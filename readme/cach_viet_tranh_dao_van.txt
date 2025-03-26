@@ -1,0 +1,117 @@
+# CÁCH VIẾT TRÁNH ĐẠO VĂN TỐI ƯU
+
+## Đoạn 1 - Phương án tối ưu
+
+### Cụm từ gốc:
+"Quá trình giao tiếp giữa client và server tuân theo mô hình yêu cầu-phản hồi"
+
+### Phương án tối ưu:
+1. "Cơ chế liên lạc giữa máy khách-máy chủ vận hành theo quy trình yêu cầu và hồi đáp"
+2. "Tương tác giữa thiết bị người dùng và máy chủ hoạt động dựa trên mô thức đề nghị-phúc đáp"
+3. "Giao tiếp trong hệ thống phân tán diễn ra theo chu trình: bên sử dụng gửi yêu cầu, bên phục vụ trả kết quả"
+
+### Cụm từ gốc:
+"Client gửi yêu cầu đến server, server xử lý yêu cầu và gửi phản hồi trở lại client"
+
+### Phương án tối ưu:
+1. "Thiết bị đầu cuối khởi tạo truy vấn, hệ thống máy chủ xử lý và phản hồi kết quả"
+2. "Phía người dùng phát đi yêu cầu, phía dịch vụ tiếp nhận, xử lý và gửi trả kết quả"
+3. "Bên yêu cầu dịch vụ gửi thông điệp, bên cung cấp dịch vụ xử lý và hồi đáp"
+
+### Cụm từ gốc:
+"Giao tiếp này thường được thực hiện thông qua các giao thức mạng như HTTP, HTTPS, FTP hoặc SMTP"
+
+### Phương án tối ưu:
+1. "Quá trình trao đổi này thực thi qua các chuẩn truyền thông như HTTP, HTTPS, FTP hay SMTP"
+2. "Việc tương tác diễn ra thông qua các quy ước kết nối mạng như HTTP, HTTPS, FTP hoặc SMTP"
+3. "Liên lạc được thiết lập bằng các giao thức tiêu chuẩn như HTTP, HTTPS, FTP và SMTP"
+
+### Cụm từ gốc:
+"Kiến trúc ClientServer mang lại nhiều lợi ích như"
+
+### Phương án tối ưu:
+1. "Mô hình phân tán Máy khách-Máy chủ đem đến các ưu điểm sau"
+2. "Cấu trúc Người dùng-Nhà cung cấp tạo ra nhiều giá trị như"
+3. "Kiến trúc hai thành phần này mang lại những lợi thế đáng kể gồm"
+
+### Cụm từ gốc:
+"Khả năng mở rộng: Có thể thêm nhiều client mà không ảnh hưởng đến hiệu suất"
+
+### Phương án tối ưu:
+1. "Tính mở rộng cao: Hệ thống dễ dàng tiếp nhận thêm nhiều người dùng mà không suy giảm hiệu năng"
+2. "Khả năng nâng quy mô: Việc bổ sung thiết bị đầu cuối không làm giảm hiệu quả hoạt động"
+3. "Dễ dàng phát triển: Có thể tăng số lượng máy khách mà vẫn duy trì được hiệu suất"
+
+### Cụm từ gốc:
+"Bảo mật tập trung: Dữ liệu được lưu trữ và bảo vệ tại server"
+
+### Phương án tối ưu:
+1. "An ninh tập trung: Thông tin được lưu giữ và bảo vệ tại một điểm trung tâm"
+2. "Quản lý bảo mật hiệu quả: Dữ liệu được tập hợp và bảo vệ tại máy chủ"
+3. "Tập trung hóa an toàn thông tin: Dữ liệu được lưu trữ và bảo vệ tại hệ thống trung tâm"
+
+### Cụm từ gốc:
+"Dễ bảo trì: Có thể nâng cấp client hoặc server độc lập"
+
+### Phương án tối ưu:
+1. "Bảo trì thuận tiện: Việc cập nhật phía người dùng hoặc phía dịch vụ có thể thực hiện riêng biệt"
+2. "Dễ dàng nâng cấp: Có thể cải tiến từng thành phần mà không ảnh hưởng đến thành phần khác"
+3. "Thuận lợi trong duy trì: Khả năng nâng cấp độc lập từng bên của hệ thống"
+
+### Cụm từ gốc:
+"Tuy nhiên, mô hình này cũng có những thách thức như"
+
+### Phương án tối ưu:
+1. "Bên cạnh đó, kiến trúc này cũng đối mặt với một số hạn chế như"
+2. "Mặc dù vậy, cách tổ chức này vẫn tồn tại những khó khăn như"
+3. "Song song với những ưu điểm, mô hình này cũng gặp phải các thách thức như"
+
+## Đoạn 2 - Phương án tối ưu
+
+### Cụm từ gốc:
+"Trong phát triển ứng dụng di động, kiến trúc ClientServer đóng vai trò quan trọng"
+
+### Phương án tối ưu:
+1. "Đối với việc xây dựng ứng dụng cho thiết bị di động, mô hình Máy khách-Máy chủ giữ vị trí then chốt"
+2. "Trong lĩnh vực phát triển phần mềm di động, cấu trúc hai thành phần này có tầm ảnh hưởng quyết định"
+3. "Khi phát triển giải pháp cho thiết bị cầm tay, kiến trúc phân tán này đóng vai trò nền tảng"
+
+### Cụm từ gốc:
+"Ứng dụng di động đóng vai trò là client, giao tiếp với các dịch vụ backend (server) thông qua API"
+
+### Phương án tối ưu:
+1. "Phần mềm trên thiết bị di động hoạt động như bên yêu cầu, kết nối với hệ thống hậu cần qua giao diện lập trình"
+2. "Ứng dụng trên thiết bị cầm tay đảm nhận vai trò người dùng, tương tác với hệ thống máy chủ thông qua các API"
+3. "Phần mềm di động thực hiện chức năng đầu cuối, liên lạc với dịch vụ nền tảng qua các điểm giao tiếp lập trình"
+
+### Cụm từ gốc:
+"Các framework hiện đại như Flutter kết hợp với Firebase hoặc các dịch vụ backend khác đã đơn giản hóa việc triển khai mô hình này"
+
+### Phương án tối ưu:
+1. "Những nền tảng phát triển tiên tiến như Flutter khi phối hợp với Firebase hoặc các giải pháp hậu cần khác đã tối giản hóa quá trình áp dụng kiến trúc này"
+2. "Các công cụ phát triển mới như Flutter cùng với Firebase hoặc các dịch vụ máy chủ khác đã làm đơn giản hóa việc xây dựng mô hình này"
+3. "Những khung phát triển hiện đại như Flutter khi kết nối với Firebase hoặc các hệ thống hậu cần khác đã giảm thiểu độ phức tạp trong việc triển khai cấu trúc này"
+
+### Cụm từ gốc:
+"cho phép nhà phát triển tập trung vào trải nghiệm người dùng mà không cần quản lý phức tạp phía server"
+
+### Phương án tối ưu:
+1. "giúp lập trình viên chú trọng vào cải thiện giao diện và trải nghiệm thay vì phải đối phó với sự phức tạp của hệ thống hậu cần"
+2. "tạo điều kiện cho người phát triển tập trung vào tối ưu hóa tương tác người dùng mà không cần bận tâm đến việc quản lý phức tạp phía máy chủ"
+3. "cho phép đội ngũ phát triển dành nhiều nguồn lực hơn cho việc nâng cao chất lượng giao diện thay vì phải xử lý những vấn đề phức tạp ở phía dịch vụ"
+
+## Đoạn văn viết lại hoàn chỉnh 1 - Tối ưu
+Cơ chế liên lạc giữa máy khách-máy chủ vận hành theo quy trình yêu cầu và hồi đáp. Thiết bị đầu cuối khởi tạo truy vấn, hệ thống máy chủ xử lý và phản hồi kết quả. Quá trình trao đổi này thực thi qua các chuẩn truyền thông như HTTP, HTTPS, FTP hay SMTP. Trong các ứng dụng hiện đại, REST API và GraphQL đã trở thành các phương thức phổ biến để thiết kế giao diện giao tiếp giữa các thành phần hệ thống [16].
+
+Mô hình phân tán Máy khách-Máy chủ đem đến các ưu điểm sau:
+• Tính mở rộng cao: Hệ thống dễ dàng tiếp nhận thêm nhiều người dùng mà không suy giảm hiệu năng
+• An ninh tập trung: Thông tin được lưu giữ và bảo vệ tại một điểm trung tâm
+• Bảo trì thuận tiện: Việc cập nhật phía người dùng hoặc phía dịch vụ có thể thực hiện riêng biệt
+
+Bên cạnh đó, kiến trúc này cũng đối mặt với một số hạn chế như:
+• Điểm lỗi đơn: Khi máy chủ gặp sự cố, toàn bộ hệ thống bị ảnh hưởng
+• Chi phí vận hành cao: Đầu tư cho việc triển khai và duy trì máy chủ
+• Phụ thuộc vào kết nối: Cần đường truyền ổn định để đảm bảo hoạt động [15]
+
+## Đoạn văn viết lại hoàn chỉnh 2 - Tối ưu
+Đối với việc xây dựng ứng dụng cho thiết bị di động, mô hình Máy khách-Máy chủ giữ vị trí then chốt. Phần mềm trên thiết bị di động hoạt động như bên yêu cầu, kết nối với hệ thống hậu cần qua giao diện lập trình. Những nền tảng phát triển tiên tiến như Flutter khi phối hợp với Firebase hoặc các giải pháp hậu cần khác đã tối giản hóa quá trình áp dụng kiến trúc này, giúp lập trình viên chú trọng vào cải thiện giao diện và trải nghiệm thay vì phải đối phó với sự phức tạp của hệ thống hậu cần [16]. 

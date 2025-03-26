@@ -1,0 +1,409 @@
+{
+  "app_name": "Social App",
+  "home": "Home",
+  "video": "Video",
+  "notifications": "Notifications",
+  "profile": {
+    "title": "Profile",
+    "edit": {
+      "title": "Edit Profile",
+      "processing": "Updating...",
+      "success": "Profile updated successfully"
+    },
+    "friends": "Friends",
+    "photos": "Photos",
+    "posts": "Posts",
+    "info": {
+      "email": "Email",
+      "phone": "Phone",
+      "gender": "Gender",
+      "birthday": "Birthday",
+      "address": "Address",
+      "bio": "Bio"
+    },
+    "actions": {
+      "edit_profile": "Edit Profile",
+      "settings": "Settings",
+      "logout": "Logout"
+    },
+    "stats": {
+      "friends": "Friends",
+      "photos": "Photos",
+      "posts": "Posts"
+    },
+    "welcome": "Welcome",
+    "complete": {
+      "title": "Complete Profile",
+      "subtitle": "Please provide your personal information",
+      "submit": "Complete",
+      "processing": "Saving information...",
+      "success": "Information saved successfully",
+      "exit_confirm": {
+        "title": "Confirm",
+        "message": "Are you sure you want to exit? Your information will not be saved.",
+        "cancel": "Cancel",
+        "exit": "Exit"
+      }
+    },
+    "update": {
+      "processing": "Updating...",
+      "success": "Updated successfully",
+      "save": "Save changes"
+    },
+    "image": {
+      "select": "Select profile picture",
+      "change": "Change profile picture",
+      "source": {
+        "title": "Choose image source",
+        "camera": "Take photo",
+        "gallery": "Choose from gallery"
+      },
+      "edit": {
+        "title": "Edit photo",
+        "crop": "Crop photo",
+        "rotate": "Rotate photo",
+        "save": "Save"
+      }
+    }
+  },
+  "settings": "Settings",
+  "hello_world": "Hello World",
+  "switch_language": "Switch Language",
+  "greeting": "Hello",
+  "farewell": "Goodbye",
+  "thank_you": "Thank you",
+  "yes": "Yes",
+  "no": "No",
+  "language": "Language",
+  "theme": "Theme",
+  "preferences": "Preferences",
+  "dark_mode": "Dark Theme",
+  "menu_title": "Menu",
+  "menu_sections": {
+    "account": "Account",
+    "preferences": "Preferences",
+    "other": "Other"
+  },
+  "menu_items": {
+    "edit_profile": "Edit Profile",
+    "manage_friends": "Manage Friends",
+    "change_language": "Change Language",
+    "change_theme": "Change Theme",
+    "manage_notifications": "Manage Notifications",
+    "view_about": "About App",
+    "view_privacy": "Privacy Policy",
+    "view_terms": "Terms of Service",
+    "sign_out": "Sign Out"
+  },
+  "validations": {
+    "birthday": {
+      "required": "Please select your birthday",
+      "invalid": "Invalid birthday",
+      "min_age": "You must be at least 13 years old"
+    },
+    "gender": {
+      "required": "Please select your gender"
+    },
+    "email": {
+      "required": "Email is required",
+      "invalid": "Invalid email format"
+    },
+    "password": {
+      "required": "Password is required",
+      "length": "Password must be at least 8 characters",
+      "complexity": "Password must contain uppercase, lowercase, number and special character"
+    },
+    "confirm_password": {
+      "required": "Please confirm your password",
+      "not_match": "Passwords do not match"
+    },
+    "name": {
+      "required": "Name is required",
+      "length": "Name must be at least 2 characters",
+      "invalid": "Name can only contain letters and spaces"
+    },
+    "phone": {
+      "required": "Phone number is required",
+      "invalid": "Invalid phone number format"
+    },
+    "age": {
+      "minimum": "You must be at least 13 years old"
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Login",
+      "button": "Login",
+      "processing": "Logging in...",
+      "success": "Login successful",
+      "remember_me": "Remember me",
+      "forgot_password": "Forgot password?",
+      "no_account": "Don't have an account?"
+    },
+    "register": {
+      "title": "Register",
+      "button": "Register",
+      "processing": "Registering...",
+      "success": "Registration successful",
+      "have_account": "Already have an account?",
+      "verify_email": {
+        "title": "Verify Email",
+        "message": "Please check your email and verify your account",
+        "button": "Got it"
+      },
+      "subtitle": "Create a new account to get started",
+      "terms": {
+        "title": "Terms of Service",
+        "content": "By creating an account, you agree to the following terms:",
+        "privacy": "We are committed to protecting your personal information according to our privacy policy.",
+        "agree": "I agree to the ",
+        "link": "terms of service"
+      },
+      "accept_terms": "Please accept the terms of service"
+    },
+    "logout": {
+      "title": "Logout",
+      "confirm": "Are you sure you want to logout?",
+      "processing": "Logging out...",
+      "success": "Logout successful"
+    },
+    "reset_password": {
+      "title": "Reset Password",
+      "message": "Enter your email to receive password reset instructions",
+      "button": "Send",
+      "processing": "Sending...",
+      "success": "Instructions have been sent to your email"
+    }
+  },
+  "permissions": {
+    "camera_denied": "Camera permission is required to take photos",
+    "gallery_denied": "Gallery permission is required to select photos",
+    "request_title": "Permission Required",
+    "settings": "Open Settings",
+    "media_rationale": "The app needs access to your camera and gallery to let you share photos and videos with friends.",
+    "notification_rationale": "The app needs notification permission to send you updates about interactions and new messages.",
+    "audio_rationale": "The app needs microphone access to allow you to record voice messages.",
+    "storage_rationale": "The app needs storage access to save media and documents.",
+    "location_rationale": "The app needs location access to show content relevant to your area."
+  },
+  "fields": {
+    "email": {
+      "label": "Email",
+      "hint": "Enter your email",
+      "invalid": "Invalid email"
+    },
+    "password": {
+      "label": "Password",
+      "hint": "Enter your password",
+      "show": "Show",
+      "hide": "Hide"
+    },
+    "confirm_password": {
+      "label": "Confirm Password",
+      "hint": "Re-enter your password"
+    },
+    "first_name": {
+      "label": "First Name",
+      "hint": "Enter your first name"
+    },
+    "last_name": {
+      "label": "Last Name",
+      "hint": "Enter your last name"
+    },
+    "full_name": {
+      "label": "Full Name",
+      "hint": "Enter your full name",
+      "error": "Please enter a valid full name"
+    },
+    "gender": {
+      "label": "Gender",
+      "male": "Male",
+      "female": "Female",
+      "other": "Other",
+      "hint": "Select your gender"
+    },
+    "birthday": {
+      "label": "Birthday",
+      "hint": "Select your birthday",
+      "error": "Please select a valid birthday"
+    },
+    "phone": {
+      "label": "Phone Number",
+      "hint": "Enter your phone number",
+      "error": "Please enter a valid phone number"
+    },
+    "address": {
+      "label": "Address",
+      "hint": "Enter your address"
+    },
+    "bio": {
+      "label": "Bio",
+      "hint": "Write something about yourself (max 150 characters)"
+    }
+  },
+  "errors": {
+    "network": "Network error",
+    "timeout": "Request timeout",
+    "server": "Server error",
+    "unknown": "An error occurred",
+    "auth": {
+      "invalid_email": "Invalid email",
+      "user_disabled": "Account has been disabled",
+      "user_not_found": "Account not found",
+      "wrong_password": "Incorrect password",
+      "email_already_in_use": "Email is already in use",
+      "weak_password": "Password is too weak",
+      "operation_not_allowed": "Operation not allowed",
+      "too_many_requests": "Too many requests, please try again later",
+      "email_not_verified": "Email not verified",
+      "requires_recent_login": "Please login again to perform this action"
+    }
+  },
+  "submit": "Submit",
+  "common": {
+    "loading": "Loading...",
+    "success": "Success",
+    "error": "Error",
+    "warning": "Warning",
+    "info": "Information",
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "save": "Save",
+    "edit": "Edit",
+    "delete": "Delete",
+    "delete_success": "Deleted successfully",
+    "delete_error": "Could not delete",
+    "delete_confirm": "Are you sure you want to delete this post?",
+    "ok": "OK",
+    "done": "Done",
+    "next": "Next",
+    "back": "Back",
+    "retry": "Retry",
+    "submit": "Submit",
+    "continue": "Continue",
+    "report": "Report violation"
+  },
+  "Messages": "Messages",
+  "People": "People",
+  "logout": "Logout",
+  "email_verification": {
+    "title": "Email Verification",
+    "subtitle": "We have sent a verification email to",
+    "instruction": "Please check your inbox and click on the verification link",
+    "check_spam": "If you don't see the email in your inbox, please check your spam folder",
+    "resend": {
+      "button": "Resend verification email",
+      "processing": "Sending...",
+      "success": "Verification email resent",
+      "wait": "Please wait {seconds} seconds before resending",
+      "error": "Could not send verification email"
+    },
+    "verify": {
+      "checking": "Checking verification status...",
+      "success": "Email verified successfully",
+      "error": "Could not verify email"
+    },
+    "actions": {
+      "open_email": "Open Email App",
+      "refresh": "Refresh Status",
+      "back_to_login": "Back to Login",
+      "continue": "Continue"
+    },
+    "messages": {
+      "verification_required": "You need to verify your email before continuing",
+      "check_email": "Please check your email",
+      "verified": "Email is verified",
+      "not_verified": "Email is not verified"
+    }
+  },
+  "datetime": {
+    "just_now": "Just now",
+    "minutes": "minutes ago",
+    "hours": "hours ago",
+    "days": "days ago",
+    "online": "Active now",
+    "offline": "Offline"
+  },
+  "create_post": {
+    "title": "Posts",
+    "create": "Create Post",
+    "no_posts": "No posts yet",
+    "no_more_posts": "No more posts",
+    "greeting": "Hello",
+    "subtitle": "Share your moments.",
+    "content_hint": "What's on your mind?",
+    "upload": "Upload",
+    "add_image": "Add Image",
+    "add_video": "Add Video",
+    "selected_images": "Selected Images",
+    "max_files": "You can only upload up to",
+    "no_video_with_image": "Cannot upload video with images",
+    "image_source": {
+      "title": "Choose Image Source",
+      "camera": "Take Photo",
+      "gallery": "Choose from Gallery"
+    },
+    "video_source": {
+      "title": "Choose Video Source",
+      "camera": "Record Video",
+      "gallery": "Choose from Gallery"
+    },
+    "edit_image": {
+      "title": "Edit Image",
+      "error": "An error occurred while editing the image"
+    },
+    "validation": {
+      "content_required": "Please enter post content"
+    },
+    "success": "Post created successfully"
+  },
+  "edit_post": {
+    "title": "Edit Post",
+    "save": "Save Changes",
+    "success": "Post updated successfully",
+    "error": "Could not update post"
+  },
+  "friends": {
+    "status": {
+      "friends": "Friends",
+      "cancel_request": "Cancel Request",
+      "accept": "Accept",
+      "add_friend": "Add Friend"
+    },
+    "unfriend": {
+      "title": "Unfriend",
+      "message": "Are you sure you want to unfriend this person?"
+    },
+    "cancel_request": {
+      "title": "Cancel Friend Request",
+      "message": "Are you sure you want to cancel the friend request?"
+    }
+  },
+  "notification": {
+    "title": "Notifications",
+    "new": "New",
+    "mark_all_read": "Mark all as read",
+    "empty": "No notifications yet",
+    "loading": "Loading notifications...",
+    "error": "Could not load notifications",
+    "options": {
+      "delete": "Delete this notification",
+      "mark_read": "Mark as read"
+    },
+    "types": {
+      "like": "liked your post",
+      "comment_prefix": "commented on your post: \"",
+      "comment_suffix": "\"",
+      "friend_request": "sent you a friend request",
+      "friend_accept": "accepted your friend request",
+      "message_prefix": "sent you a message: \"",
+      "message_suffix": "\""
+    },
+    "actions": {
+      "delete_success": "Notification deleted",
+      "delete_error_prefix": "Error deleting notification: ",
+      "mark_read_success": "Marked as read",
+      "mark_read_error_prefix": "Error marking as read: "
+    }
+  }
+}

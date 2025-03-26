@@ -1,0 +1,44 @@
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "woven-plane-448115-r4",
+          "appId": "1:1007646480719:android:42b4795ef1ab90b79f8d3a",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "woven-plane-448115-r4",
+          "configurations": {
+            "android": "1:1007646480719:android:42b4795ef1ab90b79f8d3a",
+            "ios": "1:1007646480719:ios:b36620eaa075c10d9f8d3a",
+            "web": "1:1007646480719:web:1b08c84c412622f49f8d3a"
+          }
+        }
+      }
+    }
+  },
+  "firestore": {
+    "rules": "firestore.rules",
+    "indexes": "firestore.indexes.json"
+  },
+  "functions": [
+    {
+      "source": "functions",
+      "codebase": "default",
+      "ignore": [
+        "node_modules",
+        ".git",
+        "firebase-debug.log",
+        "firebase-debug.*.log",
+        "*.local"
+      ],
+      "predeploy": [
+        "npm --prefix \"$RESOURCE_DIR\" run lint",
+        "npm --prefix \"$RESOURCE_DIR\" run build"
+      ]
+    }
+  ]
+}

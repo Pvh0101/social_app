@@ -1,0 +1,17 @@
+# CỤM TỪ BỊ ĐÁNH DẤU ĐẠO VĂN
+
+## Đoạn 1
+1. "Quá trình giao tiếp giữa client và server tuân theo mô hình yêu cầu-phản hồi"
+2. "Client gửi yêu cầu đến server, server xử lý yêu cầu và gửi phản hồi trở lại client"
+3. "Giao tiếp này thường được thực hiện thông qua các giao thức mạng như HTTP, HTTPS, FTP hoặc SMTP"
+4. "Kiến trúc ClientServer mang lại nhiều lợi ích như"
+5. "Khả năng mở rộng: Có thể thêm nhiều client mà không ảnh hưởng đến hiệu suất"
+6. "Bảo mật tập trung: Dữ liệu được lưu trữ và bảo vệ tại server"
+7. "Dễ bảo trì: Có thể nâng cấp client hoặc server độc lập"
+8. "Tuy nhiên, mô hình này cũng có những thách thức như"
+
+## Đoạn 2
+1. "Trong phát triển ứng dụng di động, kiến trúc ClientServer đóng vai trò quan trọng"
+2. "Ứng dụng di động đóng vai trò là client, giao tiếp với các dịch vụ backend (server) thông qua API"
+3. "Các framework hiện đại như Flutter kết hợp với Firebase hoặc các dịch vụ backend khác đã đơn giản hóa việc triển khai mô hình này"
+4. "cho phép nhà phát triển tập trung vào trải nghiệm người dùng mà không cần quản lý phức tạp phía server" 

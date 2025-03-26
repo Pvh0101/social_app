@@ -1,0 +1,517 @@
+{
+  "hello_world": "Xin chào",
+  "switch_language": "Chuyển ngôn ngữ",
+  "greeting": "Xin chào",
+  "farewell": "Tạm biệt",
+  "thank_you": "Cảm ơn",
+  "yes": "Có",
+  "no": "Không",
+  "settings": {
+    "theme": {
+      "title": "Cài đặt giao diện",
+      "dark_mode": "Chế độ tối",
+      "dark": "Chế độ tối",
+      "light": "Chế độ sáng",
+      "colors": "Màu sắc chủ đề",
+      "text_size": "Kích thước chữ",
+      "text_small": "Nhỏ",
+      "text_large": "Lớn",
+      "preview": "Xem trước",
+      "preview_title": "Tiêu đề mẫu",
+      "preview_subtitle": "Đây là đoạn văn bản mẫu để xem trước giao diện của ứng dụng với các cài đặt hiện tại.",
+      "preview_button": "Nút mẫu"
+    }
+  },
+  "language": "Ngôn ngữ",
+  "preferences": "Tùy chọn",
+  "notifications": "Thông báo",
+  "app_name": "Social App",
+  "home": "Trang chủ",
+  "video": "Video",
+  "profile": {
+    "title": "Hồ sơ",
+    "edit": {
+      "title": "Chỉnh sửa hồ sơ",
+      "processing": "Đang cập nhật...",
+      "success": "Cập nhật thành công"
+    },
+    "friends": "Bạn bè",
+    "photos": "Ảnh",
+    "posts": "Bài viết",
+    "info": {
+      "email": "Email",
+      "phone": "Số điện thoại",
+      "gender": "Giới tính",
+      "birthday": "Ngày sinh",
+      "address": "Địa chỉ",
+      "bio": "Giới thiệu"
+    },
+    "actions": {
+      "edit_profile": "Chỉnh sửa hồ sơ",
+      "settings": "Cài đặt",
+      "logout": "Đăng xuất"
+    },
+    "stats": {
+      "friends": "Bạn bè",
+      "photos": "Ảnh",
+      "posts": "Bài viết"
+    },
+    "welcome": "Xin chào",
+    "complete": {
+      "title": "Hoàn thiện hồ sơ",
+      "subtitle": "Vui lòng cung cấp thông tin cá nhân của bạn",
+      "submit": "Hoàn tất",
+      "processing": "Đang lưu thông tin...",
+      "success": "Lưu thông tin thành công",
+      "exit_confirm": {
+        "title": "Xác nhận",
+        "message": "Bạn có chắc muốn thoát? Thông tin sẽ không được lưu.",
+        "cancel": "Hủy",
+        "exit": "Thoát"
+      }
+    },
+    "update": {
+      "processing": "Đang cập nhật...",
+      "success": "Cập nhật thành công",
+      "save": "Lưu thay đổi"
+    },
+    "image": {
+      "select": "Chọn ảnh đại diện",
+      "change": "Thay đổi ảnh đại diện",
+      "source": {
+        "title": "Chọn nguồn ảnh",
+        "camera": "Chụp ảnh mới",
+        "gallery": "Chọn từ thư viện"
+      },
+      "edit": {
+        "title": "Chỉnh sửa ảnh",
+        "crop": "Cắt ảnh",
+        "rotate": "Xoay ảnh",
+        "save": "Lưu"
+      }
+    }
+  },
+  "menu": "Menu",
+  "menu_title": "Menu",
+  "menu_sections": {
+    "account": "Tài khoản",
+    "preferences": "Tùy chỉnh",
+    "other": "Khác"
+  },
+  "menu_items": {
+    "edit_profile": "Chỉnh sửa hồ sơ",
+    "manage_friends": "Quản lý bạn bè",
+    "change_language": "Thay đổi ngôn ngữ",
+    "change_theme": "Thay đổi giao diện",
+    "manage_notifications": "Quản lý thông báo",
+    "view_about": "Thông tin ứng dụng",
+    "view_privacy": "Chính sách bảo mật",
+    "view_terms": "Điều khoản sử dụng",
+    "sign_out": "Đăng xuất"
+  },
+  "login_phone_hint": "Số điện thoại",
+  "login_send_code": "Gửi mã",
+  "login_verification_message": "Đăng nhập bằng email và mật khẩu",
+  "login_phone_required": "Vui lòng nhập số điện thoại",
+  "login_phone_invalid": "Số điện thoại không hợp lệ",
+  "login_search_country": "Tìm kiếm quốc gia",
+  "login_error_occurred": "Đã xảy ra lỗi. Vui lòng thử lại.",
+  "login_email_hint": "Email",
+  "login_password_hint": "Mật khẩu",
+  "login_button": "Đăng nhập",
+  "login_email_required": "Vui lòng nhập email",
+  "login_email_invalid": "Email không hợp lệ",
+  "login_password_required": "Vui lòng nhập mật khẩu",
+  "login_password_short": "Mật khẩu phải có ít nhất 6 ký tự",
+  "login_forgot_password": "Quên mật khẩu?",
+  "login_no_account": "Chưa có tài khoản?",
+  "register": "Đăng ký",
+  "login_or": "HOẶC",
+  
+  "email_hint": "Nhập email của bạn",
+  "password_hint": "Nhập mật khẩu",
+  "confirm_password_hint": "Xác nhận mật khẩu",
+  "login": "Đăng nhập",
+  "forgot_password": "Quên mật khẩu?",
+  "create_account": "Tạo tài khoản",
+  "already_have_account": "Đã có tài khoản?",
+  "email_required": "Vui lòng nhập email",
+  "email_invalid": "Email không hợp lệ",
+  "password_required": "Vui lòng nhập mật khẩu",
+  "password_length": "Mật khẩu phải có ít nhất 6 ký tự",
+  "confirm_password_required": "Vui lòng xác nhận mật khẩu",
+  "passwords_not_match": "Mật khẩu không khớp",
+  "processing_login": "Đang xử lý đăng nhập...",
+  "processing_register": "Đang xử lý đăng ký...",
+  "edit_profile": "Chỉnh sửa hồ sơ",
+  "save": "Lưu",
+  "name_hint": "Nhập tên của bạn",
+  "bio_hint": "Viết gì đó về bản thân",
+  "location_hint": "Nhập vị trí của bạn",
+  "name_required": "Vui lòng nhập họ và tên",
+  "profile_updated": "Cập nhật hồ sơ thành công",
+  "profile_image_updated": "Ảnh đại diện đã được cập nhật",
+  "error_updating_image": "Lỗi khi cập nhật ảnh đại diện",
+  "complete_profile": "Hoàn thiện hồ sơ",
+  "first_name": "Họ",
+  "last_name": "Tên",
+  "gender": {
+    "label": "Giới tính",
+    "male": "Nam",
+    "female": "Nữ",
+    "other": "Khác"
+  },
+  "birthday": "Ngày sinh",
+  "phone_number": "Số điện thoại",
+  "address": "Địa chỉ",
+  "bio": "Giới thiệu",
+  "select": "Chọn",
+  "submit": "Hoàn tất",
+  "full_name": "Họ và tên",
+    "select_source": "Chọn nguồn ảnh",
+    "gallery": "Thư viện ảnh",
+    "camera": "Máy ảnh",
+    "edit_image": "Chỉnh sửa ảnh",
+    "select_image": "Chọn ảnh",
+    "tap_to_select": "Nhấn để chọn ảnh đại diện",
+  "auth_error": "Lỗi xác thực. Vui lòng đăng nhập lại",
+  "validations": {
+    "email": {
+      "required": "Vui lòng nhập email",
+      "invalid": "Email không hợp lệ"
+    },
+    "password": {
+      "required": "Vui lòng nhập mật khẩu",
+      "length": "Mật khẩu phải có ít nhất 8 ký tự",
+      "complexity": "Mật khẩu phải chứa chữ hoa, chữ thường, số và ký tự đặc biệt"
+    },
+    "confirm_password": {
+      "required": "Vui lòng xác nhận mật khẩu",
+      "not_match": "Mật khẩu không khớp"
+    },
+    "name": {
+      "required": "Vui lòng nhập họ tên",
+      "length": "Họ tên phải có ít nhất 2 ký tự",
+      "invalid": "Họ tên chỉ được chứa chữ cái và khoảng trắng"
+    },
+    "phone": {
+      "required": "Vui lòng nhập số điện thoại",
+      "invalid": "Số điện thoại không hợp lệ"
+    },
+    "age": {
+      "minimum": "Bạn phải đủ 13 tuổi trở lên"
+    },
+    "birthday": {
+      "required": "Vui lòng chọn ngày sinh",
+      "invalid": "Ngày sinh không hợp lệ",
+      "min_age": "Bạn phải đủ 13 tuổi trở lên"
+    },
+    "gender": {
+      "required": "Vui lòng chọn giới tính"
+    }
+  },
+  "male": "Nam",
+  "female": "Nữ",
+  "other": "Khác",
+  "auth": {
+    "login": {
+      "title": "Đăng nhập",
+      "button": "Đăng nhập",
+      "processing": "Đang đăng nhập...",
+      "success": "Đăng nhập thành công",
+      "remember_me": "Ghi nhớ đăng nhập",
+      "forgot_password": "Quên mật khẩu?",
+      "no_account": "Chưa có tài khoản?"
+    },
+    "register": {
+      "title": "Đăng ký",
+      "button": "Đăng ký",
+      "processing": "Đang đăng ký...", 
+      "success": "Đăng ký thành công",
+      "have_account": "Đã có tài khoản?",
+      "verify_email": {
+        "title": "Xác thực Email",
+        "message": "Vui lòng kiểm tra email và xác thực tài khoản của bạn",
+        "button": "Đã hiểu"
+      },
+      "subtitle": "Tạo tài khoản mới để bắt đầu",
+      "terms": {
+        "title": "Điều khoản dịch vụ",
+        "content": "Bằng việc tạo tài khoản, bạn đồng ý với các điều khoản sau:",
+        "privacy": "Chúng tôi cam kết bảo vệ thông tin cá nhân của bạn theo chính sách bảo mật.",
+        "agree": "Tôi đồng ý với ",
+        "link": "điều khoản dịch vụ"
+      },
+      "accept_terms": "Vui lòng chấp nhận điều khoản dịch vụ"
+    },
+    "logout": {
+      "title": "Đăng xuất",
+      "confirm": "Bạn có chắc muốn đăng xuất?",
+      "processing": "Đang đăng xuất...",
+      "success": "Đăng xuất thành công"
+    },
+    "reset_password": {
+      "title": "Đặt lại mật khẩu",
+      "message": "Nhập email của bạn để nhận hướng dẫn đặt lại mật khẩu",
+      "button": "Gửi",
+      "processing": "Đang gửi...",
+      "success": "Hướng dẫn đã được gửi đến email của bạn"
+    },
+    "errors": {
+      "login_failed": "Đăng nhập thất bại",
+      "user_not_found": "Không tìm thấy người dùng",
+      "invalid_password": "Mật khẩu không đúng",
+      "invalid_email": "Email không hợp lệ",
+      "account_disabled": "Tài khoản đã bị vô hiệu hóa",
+      "network_error": "Lỗi kết nối mạng"
+    }
+  },
+  "fields": {
+    "email": {
+      "label": "Email",
+      "hint": "Nhập email của bạn",
+      "invalid": "Email không hợp lệ"
+    },
+    "password": {
+      "label": "Mật khẩu",
+      "hint": "Nhập mật khẩu của bạn",
+      "show": "Hiện",
+      "hide": "Ẩn"
+    },
+    "confirm_password": {
+      "label": "Xác nhận mật khẩu",
+      "hint": "Nhập lại mật khẩu của bạn"
+    },
+    "first_name": {
+      "label": "Họ",
+      "hint": "Nhập họ của bạn"
+    },
+    "last_name": {
+      "label": "Tên",
+      "hint": "Nhập tên của bạn"
+    },
+    "full_name": {
+      "label": "Họ và tên",
+      "hint": "Nhập họ và tên của bạn",
+      "error": "Vui lòng nhập họ và tên hợp lệ"
+    },
+    "gender": {
+      "label": "Giới tính",
+      "male": "Nam",
+      "female": "Nữ",
+      "other": "Khác",
+      "hint": "Chọn giới tính của bạn"
+    },
+    "birthday": {
+      "label": "Ngày sinh",
+      "hint": "Chọn ngày sinh của bạn",
+      "error": "Vui lòng chọn ngày sinh hợp lệ"
+    },
+    "phone": {
+      "label": "Số điện thoại",
+      "hint": "Nhập số điện thoại của bạn",
+      "error": "Vui lòng nhập số điện thoại hợp lệ"
+    },
+    "address": {
+      "label": "Địa chỉ",
+      "hint": "Nhập địa chỉ của bạn"
+    },
+    "bio": {
+      "label": "Giới thiệu",
+      "hint": "Viết vài điều về bản thân (tối đa 150 ký tự)"
+    }
+  },
+  "errors": {
+    "network": "Lỗi kết nối mạng",
+    "timeout": "Yêu cầu đã hết thời gian",
+    "server": "Lỗi máy chủ",
+    "unknown": "Đã có lỗi xảy ra",
+    "auth": {
+      "invalid_email": "Email không hợp lệ",
+      "user_disabled": "Tài khoản đã bị vô hiệu hóa",
+      "user_not_found": "Không tìm thấy tài khoản",
+      "wrong_password": "Mật khẩu không chính xác",
+      "email_already_in_use": "Email đã được sử dụng",
+      "weak_password": "Mật khẩu quá yếu",
+      "operation_not_allowed": "Thao tác không được phép",
+      "too_many_requests": "Quá nhiều yêu cầu, vui lòng thử lại sau",
+      "email_not_verified": "Email chưa được xác thực",
+      "requires_recent_login": "Vui lòng đăng nhập lại để thực hiện thao tác này"
+    }
+  },
+  "common": {
+    "loading": "Đang tải...",
+    "success": "Thành công",
+    "error": "Lỗi",
+    "warning": "Cảnh báo",
+    "info": "Thông tin",
+    "confirm": "Xác nhận",
+    "cancel": "Hủy",
+    "save": "Lưu",
+    "edit": "Sửa",
+    "delete": "Xóa",
+    "delete_success": "Xóa thành công",
+    "delete_error": "Không thể xóa",
+    "delete_confirm": "Bạn có chắc chắn muốn xóa bài viết này?",
+    "ok": "OK",
+    "done": "Xong",
+    "next": "Tiếp",
+    "back": "Quay lại",
+    "retry": "Thử lại",
+    "submit": "Gửi",
+    "continue": "Tiếp tục",
+    "report": "Báo cáo vi phạm"
+  },
+  "Messages": "Tin nhắn",
+  "People": "Mọi người",
+  "logout": "Đăng xuất",
+  "friends": {
+    "title": "Bạn bè",
+    "list": "Danh sách bạn bè",
+    "requests": "Lời mời kết bạn",
+    "add": "Thêm bạn",
+    "remove": "Hủy kết bạn",
+    "accept": "Chấp nhận",
+    "decline": "Từ chối",
+    "block": "Chặn",
+    "unblock": "Bỏ chặn",
+    "search": "Tìm kiếm bạn bè",
+    "no_friends": "Chưa có bạn bè",
+    "no_requests": "Không có lời mời kết bạn",
+    "friend_added": "Đã gửi lời mời kết bạn",
+    "friend_removed": "Đã hủy kết bạn",
+    "friend_accepted": "Đã chấp nhận lời mời kết bạn",
+    "friend_declined": "Đã từ chối lời mời kết bạn",
+    "friend_blocked": "Đã chặn người dùng",
+    "friend_unblocked": "Đã bỏ chặn người dùng",
+    "status": {
+      "friends": "Bạn bè",
+      "cancel_request": "Hủy lời mời",
+      "accept": "Chấp nhận",
+      "add_friend": "Kết bạn"
+    },
+    "unfriend": {
+      "title": "Hủy kết bạn",
+      "message": "Bạn có chắc chắn muốn hủy kết bạn không?"
+    },
+    "cancel_request": {
+      "title": "Hủy lời mời kết bạn",
+      "message": "Bạn có chắc chắn muốn hủy lời mời kết bạn không?"
+    }
+  },
+  "email_verification": {
+    "title": "Xác thực Email",
+    "subtitle": "Chúng tôi đã gửi email xác thực đến",
+    "instruction": "Vui lòng kiểm tra hộp thư của bạn và nhấn vào liên kết xác thực",
+    "check_spam": "Nếu bạn không thấy email trong hộp thư đến, hãy kiểm tra thư mục spam",
+    "resend": {
+      "button": "Gửi lại email xác thực",
+      "processing": "Đang gửi...",
+      "success": "Đã gửi lại email xác thực",
+      "wait": "Vui lòng đợi {seconds} giây trước khi gửi lại",
+      "error": "Không thể gửi email xác thực"
+    },
+    "verify": {
+      "checking": "Đang kiểm tra trạng thái xác thực...",
+      "success": "Email đã được xác thực thành công",
+      "error": "Không thể xác thực email"
+    },
+    "actions": {
+      "open_email": "Mở ứng dụng Email",
+      "refresh": "Làm mới trạng thái",
+      "back_to_login": "Quay lại đăng nhập",
+      "continue": "Tiếp tục"
+    },
+    "messages": {
+      "verification_required": "Bạn cần xác thực email trước khi tiếp tục",
+      "check_email": "Vui lòng kiểm tra email của bạn",
+      "verified": "Email đã được xác thực",
+      "not_verified": "Email chưa được xác thực"
+    }
+  },
+  "datetime": {
+    "just_now": "Vừa xong",
+    "minutes": "phút trước",
+    "hours": "giờ trước",
+    "days": "ngày trước",
+    "online": "Đang hoạt động",
+    "offline": "Ngoại tuyến"
+  },
+  "create_post": {
+    "title": "Bài viết",
+    "create": "Tạo bài viết",
+    "no_posts": "Chưa có bài viết nào",
+    "no_more_posts": "Đã hết bài viết",
+    "greeting": "Xin chào",
+    "subtitle": "Hãy chia sẻ những khoảnh khắc của bạn.",
+    "content_hint": "Bạn đang nghĩ gì?",
+    "upload": "Upload",
+    "add_image": "Thêm ảnh",
+    "add_video": "Thêm video",
+    "selected_images": "Ảnh đã chọn",
+    "max_files": "Bạn chỉ có thể đăng tối đa",
+    "no_video_with_image": "Không thể đăng video cùng với ảnh",
+    "image_source": {
+      "title": "Chọn nguồn ảnh",
+      "camera": "Chụp ảnh",
+      "gallery": "Chọn ảnh"
+    },
+    "video_source": {
+      "title": "Chọn nguồn video",
+      "camera": "Quay video",
+      "gallery": "Chọn video"
+    },
+    "edit_image": {
+      "title": "Chỉnh sửa ảnh",
+      "error": "Có lỗi xảy ra khi chỉnh sửa ảnh"
+    },
+    "validation": {
+      "content_required": "Vui lòng nhập nội dung bài viết"
+    },
+    "success": "Đăng bài viết thành công"
+  },
+  "edit_post": {
+    "title": "Chỉnh sửa bài viết",
+    "save": "Lưu thay đổi",
+    "success": "Cập nhật bài viết thành công",
+    "error": "Không thể cập nhật bài viết"
+  },
+  "notification": {
+    "title": "Thông báo",
+    "new": "Mới",
+    "mark_all_read": "Đánh dấu tất cả là đã đọc",
+    "empty": "Chưa có thông báo nào",
+    "loading": "Đang tải thông báo...",
+    "error": "Không thể tải thông báo",
+    "options": {
+      "delete": "Xóa thông báo này",
+      "mark_read": "Đánh dấu là đã đọc"
+    },
+    "types": {
+      "like": "đã thích bài viết của bạn",
+      "comment_prefix": "đã bình luận về bài viết của bạn: \"",
+      "comment_suffix": "\"",
+      "friend_request": "đã gửi lời mời kết bạn",
+      "friend_accept": "đã chấp nhận lời mời kết bạn của bạn",
+      "message_prefix": "đã gửi tin nhắn cho bạn: \"",
+      "message_suffix": "\""
+    },
+    "actions": {
+      "delete_success": "Đã xóa thông báo",
+      "delete_error_prefix": "Lỗi khi xóa thông báo: ",
+      "mark_read_success": "Đã đánh dấu là đã đọc",
+      "mark_read_error_prefix": "Lỗi khi đánh dấu đã đọc: "
+    }
+  },
+  "permissions": {
+    "camera_denied": "Cần quyền truy cập máy ảnh để chụp ảnh",
+    "gallery_denied": "Cần quyền truy cập thư viện để chọn ảnh",
+    "request_title": "Yêu cầu quyền truy cập",
+    "settings": "Mở cài đặt",
+    "media_rationale": "Ứng dụng cần quyền truy cập vào máy ảnh và thư viện để cho phép bạn chia sẻ hình ảnh và video với bạn bè.",
+    "notification_rationale": "Ứng dụng cần quyền thông báo để gửi đến bạn các thông báo về tương tác và tin nhắn mới.",
+    "audio_rationale": "Ứng dụng cần quyền truy cập micro để cho phép bạn ghi âm tin nhắn thoại.",
+    "storage_rationale": "Ứng dụng cần quyền truy cập bộ nhớ để lưu trữ media và tài liệu.",
+    "location_rationale": "Ứng dụng cần quyền truy cập vị trí để hiển thị nội dung phù hợp với khu vực của bạn."
+  }
+}

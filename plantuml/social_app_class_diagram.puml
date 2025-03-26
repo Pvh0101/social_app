@@ -1,0 +1,291 @@
+@startuml Social App Class Diagram
+
+' Định nghĩa style
+skinparam class {
+    BackgroundColor #ECECEC
+    ArrowColor #2688d4
+    BorderColor #2688d4
+}
+
+' UserModel
+class UserModel {
+    - uid: String
+    - token: String?
+    - email: String
+    - fullName: String
+    - gender: String?
+    - birthDay: DateTime?
+    - phoneNumber: String?
+    - address: String?
+    - profileImage: String?
+    - decs: String?
+    - lastSeen: DateTime?
+    - createdAt: DateTime?
+    - isOnline: boolean
+    - isPrivateAccount: boolean
+    - followersCount: int
+    + isProfileComplete: boolean
+    + lastSeenText: String
+    + fromMap(Map): UserModel
+    + toMap(): Map
+    + copyWith(): UserModel
+    + fromDocument(DocumentSnapshot): UserModel
+}
+
+' PostModel
+class PostModel {
+    - postId: String
+    - userId: String
+    - content: String
+    - fileUrls: List<String>?
+    - thumbnailUrl: String?
+    - postType: PostType
+    - createdAt: DateTime
+    - updatedAt: DateTime?
+    - likeCount: int
+    - commentCount: int
+    + createdAtText: String
+    + updatedAtText: String
+    + fromMap(Map): PostModel
+    + toMap(): Map
+}
+
+' CommentModel
+class CommentModel {
+    - commentId: String
+    - postId: String
+    - userId: String
+    - content: String
+    - likeCount: int
+    - createdAt: DateTime
+    - parentId: String?
+    + fromMap(Map): CommentModel
+    + toMap(): Map
+}
+
+' LikeModel
+class LikeModel {
+    - likeId: String
+    - contentId: String
+    - contentType: ContentType
+    - userId: String
+    - createdAt: DateTime
+    + fromMap(Map): LikeModel
+    + toMap(): Map
+}
+
+' FriendshipModel
+class FriendshipModel {
+    - friendshipId: String
+    - senderId: String
+    - receiverId: String
+    - isAccepted: boolean
+    - createdAt: DateTime
+    + createdAtText: String
+    + fromMap(Map): FriendshipModel
+    + toMap(): Map
+    + fromDocument(DocumentSnapshot): FriendshipModel
+    + copyWith(): FriendshipModel
+}
+
+' Message
+class Message {
+    - id: String
+    - chatId: String
+    - senderId: String
+    - senderName: String?
+    - senderAvatar: String?
+    - content: String
+    - type: MessageType
+    - mediaUrl: String?
+    - seenBy: Set<String>
+    - createdAt: DateTime
+    + isSeenBy(String): boolean
+    + getDisplayContent(): String
+    + createdAtText: String
+    + fromMap(Map): Message
+    + toMap(): Map
+}
+
+' Chatroom
+class Chatroom {
+    - id: String
+    - name: String?
+    - avatar: String?
+    - isGroup: boolean
+    - isPublic: boolean
+    - members: List<String>
+    - admins: List<String>
+    - lastMessageId: String?
+    - lastMessage: String?
+    - lastMessageType: MessageType?
+    - lastMessageSenderId: String?
+    - updatedAt: DateTime
+    - createdBy: String
+    - createdAt: DateTime
+    + fromMap(Map): Chatroom
+    + toMap(): Map
+    + copyWith(): Chatroom
+}
+
+' NotificationModel
+class NotificationModel {
+    - id: String
+    - senderId: String
+    - receiverId: String
+    - content: String
+    - type: NotificationType
+    - postId: String?
+    - commentId: String?
+    - chatId: String?
+    - isRead: boolean
+    - createdAt: DateTime
+    - senderName: String?
+    - senderAvatar: String?
+    + createdAtText: String
+    + fromMap(Map): NotificationModel
+    + toMap(): Map
+    + copyWith(): NotificationModel
+}
+
+' Enums
+enum PostType {
+    text
+    image
+    video
+    + value: String
+    + fromString(String): PostType
+    + isMedia: boolean
+    + needsThumbnail: boolean
+}
+
+enum MessageType {
+    text
+    image
+    video
+    audio
+    + fromString(String): MessageType
+    + displayText: String
+}
+
+enum NotificationType {
+    like
+    comment
+    mention
+    friendRequest
+    friendAccept
+    message
+    + value: String
+    + fromString(String): NotificationType
+    + fromMap(Map): NotificationType
+    + toMap(): Map
+    + getTemplateMessage(String): String
+}
+
+enum ContentType {
+    post
+    comment
+    + value: String
+    + fromString(String): ContentType
+}
+
+' Repositories
+class AuthRepository {
+    - _auth: FirebaseAuth
+    - _firestore: FirebaseFirestore
+    - _fcmService: FCMService
+    + createAccount(email, password): Future<UserCredential>
+    + signIn(email, password): Future<UserCredential>
+    + signOut(): Future<void>
+    + updateUserProfile(...): Future<UserModel>
+    + completeUserProfile(...): Future<UserModel>
+    + updateUserStatus(isOnline): Future<void>
+}
+
+class PostRepository {
+    - _firestore: FirebaseFirestore
+    - _auth: FirebaseAuth
+    - _storage: FirebaseStorage
+    - _notificationRepository: NotificationRepository
+    + getFeedPosts(...): Future<QuerySnapshot>
+    + getPostById(postId): Future<PostModel?>
+    + createPost(...): Future<String>
+    + updatePost(...): Future<void>
+    + deletePost(postId): Future<void>
+    + likePost(postId): Future<void>
+    + unlikePost(postId): Future<void>
+    + getComments(postId): Future<List<CommentModel>>
+    + addComment(...): Future<String>
+}
+
+class FriendRepository {
+    - _myUid: String
+    - _firestore: FirebaseFirestore
+    - _notificationRepository: NotificationRepository
+    + checkFriendshipStatus(userId): Future<Map<String, boolean>>
+    + isFriend(userId): Future<boolean>
+    + sendFriendRequest(userId): Future<String?>
+    + acceptFriendRequest(userId): Future<void>
+    + rejectFriendRequest(userId): Future<void>
+    + cancelFriendRequest(userId): Future<void>
+    + unfriend(userId): Future<void>
+}
+
+class ChatRepository {
+    - _firestore: FirebaseFirestore
+    - _uuid: Uuid
+    - _currentUserId: String
+    - _notificationRepository: NotificationRepository
+    + getUserChats(): Stream<List<Chatroom>>
+    + getChatById(chatId): Future<Chatroom?>
+    + getChatMessages(chatId): Stream<List<Message>>
+    + sendMessage(...): Future<String>
+    + createChat(...): Future<String>
+    + markMessageAsSeen(chatId, messageId): Future<void>
+}
+
+class NotificationRepository {
+    - _firestore: FirebaseFirestore
+    - _auth: FirebaseAuth
+    - _uuid: Uuid
+    + getNotifications(): Stream<List<NotificationModel>>
+    + getUnreadNotificationsCount(): Stream<int>
+    + markAsRead(notificationId): Future<void>
+    + markAllAsRead(): Future<void>
+    + createNotification(...): Future<String>
+    + deleteNotification(notificationId): Future<void>
+    + deleteAllNotifications(): Future<void>
+    + createMessageNotification(...): Future<String>
+    + createLikeNotification(...): Future<String>
+    + createCommentNotification(...): Future<String>
+    + createFriendRequestNotification(...): Future<String>
+    + createFriendAcceptNotification(...): Future<String>
+}
+
+' Mối quan hệ
+UserModel -- PostModel : creates >
+UserModel -- CommentModel : writes >
+UserModel -- LikeModel : gives >
+PostModel -- CommentModel : has >
+PostModel -- LikeModel : receives >
+CommentModel -- LikeModel : receives >
+CommentModel -- CommentModel : parent-child >
+UserModel -- FriendshipModel : relates >
+UserModel -- Message : sends >
+Chatroom -- Message : contains >
+UserModel -- NotificationModel : interacts >
+PostType -- PostModel : defines >
+MessageType -- Message : defines >
+NotificationType -- NotificationModel : defines >
+ContentType -- LikeModel : defines >
+
+AuthRepository -- UserModel : manages >
+PostRepository -- PostModel : manages >
+PostRepository -- CommentModel : manages >
+PostRepository -- LikeModel : manages >
+FriendRepository -- FriendshipModel : manages >
+ChatRepository -- Chatroom : manages >
+ChatRepository -- Message : manages >
+NotificationRepository -- NotificationModel : manages >
+
+@enduml 
