@@ -170,7 +170,7 @@ class FCMService {
     }
 
     // Hiển thị thông báo local
-    await _showLocalNotification(message);
+    // await _showLocalNotification(message);
 
     // Lưu thông báo vào Firestore
     await _saveNotificationToFirestore(message);

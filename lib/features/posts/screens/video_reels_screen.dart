@@ -83,7 +83,7 @@ class _VideoReelsScreenState extends ConsumerState<VideoReelsScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: Colors.transparent,
       body: Consumer(
         builder: (context, ref, child) {
           final provider = ref.watch(reelsPlayerProvider);
@@ -98,11 +98,11 @@ class _VideoReelsScreenState extends ConsumerState<VideoReelsScreen>
 
               if (posts.isEmpty) {
                 return const Center(
-                  child: Text('Chưa có video nào',
-                      style: TextStyle(color: Colors.white)),
+                  child: Text(
+                    'Chưa có video nào',
+                  ),
                 );
               }
-
               return PageView.builder(
                 physics: const CustomPageViewScrollPhysics(),
                 itemCount: posts.length,
@@ -123,12 +123,13 @@ class _VideoReelsScreenState extends ConsumerState<VideoReelsScreen>
             error: (error, stack) => Center(
               child: Text(
                 'Có lỗi xảy ra: $error',
-                style: const TextStyle(color: Colors.white),
               ),
             ),
           );
         },
       ),
+      extendBody: true,
+      extendBodyBehindAppBar: true,
     );
   }
 
@@ -136,20 +137,18 @@ class _VideoReelsScreenState extends ConsumerState<VideoReelsScreen>
   Widget _buildThumbnailItem(ReelsPlayerProvider provider, int index) {
     if (index >= provider.videosList.length) return const SizedBox();
 
-    double screenHeight = MediaQuery.of(context).size.height;
-    double bottomNavHeight = kBottomNavigationBarHeight;
-    double availableHeight = screenHeight - bottomNavHeight;
-
     return Stack(
       children: [
         // Thumbnail chính
-        Center(
-          child: SizedBox(
-            height: availableHeight,
-            width: double.infinity,
-            child: AspectRatio(
-              aspectRatio: 9 / 16,
+        SizedBox(
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height,
+          child: ClipRRect(
+            child: Container(
+              color: Theme.of(context).colorScheme.surface,
               child: CachedNetworkImage(
+                width: double.infinity,
+                height: double.infinity,
                 fit: BoxFit.cover,
                 imageUrl: provider.videosList[index].thumbnailUrl ?? '',
                 placeholder: (context, url) => Container(color: Colors.black),
@@ -179,43 +178,32 @@ class _VideoReelsScreenState extends ConsumerState<VideoReelsScreen>
       return _buildThumbnailItem(provider, index);
     }
 
-    double screenHeight = MediaQuery.of(context).size.height;
-    double bottomNavHeight = kBottomNavigationBarHeight;
-    double availableHeight = screenHeight - bottomNavHeight;
-
     return Stack(
       children: [
         // Video chính
-        Center(
-          child: SizedBox(
-            height: availableHeight,
-            width: double.infinity,
-            child: AspectRatio(
-              aspectRatio: 9 / 16,
-              child: VisibilityDetector(
-                key: Key('video_${provider.videosList[index].postId}'),
-                onVisibilityChanged: (info) {
-                  if (info.visibleFraction >= 0.9) {
-                    provider.playVideo();
-                  }
-                },
-                child: GestureDetector(
-                  onTap: () {
-                    // Kiểm tra trạng thái đang phát để thực hiện hành động ngược lại
-                    if (provider.isPlaying) {
-                      logDebug(LogService.POST,
-                          '[VIDEO_REELS] Dừng video khi chạm vào màn hình');
-                      provider.pauseVideo();
-                    } else {
-                      logDebug(LogService.POST,
-                          '[VIDEO_REELS] Phát video khi chạm vào màn hình');
-                      provider.playVideo();
-                    }
-                  },
-                  child: BetterPlayer(
-                    controller: provider.reelsController!,
-                  ),
-                ),
+        Positioned.fill(
+          child: VisibilityDetector(
+            key: Key('video_${provider.videosList[index].postId}'),
+            onVisibilityChanged: (info) {
+              if (info.visibleFraction >= 0.99) {
+                provider.playVideo();
+              }
+            },
+            child: GestureDetector(
+              onTap: () {
+                // Kiểm tra trạng thái đang phát để thực hiện hành động ngược lại
+                if (provider.isPlaying) {
+                  logDebug(LogService.POST,
+                      '[VIDEO_REELS] Dừng video khi chạm vào màn hình');
+                  provider.pauseVideo();
+                } else {
+                  logDebug(LogService.POST,
+                      '[VIDEO_REELS] Phát video khi chạm vào màn hình');
+                  provider.playVideo();
+                }
+              },
+              child: BetterPlayer(
+                controller: provider.reelsController!,
               ),
             ),
           ),
@@ -262,10 +250,9 @@ class _VideoReelsScreenState extends ConsumerState<VideoReelsScreen>
           right: 6,
           bottom: 100,
           child: PostInteractions(
-            post: post,
-            style: PostInteractionsStyle.video,
-            onShowComments: () => _showCommentSheet(context, post),
-          ),
+              post: post,
+              style: PostInteractionsStyle.video,
+              onShowComments: () => {}),
         ),
 
         // Thông tin video
@@ -282,6 +269,7 @@ class _VideoReelsScreenState extends ConsumerState<VideoReelsScreen>
                 userId: post.userId,
                 post: post,
                 style: PostInfoStyle.video,
+                showOptions: true,
               ),
               const SizedBox(height: 8),
               Text(
@@ -297,16 +285,16 @@ class _VideoReelsScreenState extends ConsumerState<VideoReelsScreen>
     );
   }
 
-  void _showCommentSheet(BuildContext context, PostModel post) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (_) => CommentSheet(post: post),
-    );
-  }
+  // void _showCommentSheet(BuildContext context, PostModel post) {
+  //   showModalBottomSheet(
+  //     context: context,
+  //     isScrollControlled: true,
+  //     shape: const RoundedRectangleBorder(
+  //       borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+  //     ),
+  //     builder: (_) => CommentSheet(postId: post.postId),
+  //   );
+  // }
 }
 
 /// Physics tùy chỉnh cho PageView

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:easy_localization/easy_localization.dart';
-import '../../../core/constants/routes_constants.dart';
 import '../../../core/utils/datetime_helper.dart';
 import '../../../core/utils/global_method.dart';
 import '../../../core/widgets/display_user_image.dart';
@@ -20,6 +19,7 @@ class PostInfoTile extends ConsumerWidget {
   final String userId;
   final PostModel post;
   final PostInfoStyle style;
+  final bool showOptions;
 
   const PostInfoTile({
     super.key,
@@ -27,6 +27,7 @@ class PostInfoTile extends ConsumerWidget {
     required this.userId,
     required this.post,
     this.style = PostInfoStyle.feed,
+    this.showOptions = true,
   });
 
   void _showDeleteConfirmDialog(BuildContext context, WidgetRef ref) {
@@ -127,22 +128,20 @@ class PostInfoTile extends ConsumerWidget {
       data: (user) {
         final isVideo = style == PostInfoStyle.video;
 
-        void navigateToProfile() {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => UserProfileScreen(
-                userId: user.uid,
-              ),
-            ),
-          );
-        }
-
         return Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             GestureDetector(
-              onTap: navigateToProfile,
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => UserProfileScreen(
+                      userId: user.uid,
+                    ),
+                  ),
+                );
+              },
               child: DisplayUserImage(
                 imageUrl: user.profileImage,
                 radius: isVideo ? 20 : 25,
@@ -152,7 +151,16 @@ class PostInfoTile extends ConsumerWidget {
             const SizedBox(width: 10),
             Expanded(
               child: GestureDetector(
-                onTap: navigateToProfile,
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => UserProfileScreen(
+                        userId: user.uid,
+                      ),
+                    ),
+                  );
+                },
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
@@ -180,17 +188,18 @@ class PostInfoTile extends ConsumerWidget {
                 ),
               ),
             ),
-            GestureDetector(
-              onTap: () => _showPostOptions(
-                context,
-                currentUser.value?.uid ?? '',
-                ref,
+            if (showOptions)
+              GestureDetector(
+                onTap: () => _showPostOptions(
+                  context,
+                  currentUser.value?.uid ?? '',
+                  ref,
+                ),
+                child: Icon(
+                  Icons.more_horiz,
+                  color: isVideo ? Colors.white : null,
+                ),
               ),
-              child: Icon(
-                Icons.more_horiz,
-                color: isVideo ? Colors.white : null,
-              ),
-            ),
           ],
         );
       },

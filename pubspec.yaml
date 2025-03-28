@@ -85,6 +85,27 @@ dev_dependencies:
   build_runner: ^2.4.6
   json_serializable: ^6.7.1
 
+# Cấu hình Icon ứng dụng
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/icons/sora_app_icon.png"
+  adaptive_icon_background: "#68CFE7" # Màu nền xanh biển nhạt giống logo
+  adaptive_icon_foreground: "assets/icons/sora_app_icon.png"
+  min_sdk_android: 21
+  remove_alpha_ios: true
+  web:
+    generate: true
+    image_path: "assets/icons/sora_app_icon.png"
+    background_color: "#68CFE7"
+    theme_color: "#68CFE7"
+  windows:
+    generate: true
+    image_path: "assets/icons/sora_app_icon.png"
+    icon_size: 48
+  macos:
+    generate: true
+    image_path: "assets/icons/sora_app_icon.png"
 
 flutter:
   uses-material-design: true
@@ -92,3 +113,4 @@ flutter:
     - assets/images/
     - assets/translations/
     - assets/lottie/
+    - assets/icons/

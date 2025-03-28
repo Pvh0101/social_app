@@ -30,13 +30,29 @@ class NotificationNavigationService {
     // Chuyển hướng dựa trên loại thông báo
     switch (type) {
       case NotificationType.like:
+        if (postId != null) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => PostDetailScreen(
+                postId: postId,
+                focusComment: false,
+              ),
+            ),
+          );
+        }
+        break;
       case NotificationType.comment:
       case NotificationType.mention:
         if (postId != null) {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => PostDetailScreen(postId: postId),
+              builder: (context) => PostDetailScreen(
+                postId: postId,
+                focusComment:
+                    true, // Focus vào ô comment khi đến từ thông báo bình luận
+              ),
             ),
           );
         }

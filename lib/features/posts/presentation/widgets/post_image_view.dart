@@ -173,7 +173,7 @@ class _PostImageViewState extends ConsumerState<PostImageView>
                     fit: BoxFit.cover,
                     cacheManager: DefaultCacheManager(),
                     placeholder: (context, url) => const Center(
-                      child: CircularProgressIndicator(),
+                      child: SizedBox.shrink(),
                     ),
                     errorWidget: (context, url, error) {
                       ref.logError(

@@ -173,7 +173,6 @@ class PostRepository {
           // Bước 1: Tạo thumbnail
           final File? thumbnailFile = await _mediaService.getVideoThumbnail(
             videoFile.path,
-            quality: 80,
             onError: (e) {
               logError(
                   LogService.POST,

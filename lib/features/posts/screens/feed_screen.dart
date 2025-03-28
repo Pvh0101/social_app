@@ -12,6 +12,7 @@ import '../widgets/comment_sheet.dart';
 import '../widgets/post_info_tile.dart';
 import '../widgets/post_interactions.dart';
 import '../../chat/providers/chat_providers.dart';
+import '../widgets/post_content.dart';
 
 /// Provider quản lý postId cần hiển thị
 final selectedPostIdProvider = StateProvider<String?>((ref) => null);
@@ -20,13 +21,11 @@ class FeedScreen extends ConsumerStatefulWidget {
   final String?
       userId; // Nếu null thì hiển thị feed chung, nếu có thì hiển thị feed của user đó
   final bool showAppBar;
-  final ScrollController? scrollController;
 
   const FeedScreen({
     super.key,
     this.userId,
     this.showAppBar = true,
-    this.scrollController,
   });
 
   @override
@@ -44,15 +43,13 @@ class _FeedScreenState extends ConsumerState<FeedScreen>
   @override
   void initState() {
     super.initState();
-    _scrollController = widget.scrollController ?? ScrollController();
+    _scrollController = ScrollController();
     _scrollController.addListener(_onScroll);
   }
 
   @override
   void dispose() {
-    if (widget.scrollController == null) {
-      _scrollController.dispose();
-    }
+    _scrollController.dispose();
     _scrollController.removeListener(_onScroll);
     super.dispose();
   }
@@ -179,26 +176,23 @@ class _FeedScreenState extends ConsumerState<FeedScreen>
                       ],
                     ],
                   ),
-                SliverPadding(
-                  padding: const EdgeInsets.all(8),
-                  sliver: SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                      (context, index) {
-                        if (index == posts.length) {
-                          return _buildLoadMoreIndicator(state);
-                        }
+                SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    (context, index) {
+                      if (index == posts.length) {
+                        return _buildLoadMoreIndicator(state);
+                      }
 
-                        final post = posts[index];
-                        return Padding(
-                          padding: const EdgeInsets.only(bottom: 8.0),
-                          child: PostCard(
-                            key: ValueKey('post_${post.postId}'),
-                            post: post,
-                          ),
-                        );
-                      },
-                      childCount: posts.length + (state.hasMore ? 1 : 0),
-                    ),
+                      final post = posts[index];
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 8.0),
+                        child: PostCard(
+                          key: ValueKey('post_${post.postId}'),
+                          post: post,
+                        ),
+                      );
+                    },
+                    childCount: posts.length + (state.hasMore ? 1 : 0),
                   ),
                 ),
               ],
@@ -243,51 +237,40 @@ class PostCard extends ConsumerWidget {
     required this.post,
   });
 
-  void _showCommentSheet(BuildContext context, WidgetRef ref) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (context) => CommentSheet(post: post),
+  void _navigateToPostDetail(BuildContext context) {
+    Navigator.pushNamed(
+      context,
+      RouteConstants.postDetail,
+      arguments: {
+        'postId': post.postId,
+        'focusComment': false,
+      },
     );
   }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Card(
-      margin: const EdgeInsets.symmetric(vertical: 4),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: PostInfoTile(
-              datePublished: post.createdAt,
-              userId: post.userId,
+    return GestureDetector(
+      onTap: () => _navigateToPostDetail(context),
+      child: Card(
+        margin: const EdgeInsets.symmetric(vertical: 4),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: PostInfoTile(
+                datePublished: post.createdAt,
+                userId: post.userId,
+                post: post,
+                showOptions: true,
+              ),
+            ),
+            PostContent(
               post: post,
             ),
-          ),
-          Padding(
-            padding:
-                const EdgeInsets.only(top: 8, left: 8, right: 8, bottom: 8),
-            child: Text(
-              post.content,
-              style: Theme.of(context).textTheme.bodyLarge,
-            ),
-          ),
-          if (post.fileUrls != null && post.fileUrls!.isNotEmpty)
-            PostImageView(
-              imageUrls: post.fileUrls!,
-              heroTagPrefix: 'post_${post.postId}',
-            ),
-          const Divider(height: 1),
-          PostInteractions(
-            post: post,
-            onShowComments: () => _showCommentSheet(context, ref),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

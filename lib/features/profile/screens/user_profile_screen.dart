@@ -132,12 +132,6 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
                           child: FriendshipButton(userId: user.uid),
                         ),
                         const SizedBox(width: 8),
-                        Expanded(
-                          child: MessageButton(
-                            otherUserId: user.uid,
-                          ),
-                        ),
-                        const SizedBox(width: 8),
                         IconButton(
                           icon: const Icon(Icons.more_vert),
                           onPressed: () {

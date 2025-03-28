@@ -351,14 +351,13 @@ class MediaService {
   /// Tạo thumbnail từ video
   Future<File?> getVideoThumbnail(
     String videoPath, {
-    int quality = 75,
     Function(String)? onError,
   }) async {
     logInfo(LogService.MEDIA,
-        '[MEDIA_SERVICE] Tạo thumbnail cho video: $videoPath, chất lượng: $quality');
+        '[MEDIA_SERVICE] Tạo thumbnail cho video: $videoPath, ');
     final result = await _processorService.getVideoThumbnail(
       videoPath,
-      quality: quality,
+      quality: 100,
       onError: onError,
     );
 

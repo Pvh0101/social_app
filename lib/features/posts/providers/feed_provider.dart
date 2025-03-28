@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/enums/post_type.dart';
 import 'post_provider.dart';
-import 'package:better_player_plus/better_player_plus.dart';
 
 import '../models/post_model.dart';
 import '../repositories/post_repository.dart';

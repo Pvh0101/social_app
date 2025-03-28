@@ -14,7 +14,6 @@ class AppCacheManager {
   // Khóa để lưu cấu hình cache và thống kê
   static const String _lastCacheCleanKey = 'last_cache_clean_time';
   static const String _imageCacheSizeKey = 'image_cache_size_bytes';
-  static const String _videoCacheSizeKey = 'video_cache_size_bytes';
   static const String _audioCacheSizeKey = 'audio_cache_size_bytes';
 
   // Đếm số lần thử lại
@@ -22,19 +21,16 @@ class AppCacheManager {
   static const int _maxRetryAttempts = 2;
 
   // Kích thước cache mặc định
-  static const int _defaultMaxCacheSize = 300 * 1024 * 1024; // 300MB
+  static const int _defaultMaxCacheSize = 150 * 1024 * 1024; // 150MB
   static const int _defaultMaxImageCacheSize = 100 * 1024 * 1024; // 100MB
-  static const int _defaultMaxVideoCacheSize = 150 * 1024 * 1024; // 150MB
   static const int _defaultMaxAudioCacheSize = 50 * 1024 * 1024; // 50MB
 
   // Thời gian hết hạn mặc định
   static const Duration _defaultImageMaxAge = Duration(days: 14); // 2 tuần
-  static const Duration _defaultVideoMaxAge = Duration(days: 7); // 1 tuần
   static const Duration _defaultAudioMaxAge = Duration(days: 14); // 2 tuần
 
   // Cache manager instance cho từng loại media
   late final BaseCacheManager imageCacheManager;
-  late final BaseCacheManager videoCacheManager;
   late final BaseCacheManager audioCacheManager;
 
   bool _isInitialized = false;
@@ -48,9 +44,6 @@ class AppCacheManager {
     // Tạo các cache manager riêng biệt cho mỗi loại media
     imageCacheManager = _createCacheManager(
         'image_cache', _defaultMaxImageCacheSize, _defaultImageMaxAge);
-
-    videoCacheManager = _createCacheManager(
-        'video_cache', _defaultMaxVideoCacheSize, _defaultVideoMaxAge);
 
     audioCacheManager = _createCacheManager(
         'audio_cache', _defaultMaxAudioCacheSize, _defaultAudioMaxAge);
@@ -204,9 +197,6 @@ class AppCacheManager {
         case MediaCacheType.image:
           key = _imageCacheSizeKey;
           break;
-        case MediaCacheType.video:
-          key = _videoCacheSizeKey;
-          break;
         case MediaCacheType.audio:
           key = _audioCacheSizeKey;
           break;
@@ -253,8 +243,6 @@ class AppCacheManager {
     switch (type) {
       case MediaCacheType.image:
         return imageCacheManager;
-      case MediaCacheType.video:
-        return videoCacheManager;
       case MediaCacheType.audio:
         return audioCacheManager;
     }
@@ -332,9 +320,6 @@ class AppCacheManager {
       case MediaCacheType.image:
         key = _imageCacheSizeKey;
         break;
-      case MediaCacheType.video:
-        key = _videoCacheSizeKey;
-        break;
       case MediaCacheType.audio:
         key = _audioCacheSizeKey;
         break;
@@ -360,7 +345,6 @@ class AppCacheManager {
 
         // Dọn dẹp các file cũ
         await imageCacheManager.emptyCache();
-        await videoCacheManager.emptyCache();
         await audioCacheManager.emptyCache();
 
         // Cập nhật thời gian dọn dẹp
@@ -368,7 +352,6 @@ class AppCacheManager {
 
         // Xóa các thống kê kích thước cache
         await prefs.remove(_imageCacheSizeKey);
-        await prefs.remove(_videoCacheSizeKey);
         await prefs.remove(_audioCacheSizeKey);
 
         logInfo(LogService.MEDIA,
@@ -385,10 +368,8 @@ class AppCacheManager {
     final prefs = await SharedPreferences.getInstance();
     return {
       'image': prefs.getInt(_imageCacheSizeKey) ?? 0,
-      'video': prefs.getInt(_videoCacheSizeKey) ?? 0,
       'audio': prefs.getInt(_audioCacheSizeKey) ?? 0,
       'total': (prefs.getInt(_imageCacheSizeKey) ?? 0) +
-          (prefs.getInt(_videoCacheSizeKey) ?? 0) +
           (prefs.getInt(_audioCacheSizeKey) ?? 0),
     };
   }
@@ -396,10 +377,8 @@ class AppCacheManager {
   /// Cập nhật cấu hình cache
   Future<void> updateCacheConfig({
     int? maxImageCacheSize,
-    int? maxVideoCacheSize,
     int? maxAudioCacheSize,
     Duration? imageMaxAge,
-    Duration? videoMaxAge,
     Duration? audioMaxAge,
   }) async {
     // Hiện thực tùy chỉnh nâng cao có thể được bổ sung sau
@@ -413,7 +392,6 @@ class AppCacheManager {
 /// Enum định nghĩa các loại cache media
 enum MediaCacheType {
   image,
-  video,
   audio,
 }
 

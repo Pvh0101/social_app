@@ -8,6 +8,7 @@ import '../../models/chatroom.dart';
 import '../../providers/chat_providers.dart';
 import '../../providers/chat_repository_provider.dart';
 import '../../../../features/authentication/providers/get_user_info_as_stream_by_id_provider.dart';
+import '../../../../features/friends/providers/get_all_friends_provider.dart';
 import '../../../../core/widgets/display_user_image.dart';
 import '../../../../core/utils/global_method.dart';
 import '../../../../core/widgets/custom_text_field.dart';
@@ -105,33 +106,12 @@ class _ChatInfoScreenState extends ConsumerState<ChatInfoScreen> {
   }
 
   Future<void> _addMember(Chatroom chat) async {
-    // Hiển thị dialog để nhập ID người dùng cần thêm
-    final userId = await showDialog<String>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Thêm thành viên'),
-        content: CustomTextField(
-          hintText: 'Nhập ID người dùng',
-          keyboardType: TextInputType.text,
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Hủy'),
-          ),
-          TextButton(
-            onPressed: () {
-              final textField = context.findRenderObject() as RenderBox;
-              final controller = (textField.parent as TextField).controller;
-              Navigator.of(context).pop(controller?.text);
-            },
-            child: const Text('Thêm'),
-          ),
-        ],
-      ),
-    );
+    if (!mounted) return;
 
-    if (userId == null || userId.isEmpty) return;
+    // Hiển thị dialog để chọn bạn bè từ danh sách bạn bè
+    final friendId = await _showFriendSelectionDialog();
+
+    if (friendId == null || friendId.isEmpty) return;
 
     setState(() {
       _isLoading = true;
@@ -139,7 +119,7 @@ class _ChatInfoScreenState extends ConsumerState<ChatInfoScreen> {
 
     try {
       final chatRepository = ref.read(chatRepositoryProvider);
-      await chatRepository.addMemberToChat(widget.chatId, userId);
+      await chatRepository.addMemberToChat(widget.chatId, friendId);
       if (mounted) {
         setState(() {
           _isLoading = false;
@@ -154,6 +134,102 @@ class _ChatInfoScreenState extends ConsumerState<ChatInfoScreen> {
         showToastMessage(text: 'Lỗi khi thêm thành viên: $e');
       }
     }
+  }
+
+  Future<String?> _showFriendSelectionDialog() async {
+    return showDialog<String>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Chọn bạn bè'),
+        content: SizedBox(
+          width: double.maxFinite,
+          height: 300,
+          child: Consumer(
+            builder: (context, ref, child) {
+              final friendsAsync = ref.watch(getAllFriendsProvider);
+
+              return friendsAsync.when(
+                data: (friendIds) {
+                  if (friendIds.isEmpty) {
+                    return const Center(
+                      child: Text('Bạn chưa có bạn bè nào'),
+                    );
+                  }
+
+                  return ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: friendIds.length,
+                    itemBuilder: (context, index) {
+                      final friendId = friendIds[index];
+                      final friendStream =
+                          ref.watch(getUserInfoAsStreamByIdProvider(friendId));
+
+                      return friendStream.when(
+                        data: (friend) {
+                          // Kiểm tra xem bạn bè đã là thành viên của nhóm chat hay chưa
+                          final isMember = ref
+                                  .read(chatProvider(widget.chatId))
+                                  .value
+                                  ?.members
+                                  .contains(friendId) ??
+                              false;
+
+                          return ListTile(
+                            leading: DisplayUserImage(
+                              imageUrl: friend.profileImage,
+                              radius: 20,
+                            ),
+                            title: Text(friend.fullName),
+                            subtitle: Text(friend.email),
+                            enabled: !isMember,
+                            onTap: isMember
+                                ? null
+                                : () => Navigator.of(context).pop(friendId),
+                            trailing: isMember
+                                ? const Chip(
+                                    label: Text('Đã là thành viên'),
+                                    backgroundColor: Colors.grey,
+                                  )
+                                : null,
+                          );
+                        },
+                        loading: () => const ListTile(
+                          leading: CircleAvatar(
+                            radius: 20,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          ),
+                          title: Text('Đang tải...'),
+                        ),
+                        error: (error, stack) => ListTile(
+                          leading: const CircleAvatar(
+                            radius: 20,
+                            child: Icon(Icons.error),
+                          ),
+                          title: Text('Lỗi'),
+                          subtitle: Text(error.toString()),
+                        ),
+                      );
+                    },
+                  );
+                },
+                loading: () => const Center(
+                  child: CircularProgressIndicator(),
+                ),
+                error: (error, stack) => Center(
+                  child: Text('Lỗi: $error'),
+                ),
+              );
+            },
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Hủy'),
+          ),
+        ],
+      ),
+    );
   }
 
   Future<void> _removeMember(Chatroom chat, String userId) async {

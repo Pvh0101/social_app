@@ -20,6 +20,7 @@ class RouteConstants {
   static const String userProfile = '/user-profile';
   static const String follow = '/follow';
   static const String feed = '/feed';
+  static const String postDetail = '/post-detail';
 
   // Chat routes
   static const String chat = '/chat';

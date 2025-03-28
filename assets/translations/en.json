@@ -405,5 +405,16 @@
       "mark_read_success": "Marked as read",
       "mark_read_error_prefix": "Error marking as read: "
     }
+  },
+  "chat": {
+    "message": {
+      "sent_media": "Sent {0}",
+      "type": {
+        "text": "text",
+        "image": "image",
+        "video": "video",
+        "audio": "audio"
+      }
+    }
   }
 }

@@ -68,22 +68,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     // Lấy số lượng thông báo chưa đọc
     final unreadNotificationsAsync =
         ref.watch(unreadNotificationsCountProvider);
-    // Lấy tổng số tin nhắn chưa đọc
-    final unreadMessagesAsync = ref.watch(totalUnreadMessagesProvider);
 
     return [
       _buildItem(Icons.home_outlined, Icons.home, 'home'),
       _buildItem(CupertinoIcons.play_circle, CupertinoIcons.play_circle_fill,
           'Videos'),
-      _buildItemWithBadge(
-        Icons.people_outline,
-        Icons.people,
-        'People',
-        unreadMessagesAsync.maybeWhen(
-          data: (count) => count,
-          orElse: () => 0,
-        ),
-      ),
+      _buildItem(Icons.people_outline, Icons.people, 'People'),
       _buildItemWithBadge(
         Icons.notifications_outlined,
         Icons.notifications,

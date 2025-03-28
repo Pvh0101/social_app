@@ -513,5 +513,16 @@
     "audio_rationale": "Ứng dụng cần quyền truy cập micro để cho phép bạn ghi âm tin nhắn thoại.",
     "storage_rationale": "Ứng dụng cần quyền truy cập bộ nhớ để lưu trữ media và tài liệu.",
     "location_rationale": "Ứng dụng cần quyền truy cập vị trí để hiển thị nội dung phù hợp với khu vực của bạn."
+  },
+  "chat": {
+    "message": {
+      "sent_media": "Đã gửi {0}",
+      "type": {
+        "text": "văn bản",
+        "image": "hình ảnh",
+        "video": "video",
+        "audio": "âm thanh"
+      }
+    }
   }
 }

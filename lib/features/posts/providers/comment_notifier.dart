@@ -142,20 +142,6 @@ class CommentNotifier extends StateNotifier<CommentState> {
   /// Thêm comment mới vào danh sách
   Future<void> addComment(String content) async {
     try {
-      // Tăng số lượng comment ngay lập tức
-      final currentCount = state.items.value?.length ?? 0;
-      state = state.copyWith(
-        items: AsyncValue.data([
-          ...state.currentItems,
-          CommentModel(
-              commentId: '',
-              postId: _postId,
-              userId: '',
-              content: content,
-              createdAt: DateTime.now())
-        ]),
-      );
-
       // Tạo comment mới
       final commentId = await _repository.createComment(
         postId: _postId,
@@ -165,12 +151,6 @@ class CommentNotifier extends StateNotifier<CommentState> {
       // Tải lại danh sách comments
       await refresh();
     } catch (e) {
-      // Rollback nếu có lỗi
-      final currentItems = state.currentItems;
-      state = state.copyWith(
-        items:
-            AsyncValue.data(currentItems.sublist(0, currentItems.length - 1)),
-      );
       rethrow;
     }
   }

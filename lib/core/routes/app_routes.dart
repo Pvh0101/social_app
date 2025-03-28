@@ -11,6 +11,7 @@ import '../../features/chat/presentation/screens/create_group_screen.dart';
 import '../../features/chat/presentation/screens/chat_info_screen.dart';
 import '../../features/chat/models/chatroom.dart';
 import '../../features/posts/screens/feed_screen.dart';
+import '../../features/posts/screens/post_detail_screen.dart';
 import '../../features/friends/presentation/screens/friends_screen.dart';
 import '../../features/notification/presentation/screens/notification_screen.dart';
 import '../../features/profile/screens/user_profile_screen.dart';
@@ -51,6 +52,68 @@ class Routes {
         ));
       case RouteConstants.feed:
         return _materialRoute(const FeedScreen());
+      case RouteConstants.postDetail:
+        if (settings.arguments is String) {
+          return PageRouteBuilder(
+            pageBuilder: (context, animation, secondaryAnimation) =>
+                PostDetailScreen(
+              postId: settings.arguments as String,
+            ),
+            transitionsBuilder:
+                (context, animation, secondaryAnimation, child) {
+              const begin = Offset(0.0, 0.1);
+              const end = Offset.zero;
+              const curve = Curves.easeInOut;
+
+              var tween =
+                  Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+              var offsetAnimation = animation.drive(tween);
+
+              return SlideTransition(
+                position: offsetAnimation,
+                child: FadeTransition(
+                  opacity: animation,
+                  child: child,
+                ),
+              );
+            },
+            transitionDuration: const Duration(milliseconds: 300),
+          );
+        } else if (settings.arguments is Map<String, dynamic>) {
+          final args = settings.arguments as Map<String, dynamic>;
+          return PageRouteBuilder(
+            pageBuilder: (context, animation, secondaryAnimation) =>
+                PostDetailScreen(
+              postId: args['postId'] as String,
+              focusComment: args['focusComment'] as bool? ?? false,
+            ),
+            transitionsBuilder:
+                (context, animation, secondaryAnimation, child) {
+              const begin = Offset(0.0, 0.1);
+              const end = Offset.zero;
+              const curve = Curves.easeInOut;
+
+              var tween =
+                  Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+              var offsetAnimation = animation.drive(tween);
+
+              return SlideTransition(
+                position: offsetAnimation,
+                child: FadeTransition(
+                  opacity: animation,
+                  child: child,
+                ),
+              );
+            },
+            transitionDuration: const Duration(milliseconds: 300),
+          );
+        } else {
+          return _materialRoute(
+            const Center(
+              child: Text('Không tìm thấy bài viết'),
+            ),
+          );
+        }
       case RouteConstants.themeSettings:
         return _materialRoute(const ThemeSettingsScreen());
       case RouteConstants.userProfile:

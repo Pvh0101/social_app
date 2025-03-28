@@ -64,10 +64,27 @@ class Message {
   /// Nếu là tin nhắn văn bản, trả về nội dung gốc
   /// Nếu là tin nhắn media, trả về thông báo "Đã gửi [loại media]"
   String getDisplayContent() {
+    final displayName = senderName ?? 'Người dùng';
+
     if (type == MessageType.text) {
-      return content;
+      return '$displayName: $content';
     }
-    return 'chat.message.sent_media'.tr(args: [type.displayText.toLowerCase()]);
+
+    String mediaType = '';
+    switch (type) {
+      case MessageType.image:
+        mediaType = 'hình ảnh';
+        break;
+      case MessageType.video:
+        mediaType = 'video';
+        break;
+      case MessageType.audio:
+        mediaType = 'âm thanh';
+        break;
+      default:
+        mediaType = 'tệp';
+    }
+    return '$displayName đã gửi $mediaType';
   }
 
   /// Lấy thời gian tạo tin nhắn dưới dạng văn bản tương đối

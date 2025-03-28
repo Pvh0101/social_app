@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:better_player_plus/better_player_plus.dart';
@@ -95,7 +96,7 @@ class ReelsPlayerProvider extends ChangeNotifier {
       reelsController = BetterPlayerController(
         BetterPlayerConfiguration(
           placeholder: CachedNetworkImage(
-            fit: BoxFit.contain,
+            fit: BoxFit.cover,
             imageUrl: videosList[currentReelIndex].thumbnailUrl ?? '',
             placeholder: (context, url) => const SizedBox(),
             errorWidget: (context, url, error) => const Icon(Icons.error),
@@ -106,7 +107,6 @@ class ReelsPlayerProvider extends ChangeNotifier {
           autoPlay: false,
           looping: true,
           controlsConfiguration: const BetterPlayerControlsConfiguration(
-            controlBarColor: Colors.black26,
             showControls: false,
             enableFullscreen: false,
             enableProgressBar: false,
