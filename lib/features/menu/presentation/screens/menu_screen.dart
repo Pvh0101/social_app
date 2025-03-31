@@ -7,16 +7,21 @@ import '../../../authentication/presentation/screens/user_information_screen.dar
 import '../../../authentication/providers/auth_provider.dart';
 import '../../../authentication/providers/get_user_info_as_stream_provider.dart';
 
-class MenuScreen extends ConsumerWidget {
+class MenuScreen extends ConsumerStatefulWidget {
   const MenuScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<MenuScreen> createState() => _MenuScreenState();
+}
+
+class _MenuScreenState extends ConsumerState<MenuScreen> {
+  @override
+  Widget build(BuildContext context) {
     final userStream = ref.watch(getUserInfoAsStreamProvider);
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Menu'),
+        title: Text('menu_title'.tr()),
       ),
       body: userStream.when(
         data: (user) => _buildMenuContent(context, ref, user),
@@ -259,6 +264,13 @@ class MenuScreen extends ConsumerWidget {
               title: const Text('English'),
               onTap: () {
                 context.setLocale(const Locale('en'));
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              title: const Text('中文'),
+              onTap: () {
+                context.setLocale(const Locale('zh'));
                 Navigator.pop(context);
               },
             ),

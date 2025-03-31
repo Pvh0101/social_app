@@ -5,6 +5,8 @@ import '../../../../core/widgets/loader.dart';
 import '../../../../core/core.dart';
 import '../../../authentication/authentication.dart';
 import '../../../chat/presentation/screens/chat_screen.dart';
+import '../../providers/friend_provider.dart';
+import '../../providers/get_all_friends_provider.dart';
 import 'friendship_button.dart';
 
 enum FriendTileType {
@@ -32,6 +34,60 @@ class FriendTile extends ConsumerWidget {
     this.isPendingRequest = false,
   });
 
+  void _showMoreOptions(BuildContext context, WidgetRef ref, UserModel user) {
+    ref.logInfo(LogService.FRIEND,
+        '[FRIEND_TILE] Hiển thị tùy chọn mở rộng cho người dùng: ${user.fullName} (${user.uid})');
+
+    showModalBottomSheet(
+      context: context,
+      builder: (context) => Container(
+        padding: const EdgeInsets.symmetric(vertical: 20),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              title: const Text(
+                'Hủy kết bạn',
+              ),
+              onTap: () async {
+                Navigator.pop(context); // Đóng bottom sheet
+
+                // Hiển thị hộp thoại xác nhận
+                final confirmed = await showDialog<bool>(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        title: const Text('Xác nhận hủy kết bạn'),
+                        content: Text(
+                            'Bạn có chắc chắn muốn hủy kết bạn với ${user.fullName}?'),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.pop(context, false),
+                            child: const Text('Hủy'),
+                          ),
+                          TextButton(
+                            onPressed: () => Navigator.pop(context, true),
+                            child: const Text('Xác nhận'),
+                          ),
+                        ],
+                      ),
+                    ) ??
+                    false;
+
+                if (confirmed) {
+                  ref.logInfo(LogService.FRIEND,
+                      '[FRIEND_TILE] Người dùng xác nhận hủy kết bạn với: ${user.fullName} (${user.uid})');
+                  await ref.read(friendProvider).removeFriend(userId: user.uid);
+                  ref.invalidate(friendshipStatusProvider(user.uid));
+                  ref.invalidate(getAllFriendsProvider);
+                }
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     ref.logDebug(LogService.FRIEND,
@@ -42,7 +98,7 @@ class FriendTile extends ConsumerWidget {
         ref.logDebug(LogService.FRIEND,
             '[FRIEND_TILE] Đã nhận thông tin người dùng: ${user.fullName} (${user.uid})');
         return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          padding: const EdgeInsets.only(left: 20, top: 10, bottom: 10),
           child: Row(
             children: [
               // Avatar và thông tin người dùng, bọc trong GestureDetector
@@ -97,8 +153,17 @@ class FriendTile extends ConsumerWidget {
 
               // Action buttons
               Row(
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   FriendshipButton(userId: userId),
+
+                  // Nút More chỉ hiển thị khi đây là bạn bè
+                  if (type == FriendTileType.friend)
+                    IconButton(
+                      icon: const Icon(Icons.more_vert),
+                      onPressed: () => _showMoreOptions(context, ref, user),
+                      tooltip: 'Thêm tùy chọn',
+                    ),
                 ],
               ),
             ],

@@ -1,0 +1,417 @@
+{
+  "app_name": "社交应用",
+  "home": "主页",
+  "video": "视频",
+  "notifications": "通知",
+  "profile": {
+    "title": "个人资料",
+    "edit": {
+      "title": "编辑资料",
+      "processing": "更新中...",
+      "success": "资料更新成功"
+    },
+    "friends": "好友",
+    "photos": "照片",
+    "posts": "帖子",
+    "info": {
+      "email": "邮箱",
+      "phone": "电话",
+      "gender": "性别",
+      "birthday": "生日",
+      "address": "地址",
+      "bio": "简介"
+    },
+    "actions": {
+      "edit_profile": "编辑资料",
+      "settings": "设置",
+      "logout": "退出登录"
+    },
+    "stats": {
+      "friends": "好友",
+      "photos": "照片",
+      "posts": "帖子"
+    },
+    "welcome": "欢迎",
+    "complete": {
+      "title": "完善资料",
+      "subtitle": "请提供您的个人信息",
+      "submit": "完成",
+      "processing": "保存信息中...",
+      "success": "信息保存成功",
+      "exit_confirm": {
+        "title": "确认",
+        "message": "确定要退出吗？您的信息将不会被保存。",
+        "cancel": "取消",
+        "exit": "退出"
+      }
+    },
+    "update": {
+      "processing": "更新中...",
+      "success": "更新成功",
+      "save": "保存更改"
+    },
+    "image": {
+      "select": "选择头像",
+      "change": "更换头像",
+      "source": {
+        "title": "选择图片来源",
+        "camera": "拍照",
+        "gallery": "从相册选择"
+      },
+      "edit": {
+        "title": "编辑照片",
+        "crop": "裁剪照片",
+        "rotate": "旋转照片",
+        "save": "保存"
+      }
+    }
+  },
+  "settings": "设置",
+  "hello_world": "你好，世界",
+  "switch_language": "切换语言",
+  "greeting": "你好",
+  "farewell": "再见",
+  "thank_you": "谢谢",
+  "yes": "是",
+  "no": "否",
+  "language": "语言",
+  "theme": "主题",
+  "preferences": "偏好设置",
+  "dark_mode": "深色主题",
+  "menu_title": "菜单",
+  "menu_sections": {
+    "account": "账户",
+    "preferences": "偏好设置",
+    "other": "其他"
+  },
+  "menu_items": {
+    "edit_profile": "编辑资料",
+    "manage_friends": "管理好友",
+    "change_language": "更改语言",
+    "change_theme": "更改主题",
+    "manage_notifications": "管理通知",
+    "view_about": "关于应用",
+    "view_privacy": "隐私政策",
+    "view_terms": "服务条款",
+    "sign_out": "退出登录"
+  },
+  "validations": {
+    "birthday": {
+      "required": "请选择您的生日",
+      "invalid": "无效的生日",
+      "min_age": "您必须年满13岁"
+    },
+    "gender": {
+      "required": "请选择您的性别"
+    },
+    "email": {
+      "required": "邮箱是必填项",
+      "invalid": "无效的邮箱格式"
+    },
+    "password": {
+      "required": "密码是必填项",
+      "length": "密码长度至少为8个字符",
+      "complexity": "密码必须包含大写字母、小写字母、数字和特殊字符"
+    },
+    "confirm_password": {
+      "required": "请确认您的密码",
+      "not_match": "密码不匹配"
+    },
+    "name": {
+      "required": "姓名是必填项",
+      "length": "姓名长度至少为2个字符",
+      "invalid": "姓名只能包含字母和空格"
+    },
+    "phone": {
+      "required": "电话号码是必填项",
+      "invalid": "无效的电话号码格式"
+    },
+    "age": {
+      "minimum": "您必须年满13岁"
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "登录",
+      "button": "登录",
+      "processing": "登录中...",
+      "success": "登录成功",
+      "remember_me": "记住我",
+      "forgot_password": "忘记密码？",
+      "no_account": "还没有账号？"
+    },
+    "register": {
+      "title": "注册",
+      "button": "注册",
+      "processing": "注册中...",
+      "success": "注册成功",
+      "have_account": "已有账号？",
+      "verify_email": {
+        "title": "验证邮箱",
+        "message": "请检查您的邮箱并验证您的账号",
+        "button": "知道了"
+      },
+      "subtitle": "创建新账号以开始使用",
+      "terms": {
+        "title": "服务条款",
+        "content": "创建账号即表示您同意以下条款：",
+        "privacy": "我们根据隐私政策保护您的个人信息。",
+        "agree": "我同意",
+        "link": "服务条款"
+      },
+      "accept_terms": "请接受服务条款"
+    },
+    "logout": {
+      "title": "退出登录",
+      "confirm": "确定要退出登录吗？",
+      "processing": "退出登录中...",
+      "success": "退出登录成功"
+    },
+    "reset_password": {
+      "title": "重置密码",
+      "message": "输入您的邮箱以接收密码重置说明",
+      "button": "发送",
+      "processing": "发送中...",
+      "success": "说明已发送到您的邮箱"
+    }
+  },
+  "permissions": {
+    "camera_denied": "需要相机权限才能拍照",
+    "gallery_denied": "需要相册权限才能选择照片",
+    "request_title": "需要权限",
+    "settings": "打开设置",
+    "media_rationale": "应用需要访问您的相机和相册，以便您与朋友分享照片和视频。",
+    "notification_rationale": "应用需要通知权限以向您发送关于互动和新消息的更新。",
+    "audio_rationale": "应用需要麦克风访问权限，以便您录制语音消息。",
+    "storage_rationale": "应用需要存储访问权限以保存媒体和文档。",
+    "location_rationale": "应用需要位置访问权限以显示与您所在地区相关的内容。"
+  },
+  "fields": {
+    "email": {
+      "label": "邮箱",
+      "hint": "输入您的邮箱",
+      "invalid": "无效的邮箱"
+    },
+    "password": {
+      "label": "密码",
+      "hint": "输入您的密码",
+      "show": "显示",
+      "hide": "隐藏"
+    },
+    "confirm_password": {
+      "label": "确认密码",
+      "hint": "重新输入您的密码"
+    },
+    "first_name": {
+      "label": "名",
+      "hint": "输入您的名"
+    },
+    "last_name": {
+      "label": "姓",
+      "hint": "输入您的姓"
+    },
+    "full_name": {
+      "label": "全名",
+      "hint": "输入您的全名",
+      "error": "请输入有效的全名"
+    },
+    "gender": {
+      "label": "性别",
+      "male": "男",
+      "female": "女",
+      "other": "其他",
+      "hint": "选择您的性别"
+    },
+    "birthday": {
+      "label": "生日",
+      "hint": "选择您的生日",
+      "error": "请选择有效的生日"
+    },
+    "phone": {
+      "label": "电话号码",
+      "hint": "输入您的电话号码",
+      "error": "请输入有效的电话号码"
+    },
+    "address": {
+      "label": "地址",
+      "hint": "输入您的地址"
+    },
+    "bio": {
+      "label": "简介",
+      "hint": "写一些关于您自己的内容（最多150个字符）"
+    }
+  },
+  "errors": {
+    "network": "网络错误",
+    "timeout": "请求超时",
+    "server": "服务器错误",
+    "unknown": "发生错误",
+    "auth": {
+      "invalid_email": "无效的邮箱",
+      "user_disabled": "用户已被禁用",
+      "user_not_found": "找不到用户",
+      "wrong_password": "密码错误",
+      "email_already_in_use": "邮箱已被使用",
+      "operation_not_allowed": "操作不允许",
+      "weak_password": "密码强度过弱",
+      "expired_action_code": "操作代码已过期",
+      "invalid_action_code": "无效的操作代码",
+      "invalid_verification_code": "无效的验证码",
+      "invalid_credential": "无效的凭证",
+      "credential_already_in_use": "凭证已被使用",
+      "too_many_requests": "请求过多，请稍后再试",
+      "provider_already_linked": "提供商已链接",
+      "requires_recent_login": "需要重新登录",
+      "email_not_verified": "邮箱未验证"
+    }
+  },
+  "common": {
+    "cancel": "取消",
+    "ok": "确定",
+    "save": "保存",
+    "delete": "删除",
+    "edit": "编辑",
+    "add": "添加",
+    "remove": "移除",
+    "confirm": "确认",
+    "continue": "继续",
+    "back": "返回",
+    "next": "下一步",
+    "previous": "上一步",
+    "submit": "提交",
+    "upload": "上传",
+    "download": "下载",
+    "loading": "加载中...",
+    "processing": "处理中...",
+    "search": "搜索",
+    "filter": "筛选",
+    "sort": "排序",
+    "share": "分享",
+    "retry": "重试",
+    "close": "关闭"
+  },
+  "chat": {
+    "title": "聊天",
+    "empty": "暂无消息",
+    "new_message": "新消息",
+    "type_message": "输入消息...",
+    "send": "发送",
+    "online": "在线",
+    "offline": "离线",
+    "typing": "正在输入...",
+    "message_type": {
+      "text": "文字",
+      "image": "图片",
+      "video": "视频",
+      "audio": "音频"
+    },
+    "action": {
+      "copy": "复制",
+      "delete": "删除",
+      "forward": "转发",
+      "reply": "回复"
+    },
+    "group": {
+      "create": "创建群组",
+      "leave": "退出群组",
+      "add_member": "添加成员",
+      "remove_member": "移除成员",
+      "admin": "管理员",
+      "member": "成员"
+    }
+  },
+  "post": {
+    "create": "创建帖子",
+    "edit": "编辑帖子",
+    "delete": "删除帖子",
+    "write_something": "写点什么...",
+    "add_photo": "添加照片",
+    "add_video": "添加视频",
+    "post_button": "发布",
+    "posting": "发布中...",
+    "delete_confirm": "确定要删除这个帖子吗？",
+    "likes": "赞",
+    "comments": "评论",
+    "share": "分享",
+    "shared": "已分享",
+    "more": "更多",
+    "view_all_comments": "查看所有评论",
+    "hide_comments": "隐藏评论",
+    "write_comment": "写评论...",
+    "empty": "暂无帖子"
+  },
+  "friend": {
+    "friend": "好友",
+    "friends": "好友",
+    "request": "好友请求",
+    "requests": "好友请求",
+    "send_request": "发送好友请求",
+    "accept": "接受",
+    "reject": "拒绝",
+    "remove": "删除好友",
+    "find_friends": "查找好友",
+    "no_friends": "暂无好友",
+    "no_requests": "暂无好友请求",
+    "search_hint": "输入姓名或邮箱搜索",
+    "suggestion": "好友建议",
+    "mutual": "共同好友",
+    "remove_confirm": "确定要删除这个好友吗？"
+  },
+  "notification": {
+    "title": "通知",
+    "empty": "暂无通知",
+    "mark_read": "标记为已读",
+    "mark_all_read": "全部标记为已读",
+    "delete": "删除通知",
+    "delete_all": "删除所有通知",
+    "settings": "通知设置",
+    "types": {
+      "like": "赞了你的帖子",
+      "comment": "评论了你的帖子",
+      "friend_request": "向你发送了好友请求",
+      "friend_accept": "接受了你的好友请求",
+      "message": "给你发送了消息",
+      "tag": "在帖子中提到了你",
+      "system": "系统通知"
+    }
+  },
+  "search": {
+    "title": "搜索",
+    "hint": "搜索...",
+    "people": "用户",
+    "posts": "帖子",
+    "no_results": "未找到结果",
+    "recent": "最近搜索",
+    "clear": "清除"
+  },
+  "datetime": {
+    "just_now": "刚刚",
+    "minutes": "分钟前",
+    "hours": "小时前",
+    "days": "天前",
+    "now": "现在",
+    "today": "今天",
+    "yesterday": "昨天",
+    "tomorrow": "明天"
+  },
+  "email_verification": {
+    "title": "验证您的邮箱",
+    "message": "我们已向您的邮箱发送了验证链接，请点击链接验证您的账号。",
+    "pending": "等待验证...",
+    "success": "邮箱验证成功！",
+    "resend": {
+      "button": "重新发送验证邮件",
+      "wait": "请等待 {0} 秒后再次发送",
+      "success": "验证邮件已重新发送"
+    },
+    "not_received": "没有收到邮件？",
+    "check_inbox": "请检查您的收件箱",
+    "check_spam": "请检查您的垃圾邮件"
+  },
+  "user_finder": {
+    "title": "查找用户",
+    "hint": "输入姓名或邮箱",
+    "no_results": "未找到用户",
+    "searching": "搜索中..."
+  }
+}

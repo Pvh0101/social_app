@@ -10,17 +10,54 @@ class LanguageSwitchButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextButton(
       onPressed: () {
-        context.setLocale(
-          context.locale.languageCode == 'en'
-              ? const Locale('vi')
-              : const Locale('en'),
-        );
+        // Xác định ngôn ngữ tiếp theo trong chuỗi xoay vòng: en -> vi -> zh -> en
+        final String currentLocale = context.locale.languageCode;
+        late final Locale nextLocale;
+
+        switch (currentLocale) {
+          case 'en':
+            nextLocale = const Locale('vi');
+            break;
+          case 'vi':
+            nextLocale = const Locale('zh');
+            break;
+          case 'zh':
+            nextLocale = const Locale('en');
+            break;
+          default:
+            nextLocale = const Locale('en');
+        }
+
+        context.setLocale(nextLocale);
       },
-      child: Text(context.locale.languageCode == 'en' ? '🇻🇳 VI' : '🇺🇸 EN',
-          style: TextStyle(
-            fontSize: 16,
-            color: Theme.of(context).colorScheme.onSurface,
-          )),
+      child: _getLanguageText(context),
+    );
+  }
+
+  Widget _getLanguageText(BuildContext context) {
+    final String currentLocale = context.locale.languageCode;
+    String langText;
+
+    switch (currentLocale) {
+      case 'en':
+        langText = '🇺🇸 EN';
+        break;
+      case 'vi':
+        langText = '🇻🇳 VI';
+        break;
+      case 'zh':
+        langText = '🇨🇳 ZH';
+        break;
+      default:
+        langText = '🇺🇸 EN';
+    }
+
+    return Text(
+      langText,
+      style: TextStyle(
+        fontSize: 16,
+        color: Theme.of(context).colorScheme.onSurface,
+      ),
     );
   }
 }

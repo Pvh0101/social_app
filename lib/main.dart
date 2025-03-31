@@ -39,7 +39,7 @@ void main() async {
     UncontrolledProviderScope(
       container: container,
       child: EasyLocalization(
-        supportedLocales: const [Locale('en'), Locale('vi')],
+        supportedLocales: const [Locale('en'), Locale('vi'), Locale('zh')],
         path: 'assets/translations',
         fallbackLocale: const Locale('en'),
         child: const MyApp(),

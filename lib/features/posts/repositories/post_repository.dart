@@ -757,25 +757,6 @@ class PostRepository {
                 sender: currentUser,
                 postId: contentId,
               );
-
-              // Gửi thông báo FCM nếu có token
-              final receiverDoc =
-                  await _firestore.collection('users').doc(post.userId).get();
-              final receiverData = receiverDoc.data();
-              final receiverToken = receiverData?['fcmToken'] as String?;
-
-              if (receiverToken != null && _ref != null) {
-                final fcmService = _ref?.read(fcmServiceProvider);
-                if (fcmService != null) {
-                  await fcmService.sendLikeNotification(
-                    receiverToken: receiverToken,
-                    senderName: currentUser.fullName,
-                    senderId: currentUser.uid,
-                    postId: contentId,
-                    senderAvatar: currentUser.profileImage,
-                  );
-                }
-              }
             }
           }
         }

@@ -35,5 +35,5 @@ class AppConfig {
   // App Settings
   static const String defaultLanguage = 'vi';
   static const String defaultTheme = 'light';
-  static const List<String> supportedLocales = ['en', 'vi'];
+  static const List<String> supportedLocales = ['en', 'vi', 'zh'];
 }
