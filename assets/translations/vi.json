@@ -340,6 +340,8 @@
     }
   },
   "common": {
+    "block": "Chặn",
+    "unblock": "Bỏ chặn",
     "loading": "Đang tải...",
     "success": "Thành công",
     "error": "Lỗi",
@@ -500,7 +502,8 @@
     "options": {
       "delete": "Xóa thông báo này",
       "mark_read": "Đánh dấu là đã đọc",
-      "delete_all": "Xóa tất cả thông báo"
+      "delete_all": "Xóa tất cả thông báo",
+      "delete_all_confirm": "Bạn có chắc chắn muốn xóa tất cả thông báo không?"
     },
     "types": {
       "like": "đã thích bài viết của bạn",
@@ -520,10 +523,8 @@
       "mark_read_error_prefix": "Lỗi khi đánh dấu đã đọc: ",
       "delete_all_success": "Đã xóa tất cả thông báo",
       "mark_read_single_success": "Đã đánh dấu thông báo là đã đọc"
-    },
-    "options": {
-      "delete_all_confirm": "Bạn có chắc chắn muốn xóa tất cả thông báo không?"
     }
+
   },
   "permissions": {
     "camera_denied": "Cần quyền truy cập máy ảnh để chụp ảnh",

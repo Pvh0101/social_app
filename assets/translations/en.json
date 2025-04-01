@@ -262,6 +262,8 @@
   },
   "submit": "Submit",
   "common": {
+    "block": "Block",
+    "unblock": "Unblock",
     "loading": "Loading...",
     "success": "Success",
     "error": "Error",

@@ -26,6 +26,11 @@ class _FriendsScreenState extends ConsumerState<FriendsScreen>
   bool _isSearching = false;
   String _searchQuery = '';
 
+  // Thêm key cho mỗi tab để giữ trạng thái
+  final _friendsListKey = GlobalKey();
+  final _requestsListKey = GlobalKey();
+  final _suggestionsListKey = GlobalKey();
+
   @override
   void initState() {
     super.initState();
@@ -129,9 +134,18 @@ class _FriendsScreenState extends ConsumerState<FriendsScreen>
         body: TabBarView(
           controller: _tabController,
           children: [
-            FriendsList(searchQuery: _searchQuery),
-            FriendRequestList(searchQuery: _searchQuery),
-            FriendSuggestionList(searchQuery: _searchQuery),
+            KeyedSubtree(
+              key: _friendsListKey,
+              child: FriendsList(searchQuery: _searchQuery),
+            ),
+            KeyedSubtree(
+              key: _requestsListKey,
+              child: FriendRequestList(searchQuery: _searchQuery),
+            ),
+            KeyedSubtree(
+              key: _suggestionsListKey,
+              child: FriendSuggestionList(searchQuery: _searchQuery),
+            ),
           ],
         ),
       ),
