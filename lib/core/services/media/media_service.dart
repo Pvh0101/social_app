@@ -1,16 +1,17 @@
 import 'dart:io';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:video_compress/video_compress.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:record/record.dart';
 import 'package:permission_handler/permission_handler.dart';
-import '../../../core/utils/log_utils.dart';
+import 'package:record/record.dart';
+import 'package:video_compress/video_compress.dart';
 
+import '../../../core/utils/log_utils.dart';
+import '../../services/permission/permission_service.dart';
+import 'media_processor_service.dart';
 import 'media_types.dart';
 import 'media_upload_service.dart';
-import 'media_processor_service.dart';
-import '../../services/permission/permission_service.dart';
 
 /// MediaService - Dịch vụ đơn giản để làm việc với media trong ứng dụng
 ///

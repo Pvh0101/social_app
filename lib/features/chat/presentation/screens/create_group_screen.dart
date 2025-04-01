@@ -1,13 +1,14 @@
 import 'dart:io';
+
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 import '../../../../core/utils/global_method.dart';
 import '../../../../core/widgets/loading_overlay.dart';
-import 'chat_screen.dart';
-import '../widgets/chat_widgets.dart';
 import '../../services/chatroom_service.dart';
+import '../widgets/chat_widgets.dart';
+import 'chat_screen.dart';
 
 // Widget cho các tùy chọn của nhóm
 class GroupOptionsSection extends StatelessWidget {
@@ -64,6 +65,7 @@ class _CreateGroupScreenState extends ConsumerState<CreateGroupScreen> {
   File? _groupImage;
   bool _isPublic = true;
   bool _isLoading = false;
+  // ignore: unused_field
   final _currentUserId = FirebaseAuth.instance.currentUser?.uid ?? '';
 
   @override

@@ -2,15 +2,14 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../notification/presentation/screens/notification_screen.dart';
 
 import '../../core/core.dart';
-import '../posts/screens/feed_screen.dart';
-import '../posts/screens/video_reels_screen.dart';
 import '../friends/presentation/screens/friends_screen.dart';
 import '../menu/presentation/screens/menu_screen.dart';
+import '../notification/presentation/screens/notification_screen.dart';
 import '../notification/providers/notification_provider.dart';
-import '../chat/providers/chat_providers.dart';
+import '../posts/screens/feed_screen.dart';
+import '../posts/screens/video_reels_screen.dart';
 
 final currentScreenIndexProvider = StateProvider<int>((ref) => 0);
 

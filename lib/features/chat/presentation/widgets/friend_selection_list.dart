@@ -176,7 +176,7 @@ class _FriendSelectionListState extends ConsumerState<FriendSelectionList> {
             ref.read(getUserInfoAsStreamByIdProvider(friendId)).valueOrNull;
         if (userInfo != null) {
           final fullName = userInfo.fullName.toLowerCase();
-          final email = (userInfo.email ?? '').toLowerCase();
+          final email = (userInfo.email).toLowerCase();
 
           if (fullName.contains(_searchQuery) || email.contains(_searchQuery)) {
             searchResults.add(friendId);
@@ -239,7 +239,7 @@ class _FriendSelectionListState extends ConsumerState<FriendSelectionList> {
               ),
             ),
             subtitle: Text(
-              friend.email ?? '',
+              friend.email,
               style: TextStyle(
                 fontSize: 12,
                 color: Colors.grey[600],
@@ -277,7 +277,7 @@ class _FriendSelectionListState extends ConsumerState<FriendSelectionList> {
               ),
             ),
             subtitle: Text(
-              friend.email ?? '',
+              friend.email,
               style: TextStyle(
                 fontSize: 12,
                 color: Colors.grey[600],

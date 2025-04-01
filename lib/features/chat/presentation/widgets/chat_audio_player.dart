@@ -1,8 +1,6 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 
 /// Widget hiển thị và phát audio trong tin nhắn
 class ChatAudioPlayer extends ConsumerStatefulWidget {
@@ -23,11 +21,6 @@ class ChatAudioPlayer extends ConsumerStatefulWidget {
 
 class _ChatAudioPlayerState extends ConsumerState<ChatAudioPlayer> {
   AudioPlayer? _audioPlayer;
-  bool _isInitialized = false;
-  bool _isPlaying = false;
-  bool _isLoading = true;
-  Duration _duration = Duration.zero;
-  Duration _position = Duration.zero;
 
   @override
   void initState() {

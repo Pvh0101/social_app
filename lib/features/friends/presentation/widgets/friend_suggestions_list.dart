@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import '../../providers/friend_provider.dart';
 import '../../../authentication/providers/get_user_info_as_stream_by_id_provider.dart';
-import '../../providers/get_all_friend_requests_provider.dart';
 import '../../providers/search_users_provider.dart';
 
 import '../../../../core/core.dart';

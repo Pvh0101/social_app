@@ -2,8 +2,8 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lottie/lottie.dart';
+
 import '../../../../core/core.dart';
-import '../../../../core/widgets/fields/password_text_field.dart';
 import '../../providers/auth_provider.dart';
 
 /// Màn hình đăng ký tài khoản mới.

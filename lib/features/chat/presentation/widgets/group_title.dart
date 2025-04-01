@@ -1,6 +1,7 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:easy_localization/easy_localization.dart';
+
 import '../../../../core/constants/routes_constants.dart';
 import '../../../../core/widgets/display_user_image.dart';
 import '../../providers/chat_providers.dart';

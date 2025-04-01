@@ -1,16 +1,17 @@
 import 'dart:convert';
 
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../enums/notification_type.dart';
-import '../../features/notification/providers/notification_provider.dart';
+
 import '../../features/authentication/models/user_model.dart';
-import 'notification_navigation_service.dart';
+import '../../features/notification/providers/notification_provider.dart';
+import '../enums/notification_type.dart';
 import '../services/permission/permission_service.dart';
+import 'notification_navigation_service.dart';
 
 final fcmServiceProvider = Provider((ref) => FCMService(ref));
 

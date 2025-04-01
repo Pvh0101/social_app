@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/services/media/media_service.dart';
-import '../../../../core/services/media/media_types.dart';
 import '../../../../core/utils/global_method.dart';
 
 /// Widget dùng chung để hiển thị và chọn ảnh nhóm chat

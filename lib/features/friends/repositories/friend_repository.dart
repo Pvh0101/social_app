@@ -1,14 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart' show immutable;
 import 'package:logger/logger.dart';
 
 import '../../../core/core.dart';
-import '../../../core/utils/log_utils.dart';
-import '../models/friend_model.dart';
-import '../../../features/notification/repository/notification_repository.dart';
 import '../../../features/authentication/models/user_model.dart';
+import '../../../features/notification/repository/notification_repository.dart';
+import '../models/friend_model.dart';
 
 /// Repository quản lý các thao tác kết bạn trên Firestore.
 @immutable

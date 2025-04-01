@@ -1,5 +1,4 @@
 import '../../../core/enums/message_type.dart';
-
 import '../../../core/utils/datetime_helper.dart';
 
 /// Model đại diện cho tin nhắn trong ứng dụng mạng xã hội.

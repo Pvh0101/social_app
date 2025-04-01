@@ -1,8 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../../../../core/constants/routes_constants.dart';
 import '../../../../core/enums/message_type.dart';
 import '../../../../core/utils/datetime_helper.dart';
 import '../../../../core/widgets/display_user_image.dart';

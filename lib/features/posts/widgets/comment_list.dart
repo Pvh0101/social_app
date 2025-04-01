@@ -1,9 +1,10 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'comment_tile.dart';
-import 'package:easy_localization/easy_localization.dart';
+
 import '../models/post_model.dart';
 import '../providers/comment_notifier.dart';
+import 'comment_tile.dart';
 
 class CommentList extends ConsumerWidget {
   final PostModel post;

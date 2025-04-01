@@ -1,9 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../../../core/utils/global_method.dart';
-import '../../../core/utils/utils.dart';
 import '../../../core/utils/log_utils.dart';
 
 final searchUsersProvider =
