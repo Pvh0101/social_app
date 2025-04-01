@@ -5,6 +5,7 @@ import 'friend_tile.dart';
 import '../../providers/get_all_friends_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:easy_localization/easy_localization.dart';
 import '../../../../core/utils/log_utils.dart';
 
 class FriendsList extends ConsumerWidget {
@@ -42,8 +43,8 @@ class FriendsList extends ConsumerWidget {
 
         if (filteredIds.isEmpty) {
           final message = searchQuery.isEmpty
-              ? 'Bạn chưa có bạn bè nào'
-              : 'Không tìm thấy bạn bè phù hợp';
+              ? 'friends.no_friends'.tr()
+              : 'friends.no_search_results'.tr();
           ref.logInfo(LogService.FRIEND, '[FRIEND_LIST_WIDGET] $message');
 
           return Center(

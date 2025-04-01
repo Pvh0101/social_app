@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:social_app/features/posts/widgets/comment_input.dart';
+import '../widgets/comment_input.dart';
 import '../providers/post_provider.dart';
 import '../widgets/post_info_tile.dart';
 import '../widgets/post_content.dart';

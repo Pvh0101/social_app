@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:easy_localization/easy_localization.dart';
 import '../../../core/enums/content_type.dart';
 import '../../../core/utils/log_utils.dart';
 import '../models/post_model.dart';
@@ -52,7 +53,7 @@ class _LikeStatusWidget extends ConsumerWidget {
             likeStatus ? Colors.red : Theme.of(context).colorScheme.onSurface,
       ),
       label: Text(
-        'Yêu thích',
+        'post.interactions.like'.tr(),
         style: Theme.of(context).textTheme.bodyMedium,
       ),
     );
@@ -137,11 +138,12 @@ class _PostInteractionsState extends ConsumerState<PostInteractions> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('$likeCount lượt thích'),
+              Text('${likeCount} ${'post.interactions.likes'.tr()}'),
               const SizedBox(width: 15),
               GestureDetector(
                 onTap: widget.onShowComments,
-                child: Text('${widget.post.commentCount} bình luận'),
+                child: Text(
+                    '${widget.post.commentCount} ${'post.interactions.comments'.tr()}'),
               ),
             ],
           ),
@@ -158,7 +160,7 @@ class _PostInteractionsState extends ConsumerState<PostInteractions> {
                       : Theme.of(context).colorScheme.onSurface,
                 ),
                 label: Text(
-                  'Yêu thích',
+                  'post.interactions.like'.tr(),
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
               ),
@@ -171,7 +173,7 @@ class _PostInteractionsState extends ConsumerState<PostInteractions> {
                   color: Theme.of(context).colorScheme.onSurface,
                 ),
                 label: Text(
-                  'Bình luận',
+                  'post.interactions.comment'.tr(),
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
               ),
@@ -184,7 +186,7 @@ class _PostInteractionsState extends ConsumerState<PostInteractions> {
                   color: Theme.of(context).colorScheme.onSurface,
                 ),
                 label: Text(
-                  'Chia sẻ',
+                  'post.interactions.share'.tr(),
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
               ),

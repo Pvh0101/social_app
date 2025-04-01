@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:easy_localization/easy_localization.dart';
 import '../widgets/chat_title.dart';
 import '../widgets/group_title.dart';
 import '../../../../core/core.dart';
@@ -107,7 +108,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
 
           // Hiển thị thông báo lỗi và quay lại chỉ khi xác định đây là chat 1-1 nhưng ID không hợp lệ
           if (mounted) {
-            showToastMessage(text: 'Định dạng ID cuộc trò chuyện không hợp lệ');
+            showToastMessage(text: 'chat.error.invalid_format'.tr());
             Navigator.pop(context);
             return;
           }
@@ -155,8 +156,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
 
       // Hiển thị thông báo lỗi và quay lại
       if (mounted) {
-        showToastMessage(
-            text: 'Không thể mở cuộc trò chuyện: Thiếu thông tin người nhận');
+        showToastMessage(text: 'chat.error.missing_receiver'.tr());
         Navigator.pop(context);
       }
     }
@@ -196,8 +196,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
           '[CHAT_SCREEN] Invalid chat info for sending message',
           null,
           StackTrace.current);
-      showToastMessage(
-          text: 'Không thể gửi tin nhắn: Thông tin người nhận không hợp lệ');
+      showToastMessage(text: 'chat.error.invalid_recipient'.tr());
       return;
     }
 
@@ -220,7 +219,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     } catch (e) {
       ref.logError(LogService.CHAT, '[CHAT_SCREEN] Error sending message: $e',
           e, StackTrace.current);
-      showToastMessage(text: 'Không thể gửi tin nhắn: $e');
+      showToastMessage(text: '${'chat.error.send'.tr()}: $e');
     }
   }
 
@@ -249,9 +248,9 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
               );
             }
           },
-          loading: () => const Text('Đang tải...'),
-          error: (error, _) =>
-              Text('Lỗi', overflow: TextOverflow.ellipsis, maxLines: 1),
+          loading: () => Text('common.loading'.tr()),
+          error: (error, _) => Text('common.error'.tr(),
+              overflow: TextOverflow.ellipsis, maxLines: 1),
         ),
       ),
       body: Column(
@@ -272,7 +271,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
               loading: () => const SizedBox.shrink(),
               error: (error, stack) {
                 return Center(
-                  child: Text('Có lỗi xảy ra khi tải tin nhắn: $error'),
+                  child: Text('${'chat.error.load'.tr()}: $error'),
                 );
               },
             ),

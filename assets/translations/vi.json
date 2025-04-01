@@ -348,36 +348,40 @@
     "confirm": "Xác nhận",
     "cancel": "Hủy",
     "save": "Lưu",
-    "edit": "Sửa",
+    "edit": "Chỉnh sửa",
     "delete": "Xóa",
-    "delete_success": "Xóa thành công",
+    "delete_success": "Đã xóa thành công",
     "delete_error": "Không thể xóa",
     "delete_confirm": "Bạn có chắc chắn muốn xóa bài viết này?",
     "ok": "OK",
-    "done": "Xong",
-    "next": "Tiếp",
+    "done": "Hoàn thành",
+    "next": "Tiếp theo",
     "back": "Quay lại",
     "retry": "Thử lại",
     "submit": "Gửi",
     "continue": "Tiếp tục",
-    "report": "Báo cáo vi phạm"
+    "report": "Báo cáo vi phạm",
+    "unknown_user": "Người dùng không xác định"
   },
   "Messages": "Tin nhắn",
   "People": "Mọi người",
   "logout": "Đăng xuất",
   "friends": {
     "title": "Bạn bè",
-    "list": "Danh sách bạn bè",
-    "requests": "Lời mời kết bạn",
+    "list": "Bạn bè",
+    "requests": "Lời mời",
+    "suggestions": "Gợi ý",
+    "search": "Tìm kiếm bạn bè...",
+    "no_friends": "Bạn chưa có bạn bè nào",
+    "no_requests": "Không có yêu cầu kết bạn nào",
+    "no_suggestions": "Không có gợi ý kết bạn",
+    "no_search_results": "Không tìm thấy kết quả phù hợp",
     "add": "Thêm bạn",
     "remove": "Hủy kết bạn",
     "accept": "Chấp nhận",
     "decline": "Từ chối",
     "block": "Chặn",
     "unblock": "Bỏ chặn",
-    "search": "Tìm kiếm bạn bè",
-    "no_friends": "Chưa có bạn bè",
-    "no_requests": "Không có lời mời kết bạn",
     "friend_added": "Đã gửi lời mời kết bạn",
     "friend_removed": "Đã hủy kết bạn",
     "friend_accepted": "Đã chấp nhận lời mời kết bạn",
@@ -394,6 +398,11 @@
       "title": "Hủy kết bạn",
       "message": "Bạn có chắc chắn muốn hủy kết bạn không?"
     },
+    "actions": {
+      "message": "Nhắn tin",
+      "unfriend": "Hủy kết bạn",
+      "more": "Thêm tùy chọn"
+    },
     "cancel_request": {
       "title": "Hủy lời mời kết bạn",
       "message": "Bạn có chắc chắn muốn hủy lời mời kết bạn không?"
@@ -408,7 +417,7 @@
       "button": "Gửi lại email xác thực",
       "processing": "Đang gửi...",
       "success": "Đã gửi lại email xác thực",
-      "wait": "Vui lòng đợi {seconds} giây trước khi gửi lại",
+      "wait": "Vui lòng đợi giây trước khi gửi lại",
       "error": "Không thể gửi email xác thực"
     },
     "verify": {
@@ -450,7 +459,10 @@
     "add_video": "Thêm video",
     "selected_images": "Ảnh đã chọn",
     "max_files": "Bạn chỉ có thể đăng tối đa",
+    "max_files_added": "Chỉ có thể thêm",
     "no_video_with_image": "Không thể đăng video cùng với ảnh",
+    "video_restriction": "Không thể đăng nhiều video",
+    "media_with_video": "Không thể kết hợp hình ảnh hoặc âm thanh với video",
     "image_source": {
       "title": "Chọn nguồn ảnh",
       "camera": "Chụp ảnh",
@@ -487,14 +499,17 @@
     "error": "Không thể tải thông báo",
     "options": {
       "delete": "Xóa thông báo này",
-      "mark_read": "Đánh dấu là đã đọc"
+      "mark_read": "Đánh dấu là đã đọc",
+      "delete_all": "Xóa tất cả thông báo"
     },
     "types": {
       "like": "đã thích bài viết của bạn",
+      "comment": "đã bình luận về bài viết của bạn",
+      "friend_request": "đã gửi lời mời kết bạn",
+      "accepted_friend_request": "đã chấp nhận lời mời kết bạn của bạn",
+      "message": "đã gửi tin nhắn cho bạn",
       "comment_prefix": "đã bình luận về bài viết của bạn: \"",
       "comment_suffix": "\"",
-      "friend_request": "đã gửi lời mời kết bạn",
-      "friend_accept": "đã chấp nhận lời mời kết bạn của bạn",
       "message_prefix": "đã gửi tin nhắn cho bạn: \"",
       "message_suffix": "\""
     },
@@ -502,7 +517,12 @@
       "delete_success": "Đã xóa thông báo",
       "delete_error_prefix": "Lỗi khi xóa thông báo: ",
       "mark_read_success": "Đã đánh dấu là đã đọc",
-      "mark_read_error_prefix": "Lỗi khi đánh dấu đã đọc: "
+      "mark_read_error_prefix": "Lỗi khi đánh dấu đã đọc: ",
+      "delete_all_success": "Đã xóa tất cả thông báo",
+      "mark_read_single_success": "Đã đánh dấu thông báo là đã đọc"
+    },
+    "options": {
+      "delete_all_confirm": "Bạn có chắc chắn muốn xóa tất cả thông báo không?"
     }
   },
   "permissions": {
@@ -517,11 +537,51 @@
     "location_rationale": "Ứng dụng cần quyền truy cập vị trí để hiển thị nội dung phù hợp với khu vực của bạn."
   },
   "chat": {
-      "message_type": {
-        "text": "đã gửi văn bản",
-        "image": "đã gửi hình ảnh",
-        "video": "đã gửi video",
-        "audio": "đã gửi âm thanh"
-      }
+    "title": "Tin nhắn",
+    "empty": "Chưa có tin nhắn nào",
+    "new_message": "Tin nhắn mới",
+    "group": {
+      "create": "Tạo nhóm chat mới",
+      "leave": "Rời khỏi nhóm",
+      "members": "Thành viên nhóm"
+    },
+    "error": {
+      "send": "Lỗi gửi tin nhắn",
+      "upload": "Không thể tải lên file",
+      "load": "Có lỗi xảy ra khi tải tin nhắn",
+      "invalid_format": "Định dạng ID cuộc trò chuyện không hợp lệ",
+      "missing_receiver": "Không thể mở cuộc trò chuyện: Thiếu thông tin người nhận",
+      "invalid_recipient": "Không thể gửi tin nhắn: Thông tin người nhận không hợp lệ"
+    },
+    "sent_media": "Đã gửi phương tiện",
+    "delete_success": "Đã xóa đoạn chat",
+    "message_type": {
+      "text": "đã gửi văn bản",
+      "image": "đã gửi hình ảnh",
+      "video": "đã gửi video",
+      "audio": "đã gửi âm thanh"
+    }
+  },
+  "post": {
+    "comment": {
+      "write": "Viết bình luận...",
+      "error": "Không thể gửi bình luận",
+      "title": "Bình luận",
+      "no_comments": "Chưa có bình luận nào",
+      "delete": "Xóa",
+      "delete_comment": "Xóa bình luận",
+      "delete_success": "Đã xóa bình luận",
+      "delete_error": "Không thể xóa bình luận"
+    },
+    "interactions": {
+      "like": "Yêu thích",
+      "comment": "Bình luận",
+      "share": "Chia sẻ",
+      "likes": "lượt thích",
+      "comments": "bình luận"
+    }
+  },
+  "post_detail": {
+    "not_found": "Không tìm thấy bài viết"
   }
 }

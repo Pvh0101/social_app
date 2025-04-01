@@ -32,11 +32,11 @@ class FriendshipButton extends ConsumerWidget {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text('Hủy'),
+            child: Text('common.cancel'.tr()),
           ),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
-            child: const Text('Xác nhận'),
+            child: Text('common.confirm'.tr()),
           ),
         ],
       ),
@@ -77,7 +77,7 @@ class FriendshipButton extends ConsumerWidget {
         // Đã là bạn bè
         if (status['isFriend'] == true) {
           return RoundButton(
-            label: 'Nhắn tin',
+            label: 'friends.actions.message'.tr(),
             onPressed: () {
               ref.logDebug(LogService.FRIEND,
                   '[FRIENDSHIP_BUTTON] Mở cuộc trò chuyện với: $userId');
@@ -94,14 +94,14 @@ class FriendshipButton extends ConsumerWidget {
         // Người dùng hiện tại là người gửi lời mời
         if (status['hasPendingRequest'] == true && status['isSender'] == true) {
           return RoundButton(
-            label: 'Đã gửi lời mời',
+            label: 'friends.status.cancel_request'.tr(),
             onPressed: () async {
               ref.logDebug(LogService.FRIEND,
                   '[FRIENDSHIP_BUTTON] Nhấn nút hủy lời mời kết bạn đã gửi cho: $userId');
               final confirm = await _showConfirmationDialog(
                 context,
-                title: 'Hủy lời mời',
-                content: 'Bạn có chắc chắn muốn hủy lời mời kết bạn không?',
+                title: 'friends.cancel_request.title'.tr(),
+                content: 'friends.cancel_request.message'.tr(),
                 ref: ref,
               );
 
@@ -124,7 +124,7 @@ class FriendshipButton extends ConsumerWidget {
         if (status['hasPendingRequest'] == true &&
             status['isReceiver'] == true) {
           return RoundButton(
-            label: 'Đồng ý',
+            label: 'friends.status.accept'.tr(),
             onPressed: () async {
               ref.logInfo(LogService.FRIEND,
                   '[FRIENDSHIP_BUTTON] Chấp nhận lời mời kết bạn từ người dùng: $userId');
@@ -138,7 +138,7 @@ class FriendshipButton extends ConsumerWidget {
 
         // Chưa có mối quan hệ nào
         return RoundButton(
-          label: 'Kết bạn',
+          label: 'friends.status.add_friend'.tr(),
           onPressed: () async {
             ref.logInfo(LogService.FRIEND,
                 '[FRIENDSHIP_BUTTON] Gửi lời mời kết bạn đến người dùng: $userId');

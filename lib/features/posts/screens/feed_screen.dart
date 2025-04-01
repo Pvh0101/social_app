@@ -121,7 +121,7 @@ class _FeedScreenState extends ConsumerState<FeedScreen>
                         IconButton(
                           onPressed: () => _navigateToCreatePost(),
                           icon: const Icon(Icons.add),
-                          tooltip: 'Tạo bài viết',
+                          tooltip: 'create_post.create'.tr(),
                         ),
                         Builder(builder: (context) {
                           final unreadMessagesCount =
@@ -139,7 +139,7 @@ class _FeedScreenState extends ConsumerState<FeedScreen>
                                   RouteConstants.chatList,
                                 ),
                                 icon: const Icon(Icons.send_rounded),
-                                tooltip: 'Tin nhắn',
+                                tooltip: 'chat.title'.tr(),
                               ),
                               if (unreadMessagesCount > 0)
                                 Positioned(
@@ -203,7 +203,7 @@ class _FeedScreenState extends ConsumerState<FeedScreen>
           child: CircularProgressIndicator(),
         ),
         error: (error, stack) => Center(
-          child: Text('Lỗi: $error'),
+          child: Text('${'common.error'.tr()}: $error'),
         ),
       ),
     );

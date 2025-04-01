@@ -1,6 +1,5 @@
 import '../../../core/utils/datetime_helper.dart';
 import '../../../core/enums/notification_type.dart';
-import 'package:intl/intl.dart';
 
 /// **Mô hình Thông báo (NotificationModel)**
 ///

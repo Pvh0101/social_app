@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:social_app/core/constants/routes_constants.dart';
-import 'package:social_app/core/widgets/display_user_image.dart';
-import 'package:social_app/features/chat/providers/chat_providers.dart';
+import 'package:easy_localization/easy_localization.dart';
+import '../../../../core/constants/routes_constants.dart';
+import '../../../../core/widgets/display_user_image.dart';
+import '../../providers/chat_providers.dart';
 
 class GroupTitle extends ConsumerWidget {
   final String chatId;
@@ -23,7 +24,7 @@ class GroupTitle extends ConsumerWidget {
     return chatAsync.when(
       data: (chat) {
         if (chat == null) {
-          return const Text('Cuộc trò chuyện không tồn tại');
+          return Text('chat.not_exist'.tr());
         }
 
         return Row(
@@ -39,7 +40,7 @@ class GroupTitle extends ConsumerWidget {
               },
               child: DisplayUserImage(
                 imageUrl: chat.avatar,
-                userName: chat.name ?? 'Nhóm chat',
+                userName: chat.name ?? 'chat.group.default_name'.tr(),
                 isOnline: false, // Nhóm chat không có trạng thái online
                 radius: avatarRadius ?? 22,
               ),
@@ -58,14 +59,14 @@ class GroupTitle extends ConsumerWidget {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Text(
-                    chat.name ?? 'Nhóm chat',
+                    chat.name ?? 'chat.group.default_name'.tr(),
                     style: Theme.of(context).textTheme.titleMedium,
                     overflow: TextOverflow.ellipsis,
                     maxLines: 1,
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    '${chat.members.length} thành viên',
+                    '${chat.members.length} ${'chat.group.members'.tr()}',
                     style: Theme.of(context).textTheme.bodyMedium,
                     overflow: TextOverflow.ellipsis,
                     maxLines: 1,
@@ -88,14 +89,16 @@ class GroupTitle extends ConsumerWidget {
         );
       },
       error: (error, stackTrace) {
-        return Text('Lỗi: $error', style: const TextStyle(color: Colors.red));
+        return Text('${'common.error'.tr()}: $error',
+            style: const TextStyle(color: Colors.red));
       },
       loading: () {
         return Row(
           children: [
             const CircularProgressIndicator(strokeWidth: 2),
             const SizedBox(width: 12),
-            Text('Đang tải...', style: Theme.of(context).textTheme.bodyMedium),
+            Text('common.loading'.tr(),
+                style: Theme.of(context).textTheme.bodyMedium),
           ],
         );
       },

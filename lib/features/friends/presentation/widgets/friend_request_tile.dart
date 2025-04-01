@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:easy_localization/easy_localization.dart';
 import '../../../../core/widgets/buttons/round_button.dart';
 import '../../providers/friend_provider.dart';
 
@@ -81,7 +82,7 @@ class FriendRequestTile extends ConsumerWidget {
                                   .read(friendProvider)
                                   .acceptFriendRequest(userId: userId);
                             },
-                            label: 'Đồng ý',
+                            label: 'friends.status.accept'.tr(),
                             height: 38,
                           ),
                         ),
@@ -95,7 +96,7 @@ class FriendRequestTile extends ConsumerWidget {
                                   .read(friendProvider)
                                   .removeFriendRequest(userId: userId);
                             },
-                            label: 'Từ chối',
+                            label: 'friends.decline'.tr(),
                             height: 38,
                           ),
                         ),

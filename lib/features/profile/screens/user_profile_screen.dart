@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:social_app/features/chat/presentation/widgets/message_button.dart';
-
-import '../../../core/constants/routes_constants.dart';
 import '../../../core/widgets/display_user_image.dart';
 import '../../../core/widgets/buttons/round_button_fill.dart';
 import '../../authentication/authentication.dart';
+import '../../authentication/presentation/screens/user_information_screen.dart';
 import '../../friends/presentation/widgets/friendship_button.dart';
-import './user_posts_screen.dart';
+import '../../friends/presentation/widgets/user_more_options_button.dart';
+import 'user_posts_screen.dart';
 
 class UserProfileScreen extends ConsumerStatefulWidget {
   final String userId;
@@ -132,32 +131,9 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
                           child: FriendshipButton(userId: user.uid),
                         ),
                         const SizedBox(width: 8),
-                        IconButton(
-                          icon: const Icon(Icons.more_vert),
-                          onPressed: () {
-                            showModalBottomSheet(
-                              context: context,
-                              builder: (context) => Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  ListTile(
-                                    leading: const Icon(Icons.flag_outlined),
-                                    title: const Text('Báo cáo'),
-                                    onTap: () {
-                                      Navigator.pop(context);
-                                    },
-                                  ),
-                                  ListTile(
-                                    leading: const Icon(Icons.block_outlined),
-                                    title: const Text('Chặn người dùng'),
-                                    onTap: () {
-                                      Navigator.pop(context);
-                                    },
-                                  ),
-                                ],
-                              ),
-                            );
-                          },
+                        UserMoreOptionsButton(
+                          userId: user.uid,
+                          user: user,
                         ),
                       ],
                     ),
@@ -166,10 +142,13 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
                       width: double.infinity,
                       child: RoundButtonFill(
                         onPressed: () {
-                          Navigator.pushNamed(
+                          Navigator.push(
                             context,
-                            RouteConstants.userInformation,
-                            arguments: {'isEditing': true},
+                            MaterialPageRoute(
+                              builder: (context) => const UserInformationScreen(
+                                isEditing: true,
+                              ),
+                            ),
                           );
                         },
                         label: 'Chỉnh sửa hồ sơ',

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:easy_localization/easy_localization.dart';
 import '../../models/chatroom.dart';
 import '../../../../core/widgets/display_user_image.dart';
 import '../../../../core/utils/datetime_helper.dart';
@@ -52,18 +53,18 @@ class ChatListItem extends ConsumerWidget {
           unreadCountStream: unreadCountStream,
         );
       },
-      loading: () => const ListTile(
-        leading: CircleAvatar(
+      loading: () => ListTile(
+        leading: const CircleAvatar(
           child: CircularProgressIndicator(),
         ),
-        title: Text('Đang tải...'),
+        title: Text('common.loading'.tr()),
       ),
       error: (error, stack) {
         return ListTile(
           leading: const CircleAvatar(
             child: Icon(Icons.error),
           ),
-          title: const Text('Không thể tải thông tin'),
+          title: Text('common.error.load'.tr()),
           subtitle: Text(error.toString()),
         );
       },
@@ -76,8 +77,8 @@ class ChatListItem extends ConsumerWidget {
 
     return _buildListTile(
       imageUrl: chat.avatar,
-      userName: chat.name ?? 'Nhóm chat',
-      title: chat.name ?? 'Nhóm chat',
+      userName: chat.name ?? 'chat.group.default_name'.tr(),
+      title: chat.name ?? 'chat.group.default_name'.tr(),
       subtitle: chat.getDisplayLastMessage(currentUserId),
       updatedAt: chat.updatedAt,
       unreadCountStream: unreadCountStream,

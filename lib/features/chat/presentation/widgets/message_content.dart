@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../models/message.dart';
 import '../../../../core/enums/message_type.dart';
-import 'package:social_app/features/posts/presentation/widgets/post_image_view.dart';
+import '../../../posts/presentation/widgets/post_image_view.dart';
 import 'chat_video_player.dart';
 import 'chat_audio_player.dart';
 

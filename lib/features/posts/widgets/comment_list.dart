@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:social_app/features/posts/widgets/comment_tile.dart';
+import 'comment_tile.dart';
+import 'package:easy_localization/easy_localization.dart';
 import '../models/post_model.dart';
 import '../providers/comment_notifier.dart';
 
@@ -21,8 +22,8 @@ class CommentList extends ConsumerWidget {
     return commentsState.items.when(
       data: (comments) {
         if (comments.isEmpty) {
-          return const Center(
-            child: Text('Chưa có bình luận nào'),
+          return Center(
+            child: Text('post.comment.no_comments'.tr()),
           );
         }
 
@@ -48,7 +49,7 @@ class CommentList extends ConsumerWidget {
         child: CircularProgressIndicator(),
       ),
       error: (error, stack) => Center(
-        child: Text('Lỗi: $error'),
+        child: Text('${'common.error'.tr()}: $error'),
       ),
     );
   }

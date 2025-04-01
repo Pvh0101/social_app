@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:easy_localization/easy_localization.dart';
 import '../../providers/chat_providers.dart';
 import '../../models/chatroom.dart';
 import '../../../../core/constants/routes_constants.dart';
@@ -44,11 +45,11 @@ class _ChatListScreenState extends ConsumerState<ChatListScreen> {
   /// Xây dựng AppBar với các actions
   PreferredSizeWidget _buildAppBar() {
     return AppBar(
-      title: const Text('Tin nhắn'),
+      title: Text('chat.title'.tr()),
       actions: [
         IconButton(
           icon: const Icon(Icons.group_add),
-          tooltip: 'Tạo nhóm chat mới',
+          tooltip: 'chat.group.create'.tr(),
           onPressed: _navigateToCreateGroup,
         ),
       ],
@@ -96,9 +97,9 @@ class _ChatListScreenState extends ConsumerState<ChatListScreen> {
 
   /// Hiển thị khi danh sách chat rỗng
   Widget _buildEmptyListView() {
-    return const Center(
+    return Center(
       child: Text(
-        'Bạn chưa có cuộc trò chuyện nào',
+        'chat.empty'.tr(),
         style: TextStyle(
           fontSize: 16,
           color: Colors.grey,
@@ -110,7 +111,7 @@ class _ChatListScreenState extends ConsumerState<ChatListScreen> {
   /// Hiển thị khi có lỗi tải danh sách chat
   Widget _buildErrorView(Object error, StackTrace? stack) {
     return Center(
-      child: Text('Lỗi: $error'),
+      child: Text('${'errors.unknown'.tr()}: $error'),
     );
   }
 
@@ -118,7 +119,7 @@ class _ChatListScreenState extends ConsumerState<ChatListScreen> {
   Widget _buildNewChatButton() {
     return FloatingActionButton(
       onPressed: _navigateToFriends,
-      tooltip: 'Tạo cuộc trò chuyện mới',
+      tooltip: 'chat.new_message'.tr(),
       child: const Icon(Icons.message),
     );
   }
@@ -176,9 +177,9 @@ class _ChatListScreenState extends ConsumerState<ChatListScreen> {
   Future<void> _performChatDeletion(String chatId) async {
     try {
       await ref.read(deleteChatProvider(chatId).future);
-      showToastMessage(text: 'Đã xóa đoạn chat');
+      showToastMessage(text: 'chat.delete_success'.tr());
     } catch (e) {
-      showToastMessage(text: 'Lỗi: ${e.toString()}');
+      showToastMessage(text: '${'errors.unknown'.tr()}: ${e.toString()}');
     }
   }
 }

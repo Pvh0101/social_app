@@ -1,15 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:timeago/timeago.dart' as timeago;
-
+import 'package:easy_localization/easy_localization.dart';
 import '../../models/notification_model.dart';
 import '../../providers/notification_provider.dart';
 import '../../repository/notification_repository.dart';
 import '../widgets/notification_item.dart';
 import '../../../../core/utils/global_method.dart';
-import '../../../../core/constants/routes_constants.dart';
-import '../../../posts/screens/post_detail_screen.dart';
-import '../../../../core/enums/notification_type.dart';
 import '../../../../core/services/notification_navigation_service.dart';
 
 /// Màn hình hiển thị danh sách thông báo
@@ -23,9 +19,9 @@ class NotificationScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Thông báo',
-          style: TextStyle(
+        title: Text(
+          'notification.title'.tr(),
+          style: const TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.bold,
           ),
@@ -51,7 +47,7 @@ class NotificationScreen extends ConsumerWidget {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    'Không có thông báo nào',
+                    'notification.empty'.tr(),
                     style: TextStyle(
                       fontSize: 16,
                       color: Colors.grey[600],
@@ -87,7 +83,7 @@ class NotificationScreen extends ConsumerWidget {
           child: CircularProgressIndicator(),
         ),
         error: (error, stack) => Center(
-          child: Text('Lỗi: $error'),
+          child: Text('${'common.error'.tr()}: $error'),
         ),
       ),
     );
@@ -100,9 +96,9 @@ class NotificationScreen extends ConsumerWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const Text(
-            'Mới',
-            style: TextStyle(
+          Text(
+            'notification.new'.tr(),
+            style: const TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
             ),
@@ -112,15 +108,16 @@ class NotificationScreen extends ConsumerWidget {
               try {
                 await repository.markAllAsRead();
                 if (context.mounted) {
-                  showToastMessage(text: 'Đã đánh dấu tất cả là đã đọc');
+                  showToastMessage(
+                      text: 'notification.actions.mark_read_success'.tr());
                 }
               } catch (e) {
                 if (context.mounted) {
-                  showToastMessage(text: 'Lỗi: $e');
+                  showToastMessage(text: '${'common.error'.tr()}: $e');
                 }
               }
             },
-            child: const Text('Đánh dấu tất cả là đã đọc'),
+            child: Text('notification.mark_all_read'.tr()),
           ),
         ],
       ),
@@ -136,25 +133,25 @@ class NotificationScreen extends ConsumerWidget {
         children: [
           ListTile(
             leading: const Icon(Icons.done_all),
-            title: const Text('Đánh dấu tất cả là đã đọc'),
+            title: Text('notification.mark_all_read'.tr()),
             onTap: () async {
               Navigator.pop(context);
               try {
                 await repository.markAllAsRead();
                 if (context.mounted) {
                   showToastMessage(
-                      text: 'Đã đánh dấu tất cả thông báo là đã đọc');
+                      text: 'notification.actions.mark_read_success'.tr());
                 }
               } catch (e) {
                 if (context.mounted) {
-                  showToastMessage(text: 'Lỗi: $e');
+                  showToastMessage(text: '${'common.error'.tr()}: $e');
                 }
               }
             },
           ),
           ListTile(
             leading: const Icon(Icons.delete_sweep),
-            title: const Text('Xóa tất cả thông báo'),
+            title: Text('notification.options.delete_all'.tr()),
             onTap: () {
               Navigator.pop(context);
               _deleteAll(context, repository);
@@ -185,17 +182,18 @@ class NotificationScreen extends ConsumerWidget {
     final confirmed = await showDialog<bool>(
           context: context,
           builder: (context) => AlertDialog(
-            title: const Text('Xác nhận xóa'),
-            content:
-                const Text('Bạn có chắc chắn muốn xóa tất cả thông báo không?'),
+            title: Text('common.confirm'.tr()),
+            content: Text('notification.options.delete_all_confirm'.tr()),
             actions: [
               TextButton(
                 onPressed: () => Navigator.of(context).pop(false),
-                child: const Text('Hủy'),
+                child: Text('common.cancel'.tr()),
               ),
               TextButton(
                 onPressed: () => Navigator.of(context).pop(true),
-                child: const Text('Xóa', style: TextStyle(color: Colors.red)),
+                child: Text('common.delete'.tr(),
+                    style:
+                        TextStyle(color: Theme.of(context).colorScheme.error)),
               ),
             ],
           ),
@@ -206,11 +204,12 @@ class NotificationScreen extends ConsumerWidget {
       try {
         await repository.deleteAllNotifications();
         if (context.mounted) {
-          showToastMessage(text: 'Đã xóa tất cả thông báo');
+          showToastMessage(
+              text: 'notification.actions.delete_all_success'.tr());
         }
       } catch (e) {
         if (context.mounted) {
-          showToastMessage(text: 'Lỗi: $e');
+          showToastMessage(text: '${'common.error'.tr()}: $e');
         }
       }
     }

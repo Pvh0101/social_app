@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class ErrorContent extends StatelessWidget {
   final String message;
@@ -36,7 +37,7 @@ class ErrorContent extends StatelessWidget {
               FilledButton.icon(
                 onPressed: onRetry,
                 icon: const Icon(Icons.refresh),
-                label: const Text('Thử lại'),
+                label: Text('common.retry'.tr()),
               ),
             ],
           ],

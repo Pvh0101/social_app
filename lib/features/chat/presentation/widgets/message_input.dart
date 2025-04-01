@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:easy_localization/easy_localization.dart';
 import '../../../../core/enums/message_type.dart';
 import '../../../../core/utils/global_method.dart';
 import '../../../../core/widgets/simple_media_picker.dart';
@@ -61,7 +62,7 @@ class _MessageInputState extends ConsumerState<MessageInput> {
           _isComposing = false;
         });
       } catch (e) {
-        showToastMessage(text: 'Lỗi gửi tin nhắn: $e');
+        showToastMessage(text: '${'chat.error.send'.tr()}: $e');
       }
     }
   }
@@ -151,9 +152,7 @@ class _MessageInputState extends ConsumerState<MessageInput> {
         _uploadProgress = 1.0;
       });
 
-      final messageContent = caption.isEmpty
-          ? 'Đã gửi ${_selectedMediaType.displayText}'
-          : caption;
+      final messageContent = caption.isEmpty ? 'chat.sent_media'.tr() : caption;
 
       widget.onSend(
         messageContent,
@@ -168,7 +167,7 @@ class _MessageInputState extends ConsumerState<MessageInput> {
         _isUploading = false;
       });
     } catch (e) {
-      showToastMessage(text: 'Không thể tải lên file: $e');
+      showToastMessage(text: '${'chat.error.upload'.tr()}: $e');
       setState(() {
         _isUploading = false;
       });

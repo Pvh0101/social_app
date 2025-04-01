@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 import '../widgets/friend_tab.dart';
 import '../widgets/friends_search_bar.dart';
@@ -101,17 +102,17 @@ class _FriendsScreenState extends ConsumerState<FriendsScreen>
             ],
             bottom: TabBar(
               controller: _tabController,
-              tabs: const [
+              tabs: [
                 FriendTab(
-                  text: 'Bạn bè',
+                  text: 'friends.list'.tr(),
                   count: 0,
                 ),
                 FriendTab(
-                  text: 'Lời mời',
+                  text: 'friends.requests'.tr(),
                   count: 0,
                 ),
                 FriendTab(
-                  text: 'Gợi ý',
+                  text: 'friends.suggestions'.tr(),
                   count: 0,
                 ),
               ],

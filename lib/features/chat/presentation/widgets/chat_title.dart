@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:social_app/core/constants/routes_constants.dart';
-import 'package:social_app/core/screens/error_screen.dart';
-import 'package:social_app/core/widgets/display_user_image.dart';
-import 'package:social_app/features/authentication/providers/get_user_info_as_stream_by_id_provider.dart';
+import '../../../../core/constants/routes_constants.dart';
+import '../../../../core/screens/error_screen.dart';
+import '../../../../core/widgets/display_user_image.dart';
+import '../../../authentication/providers/get_user_info_as_stream_by_id_provider.dart';
 
 class ChatTitle extends ConsumerWidget {
   final String userId;
@@ -23,6 +23,7 @@ class ChatTitle extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final userData = ref.watch(getUserInfoAsStreamByIdProvider(userId));
+
     return userData.when(
       data: (user) {
         return Row(
@@ -40,7 +41,7 @@ class ChatTitle extends ConsumerWidget {
                 imageUrl: user.profileImage,
                 userName: user.fullName,
                 isOnline: user.isOnline,
-                radius: 22,
+                radius: avatarRadius ?? 22,
               ),
             ),
             const SizedBox(width: 12),

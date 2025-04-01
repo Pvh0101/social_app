@@ -3,6 +3,7 @@
   "home": "主页",
   "video": "视频",
   "notifications": "通知",
+  "login_verification_message": "使用电子邮件和密码登录",
   "profile": {
     "title": "个人资料",
     "edit": {
@@ -397,16 +398,33 @@
   "email_verification": {
     "title": "验证您的邮箱",
     "message": "我们已向您的邮箱发送了验证链接，请点击链接验证您的账号。",
-    "pending": "等待验证...",
-    "success": "邮箱验证成功！",
+    "subtitle": "我们已向此邮箱发送验证邮件",
+    "instruction": "请检查您的收件箱并点击验证链接",
+    "check_spam": "如果您在收件箱中没有看到邮件，请检查垃圾邮件文件夹",
     "resend": {
       "button": "重新发送验证邮件",
-      "wait": "请等待 {0} 秒后再次发送",
-      "success": "验证邮件已重新发送"
+      "processing": "发送中...",
+      "success": "验证邮件已重新发送",
+      "wait": "请等待 {seconds} 秒后再重新发送",
+      "error": "无法发送验证邮件"
     },
-    "not_received": "没有收到邮件？",
-    "check_inbox": "请检查您的收件箱",
-    "check_spam": "请检查您的垃圾邮件"
+    "verify": {
+      "checking": "正在检查验证状态...",
+      "success": "邮箱验证成功",
+      "error": "无法验证邮箱"
+    },
+    "actions": {
+      "open_email": "打开邮件应用",
+      "refresh": "刷新状态",
+      "back_to_login": "返回登录",
+      "continue": "继续"
+    },
+    "messages": {
+      "verification_required": "您需要在继续之前验证您的邮箱",
+      "check_email": "请检查您的邮箱",
+      "verified": "邮箱已验证",
+      "not_verified": "邮箱未验证"
+    }
   },
   "user_finder": {
     "title": "查找用户",

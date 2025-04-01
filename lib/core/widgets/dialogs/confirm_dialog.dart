@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class ConfirmDialog extends StatelessWidget {
   final String title;
@@ -11,8 +12,8 @@ class ConfirmDialog extends StatelessWidget {
     super.key,
     required this.title,
     required this.message,
-    this.cancelText = 'Hủy',
-    this.confirmText = 'Xác nhận',
+    this.cancelText = 'common.cancel',
+    this.confirmText = 'common.confirm',
     this.confirmColor,
   });
 
@@ -29,8 +30,8 @@ class ConfirmDialog extends StatelessWidget {
       builder: (context) => ConfirmDialog(
         title: title,
         message: message,
-        cancelText: cancelText ?? 'Cancel',
-        confirmText: confirmText ?? 'Confirm',
+        cancelText: cancelText ?? 'common.cancel',
+        confirmText: confirmText ?? 'common.confirm',
         confirmColor: confirmColor,
       ),
     );
@@ -46,12 +47,12 @@ class ConfirmDialog extends StatelessWidget {
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context, false),
-          child: Text(cancelText),
+          child: Text(cancelText.tr()),
         ),
         TextButton(
           onPressed: () => Navigator.pop(context, true),
           child: Text(
-            confirmText,
+            confirmText.tr(),
             style: TextStyle(
               color: confirmColor ?? colorScheme.error,
             ),

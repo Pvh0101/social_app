@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:social_app/features/posts/widgets/comment_input.dart';
-import 'package:social_app/features/posts/widgets/comment_list.dart';
+import 'comment_input.dart';
+import 'comment_list.dart';
+import 'package:easy_localization/easy_localization.dart';
 import '../models/post_model.dart';
 
 class CommentSheet extends ConsumerWidget {
@@ -30,7 +31,7 @@ class CommentSheet extends ConsumerWidget {
               children: [
                 const SizedBox(height: 8),
                 Text(
-                  'Bình luận',
+                  'post.comment.title'.tr(),
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
               ],

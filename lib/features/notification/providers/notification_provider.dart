@@ -4,7 +4,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 import '../models/notification_model.dart';
 import '../repository/notification_repository.dart';
-import '../../../core/enums/notification_type.dart';
 
 /// Provider cho NotificationRepository
 final notificationRepositoryProvider = Provider<NotificationRepository>((ref) {

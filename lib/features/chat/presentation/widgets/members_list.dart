@@ -132,7 +132,7 @@ class MemberItem extends ConsumerWidget {
                 ),
             ],
           ),
-          subtitle: Text(user.email ?? ''),
+          subtitle: Text(user.email),
           trailing: chat.isAdmin(currentUserId) && !isSelf
               ? IconButton(
                   icon: const Icon(Icons.remove_circle_outline,
@@ -150,11 +150,11 @@ class MemberItem extends ConsumerWidget {
         title: Text('Đang tải...'),
       ),
       error: (error, stack) => ListTile(
-        leading: CircleAvatar(
+        leading: const CircleAvatar(
           radius: 20,
           child: Icon(Icons.error),
         ),
-        title: Text('Lỗi'),
+        title: const Text('Lỗi'),
         subtitle: Text(error.toString()),
       ),
     );

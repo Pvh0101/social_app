@@ -257,8 +257,7 @@ class _EmailVerificationScreenState
               onPressed: _resendCountdown > 0 ? null : _resendVerificationEmail,
               child: Text(
                 _resendCountdown > 0
-                    ? 'email_verification.resend.wait'
-                        .tr(args: [_resendCountdown.toString()])
+                    ? '${'email_verification.resend.wait'.tr()} $_resendCountdown'
                     : 'email_verification.resend.button'.tr(),
               ),
             ),

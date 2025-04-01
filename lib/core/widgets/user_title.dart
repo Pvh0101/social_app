@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:social_app/core/screens/error_screen.dart';
-import 'package:social_app/features/authentication/providers/get_user_info_as_stream_by_id_provider.dart';
+import '../screens/error_screen.dart';
+import '../../features/authentication/providers/get_user_info_as_stream_by_id_provider.dart';
 
 import '../core.dart';
 

@@ -2,7 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:social_app/features/notification/presentation/screens/notification_screen.dart';
+import '../notification/presentation/screens/notification_screen.dart';
 
 import '../../core/core.dart';
 import '../posts/screens/feed_screen.dart';

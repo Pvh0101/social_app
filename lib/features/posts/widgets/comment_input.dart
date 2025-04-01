@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:easy_localization/easy_localization.dart';
 import '../../../core/core.dart';
 import '../models/post_model.dart';
 import '../providers/comment_notifier.dart';
@@ -28,7 +29,7 @@ class CommentInput extends ConsumerWidget {
           .addComment(content.trim());
       textController.clear();
     } catch (e) {
-      showToastMessage(text: 'Không thể gửi bình luận: $e');
+      showToastMessage(text: '${'post.comment.error'.tr()}: ${e.toString()}');
     }
   }
 
@@ -58,8 +59,8 @@ class CommentInput extends ConsumerWidget {
             child: TextField(
               controller: textController,
               focusNode: focusNode,
-              decoration: const InputDecoration(
-                hintText: 'Viết bình luận...',
+              decoration: InputDecoration(
+                hintText: 'post.comment.write'.tr(),
                 border: InputBorder.none,
               ),
               maxLines: null,

@@ -1,4 +1,4 @@
-import 'package:social_app/core/enums/message_type.dart';
+import '../../../core/enums/message_type.dart';
 
 import '../../../core/utils/datetime_helper.dart';
 

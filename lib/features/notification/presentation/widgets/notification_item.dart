@@ -90,7 +90,8 @@ class NotificationItem extends ConsumerWidget {
                                   text: senderStream.maybeWhen(
                                     data: (sender) => sender.fullName,
                                     orElse: () =>
-                                        notification.senderName ?? 'Người dùng',
+                                        notification.senderName ??
+                                        'common.unknown_user'.tr(),
                                   ),
                                   style: Theme.of(context)
                                       .textTheme
@@ -100,7 +101,8 @@ class NotificationItem extends ConsumerWidget {
                                       ),
                                 ),
                                 TextSpan(
-                                  text: ' ${_getNotificationText()}',
+                                  text:
+                                      ' ${notification.type.getTemplateMessageText()}',
                                 ),
                               ],
                             ),
@@ -212,28 +214,5 @@ class NotificationItem extends ConsumerWidget {
         ],
       ),
     );
-  }
-
-  String _getNotificationText() {
-    switch (notification.type) {
-      case 'like':
-        return 'đã thích bài viết của bạn';
-      case 'comment':
-        return 'đã bình luận về bài viết của bạn';
-      case 'friend_request':
-        return 'đã gửi lời mời kết bạn';
-      case 'friend_accept':
-        return 'đã chấp nhận lời mời kết bạn của bạn';
-      case 'message':
-        return 'đã gửi tin nhắn cho bạn';
-      default:
-        // Xóa tên người dùng khỏi nội dung nếu có
-        final content = notification.content;
-        final senderName = notification.senderName ?? '';
-        if (senderName.isNotEmpty && content.startsWith(senderName)) {
-          return content.substring(senderName.length).trim();
-        }
-        return content;
-    }
   }
 }

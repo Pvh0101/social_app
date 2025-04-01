@@ -8,9 +8,9 @@ export 'constants/routes_constants.dart';
 // Routes
 export 'routes/app_routes.dart';
 export 'utils/global_method.dart';
+export 'utils/log_utils.dart';
 // Utils
 export 'utils/validation_utils.dart';
-export 'utils/log_utils.dart';
 export 'widgets/custom_list_tile.dart';
 export 'widgets/display_user_image.dart';
 export 'widgets/fields/password_text_field.dart';

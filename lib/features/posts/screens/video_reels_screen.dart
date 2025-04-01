@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:better_player_plus/better_player_plus.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:visibility_detector/visibility_detector.dart';
+import 'package:easy_localization/easy_localization.dart';
 import '../../../core/utils/log_utils.dart';
 import '../providers/video_player_provider.dart';
 import '../providers/feed_provider.dart';
@@ -97,9 +98,10 @@ class _VideoReelsScreenState extends ConsumerState<VideoReelsScreen>
               }
 
               if (posts.isEmpty) {
-                return const Center(
+                return Center(
                   child: Text(
-                    'Chưa có video nào',
+                    'create_post.no_posts'.tr(),
+                    style: const TextStyle(color: Colors.white),
                   ),
                 );
               }
@@ -125,7 +127,8 @@ class _VideoReelsScreenState extends ConsumerState<VideoReelsScreen>
             ),
             error: (error, stack) => Center(
               child: Text(
-                'Có lỗi xảy ra: $error',
+                '${'common.error'.tr()}: $error',
+                style: const TextStyle(color: Colors.white),
               ),
             ),
           );

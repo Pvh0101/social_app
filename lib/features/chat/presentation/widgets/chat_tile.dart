@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -61,7 +62,7 @@ class ChatTile extends ConsumerWidget {
     if (!chat.isGroup) {
       final otherUserId = chat.getOtherUserId(currentUserId);
       if (otherUserId.isEmpty) {
-        return _buildErrorTile(context, 'Không thể xác định người nhận');
+        return _buildErrorTile(context, 'chat.error.missing_receiver'.tr());
       }
 
       // Lấy thông tin người dùng kia bằng Stream để cập nhật realtime

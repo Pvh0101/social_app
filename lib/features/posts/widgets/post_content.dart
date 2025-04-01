@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:social_app/features/posts/presentation/widgets/post_image_view.dart';
-import 'package:social_app/features/widgets/expandable_text.dart';
+import '../presentation/widgets/post_image_view.dart';
+import '../../widgets/expandable_text.dart';
 import '../models/post_model.dart';
 import '../../../core/constants/routes_constants.dart';
 import 'post_interactions.dart';

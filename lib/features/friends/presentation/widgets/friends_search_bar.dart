@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:easy_localization/easy_localization.dart';
 import '../../../../core/utils/log_utils.dart';
 
 class FriendsSearchBar extends ConsumerWidget {
@@ -22,7 +23,7 @@ class FriendsSearchBar extends ConsumerWidget {
         '[FRIENDS_SEARCH_BAR] Xây dựng thanh tìm kiếm, trạng thái tìm kiếm: $isSearching');
 
     if (!isSearching) {
-      return const Text('Bạn bè');
+      return Text('friends.title'.tr());
     }
 
     return TextField(
@@ -33,8 +34,8 @@ class FriendsSearchBar extends ConsumerWidget {
         onChanged(value);
       },
       autofocus: true,
-      decoration: const InputDecoration(
-        hintText: 'Tìm kiếm bạn bè...',
+      decoration: InputDecoration(
+        hintText: 'friends.search'.tr(),
         border: InputBorder.none,
       ),
     );

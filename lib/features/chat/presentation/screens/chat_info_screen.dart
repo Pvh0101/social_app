@@ -5,9 +5,6 @@ import 'dart:io';
 
 import '../../models/chatroom.dart';
 import '../../providers/chat_providers.dart';
-import '../../../../features/authentication/providers/get_user_info_as_stream_by_id_provider.dart';
-import '../../../../features/friends/providers/get_all_friends_provider.dart';
-import '../../../../core/widgets/display_user_image.dart';
 import '../../../../core/utils/global_method.dart';
 import '../../../../core/widgets/loading_overlay.dart';
 import '../../services/chatroom_service.dart';

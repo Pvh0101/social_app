@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:social_app/core/core.dart';
+import '../../../core/core.dart';
 import '../../../core/enums/post_type.dart';
 import '../../../core/enums/content_type.dart';
 import '../../../features/notification/repository/notification_repository.dart';

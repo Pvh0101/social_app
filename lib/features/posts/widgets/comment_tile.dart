@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:easy_localization/easy_localization.dart';
 import '../../../core/enums/content_type.dart';
 import '../../../core/utils/datetime_helper.dart';
 import '../../../core/utils/global_method.dart';
@@ -134,7 +135,7 @@ class _CommentTileState extends ConsumerState<CommentTile> {
                             onTap: () =>
                                 _showCommentOptions(context, isCommentOwner),
                             child: Text(
-                              'Xóa',
+                              'post.comment.delete'.tr(),
                               style: Theme.of(context)
                                   .textTheme
                                   .bodySmall
@@ -212,24 +213,25 @@ class _CommentTileState extends ConsumerState<CommentTile> {
             if (isCommentOwner) ...[
               ListTile(
                 leading: const Icon(Icons.delete, color: Colors.red),
-                title: const Text('Xóa bình luận',
-                    style: TextStyle(color: Colors.red)),
+                title: Text('post.comment.delete_comment'.tr(),
+                    style: const TextStyle(color: Colors.red)),
                 onTap: () async {
                   Navigator.pop(context);
                   try {
                     await ref
                         .read(commentProvider(widget.postId).notifier)
                         .deleteComment(widget.commentId);
-                    showToastMessage(text: 'Đã xóa bình luận');
+                    showToastMessage(text: 'post.comment.delete_success'.tr());
                   } catch (e) {
-                    showToastMessage(text: 'Không thể xóa bình luận: $e');
+                    showToastMessage(
+                        text: '${'post.comment.delete_error'.tr()}: $e');
                   }
                 },
               ),
             ],
             ListTile(
               leading: const Icon(Icons.report),
-              title: const Text('Báo cáo bình luận'),
+              title: Text('common.report'.tr()),
               onTap: () {
                 Navigator.pop(context);
                 // TODO: Implement report comment

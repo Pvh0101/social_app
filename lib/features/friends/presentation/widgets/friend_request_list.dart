@@ -6,6 +6,7 @@ import '../../../authentication/authentication.dart';
 import '../../providers/get_all_friend_requests_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:easy_localization/easy_localization.dart';
 import '../../../../core/utils/log_utils.dart';
 
 class FriendRequestList extends ConsumerWidget {
@@ -44,8 +45,8 @@ class FriendRequestList extends ConsumerWidget {
 
         if (filteredIds.isEmpty) {
           final message = searchQuery.isEmpty
-              ? 'Không có yêu cầu kết bạn nào'
-              : 'Không tìm thấy yêu cầu phù hợp';
+              ? 'friends.no_requests'.tr()
+              : 'friends.no_search_results'.tr();
           ref.logInfo(LogService.FRIEND, '[FRIEND_REQUEST_LIST] $message');
 
           return Center(

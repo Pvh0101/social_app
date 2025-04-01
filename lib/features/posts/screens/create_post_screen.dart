@@ -250,7 +250,9 @@ class _CreatePostScreenState extends ConsumerState<CreatePostScreen> {
             TextButton(
               onPressed: _savePost,
               child: Text(
-                widget.post != null ? 'Lưu' : 'Đăng bài',
+                widget.post != null
+                    ? 'edit_post.save'.tr()
+                    : 'create_post.upload'.tr(),
                 style: const TextStyle(fontSize: 16),
               ),
             ),
@@ -310,7 +312,7 @@ class _CreatePostScreenState extends ConsumerState<CreatePostScreen> {
                 // Nút chọn ảnh
                 _buildMediaButton(
                   icon: Icons.photo_library_rounded,
-                  label: 'Ảnh',
+                  label: 'create_post.add_image'.tr(),
                   color: colorScheme.primary,
                   onPressed: () async {
                     final mediaService = ref.read(mediaServiceProvider);
@@ -327,7 +329,7 @@ class _CreatePostScreenState extends ConsumerState<CreatePostScreen> {
                       }
                     } catch (e) {
                       showToastMessage(
-                          text: 'Lỗi khi truy cập thư viện ảnh: $e');
+                          text: '${'permissions.gallery_denied'.tr()}: $e');
                     }
                   },
                 ),
@@ -337,7 +339,7 @@ class _CreatePostScreenState extends ConsumerState<CreatePostScreen> {
                 // Nút tải lên video
                 _buildMediaButton(
                   icon: Icons.videocam_rounded,
-                  label: 'Video',
+                  label: 'create_post.add_video'.tr(),
                   color: colorScheme.secondary,
                   onPressed: () async {
                     final mediaService = ref.read(mediaServiceProvider);
@@ -351,7 +353,7 @@ class _CreatePostScreenState extends ConsumerState<CreatePostScreen> {
                       }
                     } catch (e) {
                       showToastMessage(
-                          text: 'Lỗi khi truy cập thư viện video: $e');
+                          text: '${'permissions.gallery_denied'.tr()}: $e');
                     }
                   },
                 ),
@@ -559,7 +561,7 @@ class _CreatePostScreenState extends ConsumerState<CreatePostScreen> {
         );
       }
     } catch (e) {
-      showToastMessage(text: e.toString());
+      showToastMessage(text: '${'common.error'.tr()}: ${e.toString()}');
     } finally {
       if (mounted) {
         setState(() => _isLoading = false);

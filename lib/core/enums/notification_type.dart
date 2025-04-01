@@ -46,4 +46,22 @@ enum NotificationType {
         return '$senderName đã gửi tin nhắn cho bạn';
     }
   }
+
+  /// Lấy message mẫu cho từng loại thông báo
+  String getTemplateMessageText() {
+    switch (this) {
+      case NotificationType.like:
+        return 'đã thích bài viết của bạn';
+      case NotificationType.comment:
+        return 'đã bình luận về bài viết của bạn';
+      case NotificationType.mention:
+        return 'đã nhắc đến bạn trong một bài viết';
+      case NotificationType.friendRequest:
+        return 'đã gửi lời mời kết bạn';
+      case NotificationType.friendAccept:
+        return 'đã chấp nhận lời mời kết bạn của bạn';
+      case NotificationType.message:
+        return 'đã gửi tin nhắn cho bạn';
+    }
+  }
 }

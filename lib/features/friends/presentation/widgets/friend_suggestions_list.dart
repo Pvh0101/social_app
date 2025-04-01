@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../../providers/friend_provider.dart';
 import '../../../authentication/providers/get_user_info_as_stream_by_id_provider.dart';
@@ -47,7 +48,7 @@ class _RequestsListState extends ConsumerState<FriendSuggestionList> {
                 '[FRIEND_SUGGESTION_LIST] Không tìm thấy kết quả cho từ khóa: ${widget.searchQuery}');
             return Center(
               child: Text(
-                'Không tìm thấy kết quả',
+                'friends.no_search_results'.tr(),
                 style: Theme.of(context).textTheme.bodyLarge,
               ),
             );
@@ -105,7 +106,7 @@ class _RequestsListState extends ConsumerState<FriendSuggestionList> {
                   '[FRIEND_SUGGESTION_LIST] Không có gợi ý kết bạn');
               return Center(
                 child: Text(
-                  'Không có gợi ý kết bạn',
+                  'friends.no_suggestions'.tr(),
                   style: Theme.of(context).textTheme.bodyLarge,
                 ),
               );
