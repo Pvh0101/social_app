@@ -1,0 +1,1 @@
+C:\Flutter Projects\social_app\build\app\intermediates\cxx\RelWithDebInfo\2q6y6s6p\obj\armeabi-v7a

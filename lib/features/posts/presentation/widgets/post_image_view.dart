@@ -34,6 +34,11 @@ class _PostImageViewState extends ConsumerState<PostImageView>
     _pageController = PageController(viewportFraction: 1.0);
     ref.logDebug(LogService.MEDIA,
         'PostImageView khởi tạo với ${widget.imageUrls.length} ảnh');
+
+    // Preload ảnh kế tiếp sau khi widget được build
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _preloadNextImage(0);
+    });
   }
 
   @override
@@ -41,6 +46,26 @@ class _PostImageViewState extends ConsumerState<PostImageView>
     ref.logDebug(LogService.MEDIA, 'PostImageView dispose');
     _pageController.dispose();
     super.dispose();
+  }
+
+  /// Preload ảnh tiếp theo từ vị trí hiện tại
+  void _preloadNextImage(int currentIndex) {
+    final nextIndex = currentIndex + 1;
+    if (nextIndex < widget.imageUrls.length) {
+      ref.logDebug(LogService.MEDIA,
+          'Bắt đầu preload ảnh ${nextIndex + 1}/${widget.imageUrls.length}');
+
+      precacheImage(
+        CachedNetworkImageProvider(widget.imageUrls[nextIndex]),
+        context,
+      ).then((_) {
+        ref.logDebug(LogService.MEDIA,
+            'Đã preload xong ảnh ${nextIndex + 1}/${widget.imageUrls.length}');
+      }).catchError((error) {
+        ref.logError(LogService.MEDIA,
+            'Lỗi preload ảnh: ${widget.imageUrls[nextIndex]}', error);
+      });
+    }
   }
 
   void _openFullscreenView() {
@@ -78,6 +103,8 @@ class _PostImageViewState extends ConsumerState<PostImageView>
             controller: _pageController,
             onPageChanged: (index) {
               setState(() => _currentPage = index);
+              // Preload ảnh tiếp theo khi người dùng swipe
+              _preloadNextImage(index);
               ref.logDebug(LogService.MEDIA,
                   'Chuyển sang ảnh ${index + 1}/${widget.imageUrls.length}');
             },
@@ -91,7 +118,7 @@ class _PostImageViewState extends ConsumerState<PostImageView>
                     imageUrl: widget.imageUrls[index],
                     fit: BoxFit.cover,
                     placeholder: (context, url) => const Center(
-                      child: SizedBox.shrink(),
+                      child: CircularProgressIndicator(),
                     ),
                     errorWidget: (context, url, error) {
                       ref.logError(
@@ -167,6 +194,36 @@ class _FullscreenImageViewState extends ConsumerState<FullscreenImageView> {
     _currentPage = widget.initialIndex;
     ref.logInfo(LogService.MEDIA,
         'FullscreenImageView khởi tạo với ảnh ${widget.initialIndex + 1}/${widget.imageUrls.length}');
+
+    // Preload ảnh kế tiếp và ảnh trước đó nếu có
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _preloadAdjacentImages(widget.initialIndex);
+    });
+  }
+
+  /// Preload ảnh kế tiếp và ảnh trước đó
+  void _preloadAdjacentImages(int currentIndex) {
+    // Preload ảnh kế tiếp
+    final nextIndex = currentIndex + 1;
+    if (nextIndex < widget.imageUrls.length) {
+      precacheImage(
+        CachedNetworkImageProvider(widget.imageUrls[nextIndex]),
+        context,
+      );
+      ref.logDebug(
+          LogService.MEDIA, 'Đã preload ảnh kế tiếp (index: $nextIndex)');
+    }
+
+    // Preload ảnh trước đó
+    final prevIndex = currentIndex - 1;
+    if (prevIndex >= 0) {
+      precacheImage(
+        CachedNetworkImageProvider(widget.imageUrls[prevIndex]),
+        context,
+      );
+      ref.logDebug(
+          LogService.MEDIA, 'Đã preload ảnh trước đó (index: $prevIndex)');
+    }
   }
 
   @override
@@ -292,6 +349,8 @@ class _FullscreenImageViewState extends ConsumerState<FullscreenImageView> {
               pageController: _pageController,
               onPageChanged: (index) {
                 setState(() => _currentPage = index);
+                // Preload ảnh kế tiếp và ảnh trước đó mỗi khi chuyển trang
+                _preloadAdjacentImages(index);
                 ref.logInfo(LogService.MEDIA,
                     'Chuyển sang ảnh toàn màn hình ${index + 1}/${widget.imageUrls.length}');
               },
