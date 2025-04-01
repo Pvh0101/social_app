@@ -3,13 +3,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../../providers/chat_providers.dart';
 import '../../models/chatroom.dart';
-import '../../../../features/authentication/providers/get_user_info_as_stream_by_id_provider.dart';
 import '../../../../core/constants/routes_constants.dart';
-import '../../../../core/widgets/display_user_image.dart';
-import '../../../../core/utils/datetime_helper.dart';
 import '../../../../core/utils/global_method.dart';
+import '../../../../core/widgets/loading_indicator.dart';
 import 'chat_screen.dart';
+import '../widgets/chat_list_item.dart';
 
+/// Màn hình danh sách đoạn chat
 class ChatListScreen extends ConsumerStatefulWidget {
   const ChatListScreen({Key? key}) : super(key: key);
 
@@ -18,368 +18,251 @@ class ChatListScreen extends ConsumerStatefulWidget {
 }
 
 class _ChatListScreenState extends ConsumerState<ChatListScreen> {
+  final String _currentUserId = FirebaseAuth.instance.currentUser?.uid ?? '';
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    // Sử dụng StreamProvider trực tiếp
     final chatsAsync = ref.watch(userChatsProvider);
-    final currentUserId = FirebaseAuth.instance.currentUser?.uid ?? '';
-    print('Current user ID: $currentUserId');
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Tin nhắn'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.group_add),
-            tooltip: 'Tạo nhóm chat mới',
-            onPressed: () {
-              // Mở màn hình tạo nhóm chat mới
-              Navigator.pushNamed(context, RouteConstants.createGroup);
-            },
-          ),
-        ],
-      ),
-      body: RefreshIndicator(
-        onRefresh: () async {
-          // Làm mới danh sách chat
-          ref.refresh(userChatsProvider);
-        },
-        child: chatsAsync.when(
-          data: (chats) {
-            print('Received ${chats.length} chats');
-            for (final chat in chats) {
-              print('Chat ID: ${chat.id}');
-              print('Chat members: ${chat.members}');
-              print('Chat last message: ${chat.lastMessage}');
-              print('Chat updated at: ${chat.updatedAt}');
-            }
-            if (chats.isEmpty) {
-              return const Center(
-                child: Text(
-                  'Bạn chưa có cuộc trò chuyện nào',
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.grey,
-                  ),
-                ),
-              );
-            }
+      appBar: _buildAppBar(),
+      body: _buildChatList(chatsAsync),
+      floatingActionButton: _buildNewChatButton(),
+    );
+  }
 
-            return ListView.builder(
-              itemCount: chats.length,
-              itemBuilder: (context, index) {
-                final chat = chats[index];
-                print('Building chat item: ${chat.id}');
-                return _buildChatItem(context, chat, currentUserId);
-              },
-            );
-          },
-          loading: () => const Center(
-            child: CircularProgressIndicator(),
-          ),
-          error: (error, stack) {
-            return Center(
-              child: Text('Lỗi: $error'),
-            );
-          },
+  /// Xây dựng AppBar với các actions
+  PreferredSizeWidget _buildAppBar() {
+    return AppBar(
+      title: const Text('Tin nhắn'),
+      actions: [
+        IconButton(
+          icon: const Icon(Icons.group_add),
+          tooltip: 'Tạo nhóm chat mới',
+          onPressed: _navigateToCreateGroup,
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // Mở màn hình tìm kiếm người dùng để bắt đầu cuộc trò chuyện mới
-          Navigator.pushNamed(context, RouteConstants.friends);
-        },
-        tooltip: 'Tạo cuộc trò chuyện mới',
-        child: const Icon(Icons.message),
+      ],
+    );
+  }
+
+  /// Chuyển đến màn hình tạo nhóm chat
+  void _navigateToCreateGroup() {
+    Navigator.pushNamed(context, RouteConstants.createGroup);
+  }
+
+  /// Xây dựng danh sách chat với RefreshIndicator
+  Widget _buildChatList(AsyncValue<List<Chatroom>> chatsAsync) {
+    return RefreshIndicator(
+      onRefresh: () async {
+        ref.invalidate(userChatsProvider);
+      },
+      child: chatsAsync.when(
+        data: (chats) => _buildChatListContent(chats),
+        loading: () => const LoadingIndicator(),
+        error: (error, stack) => _buildErrorView(error, stack),
       ),
     );
   }
 
-  // Xây dựng item chat
-  Widget _buildChatItem(
-      BuildContext context, Chatroom chat, String currentUserId) {
-    // Hiển thị thông tin người dùng khác trong chat 1-1
-    if (!chat.isGroup) {
-      // Lấy ID người dùng khác trong chat 1-1
-      final otherUserId = chat.getOtherUserId(currentUserId);
-
-      if (otherUserId.isNotEmpty) {
-        final userStream =
-            ref.watch(getUserInfoAsStreamByIdProvider(otherUserId));
-        final unreadCountStream =
-            ref.watch(unreadMessagesCountProvider(chat.id));
-        return userStream.when(
-          data: (user) {
-            // Hiển thị nội dung tin nhắn cuối cùng
-            String lastMessageText = '';
-            if (chat.lastMessage != null) {
-              // Nếu người gửi tin nhắn cuối cùng là người dùng hiện tại
-              if (chat.lastMessageSenderId == currentUserId) {
-                lastMessageText = 'Bạn: ${chat.lastMessage}';
-              } else {
-                lastMessageText = chat.lastMessage ?? '';
-              }
-            }
-
-            return ListTile(
-              leading: DisplayUserImage(
-                imageUrl: user.profileImage,
-                userName: user.fullName,
-                radius: 24,
-                isOnline: user.isOnline,
-              ),
-              title: Text(
-                user.fullName,
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              subtitle: Text(
-                lastMessageText,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-              tileColor: unreadCountStream.when(
-                data: (count) =>
-                    count > 0 ? Colors.blue.withOpacity(0.1) : null,
-                loading: () => null,
-                error: (_, __) => null,
-              ),
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    DateTimeHelper.getRelativeTime(chat.updatedAt),
-                    style: const TextStyle(
-                      fontSize: 12,
-                      color: Colors.grey,
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  unreadCountStream.when(
-                    data: (count) {
-                      if (count > 0) {
-                        return Container(
-                          padding: const EdgeInsets.all(6),
-                          decoration: const BoxDecoration(
-                            color: Colors.blue,
-                            shape: BoxShape.circle,
-                          ),
-                          child: Text(
-                            count.toString(),
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        );
-                      }
-                      return const SizedBox.shrink();
-                    },
-                    loading: () => const SizedBox.shrink(),
-                    error: (_, __) => const SizedBox.shrink(),
-                  ),
-                ],
-              ),
-              onTap: () {
-                print(
-                    '[ChatListScreen] Navigating to chat with ID: ${chat.id}');
-                print('[ChatListScreen] Chat is group: ${chat.isGroup}');
-                print('[ChatListScreen] Chat members: ${chat.members}');
-
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ChatScreen(
-                      chatId: chat.id,
-                      isGroup: chat.isGroup,
-                    ),
-                  ),
-                );
-              },
-              onLongPress: () => _showChatOptions(context, chat),
-            );
-          },
-          loading: () => const ListTile(
-            leading: CircleAvatar(
-              child: CircularProgressIndicator(),
-            ),
-            title: Text('Đang tải...'),
-          ),
-          error: (error, stack) => ListTile(
-            leading: const CircleAvatar(
-              child: Icon(Icons.error),
-            ),
-            title: const Text('Không thể tải thông tin'),
-            subtitle: Text(error.toString()),
-          ),
-        );
-      }
+  /// Xây dựng nội dung danh sách chat khi đã tải xong
+  Widget _buildChatListContent(List<Chatroom> chats) {
+    if (chats.isEmpty) {
+      return _buildEmptyListView();
     }
 
-    // Hiển thị thông tin nhóm chat
-    final unreadCountStream = ref.watch(unreadMessagesCountProvider(chat.id));
-    return ListTile(
-      leading: DisplayUserImage(
-        imageUrl: chat.avatar,
-        userName: chat.name ?? 'Nhóm chat',
-        radius: 24,
-      ),
-      title: Text(
-        chat.name ?? 'Nhóm chat',
-        style: const TextStyle(
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-      subtitle: Text(
-        chat.getDisplayLastMessage(currentUserId),
-        maxLines: 1,
-        overflow: TextOverflow.ellipsis,
-      ),
-      tileColor: unreadCountStream.when(
-        data: (count) => count > 0 ? Colors.blue.withOpacity(0.1) : null,
-        loading: () => null,
-        error: (_, __) => null,
-      ),
-      trailing: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            DateTimeHelper.getRelativeTime(chat.updatedAt),
-            style: const TextStyle(
-              fontSize: 12,
-              color: Colors.grey,
-            ),
-          ),
-          const SizedBox(width: 8),
-          unreadCountStream.when(
-            data: (count) {
-              if (count > 0) {
-                return Container(
-                  padding: const EdgeInsets.all(6),
-                  decoration: const BoxDecoration(
-                    color: Colors.blue,
-                    shape: BoxShape.circle,
-                  ),
-                  child: Text(
-                    count.toString(),
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                );
-              }
-              return const SizedBox.shrink();
-            },
-            loading: () => const SizedBox.shrink(),
-            error: (_, __) => const SizedBox.shrink(),
-          ),
-        ],
-      ),
-      onTap: () {
-        print('[ChatListScreen] Navigating to chat with ID: ${chat.id}');
-        print('[ChatListScreen] Chat is group: ${chat.isGroup}');
-        print('[ChatListScreen] Chat members: ${chat.members}');
-
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ChatScreen(
-              chatId: chat.id,
-              isGroup: chat.isGroup,
-            ),
-          ),
+    return ListView.builder(
+      itemCount: chats.length,
+      itemBuilder: (context, index) {
+        final chat = chats[index];
+        return ChatListItem(
+          chat: chat,
+          currentUserId: _currentUserId,
+          onTap: () => _navigateToChatScreen(chat),
+          onLongPress: () => _showChatOptions(context, chat),
         );
       },
-      onLongPress: () => _showChatOptions(context, chat),
     );
   }
 
-  // Hiển thị tùy chọn cho đoạn chat
+  /// Hiển thị khi danh sách chat rỗng
+  Widget _buildEmptyListView() {
+    return const Center(
+      child: Text(
+        'Bạn chưa có cuộc trò chuyện nào',
+        style: TextStyle(
+          fontSize: 16,
+          color: Colors.grey,
+        ),
+      ),
+    );
+  }
+
+  /// Hiển thị khi có lỗi tải danh sách chat
+  Widget _buildErrorView(Object error, StackTrace? stack) {
+    return Center(
+      child: Text('Lỗi: $error'),
+    );
+  }
+
+  /// Button tạo cuộc trò chuyện mới
+  Widget _buildNewChatButton() {
+    return FloatingActionButton(
+      onPressed: _navigateToFriends,
+      tooltip: 'Tạo cuộc trò chuyện mới',
+      child: const Icon(Icons.message),
+    );
+  }
+
+  /// Chuyển đến màn hình bạn bè để tạo chat mới
+  void _navigateToFriends() {
+    Navigator.pushNamed(context, RouteConstants.friends);
+  }
+
+  /// Chuyển đến màn hình chat
+  void _navigateToChatScreen(Chatroom chat) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ChatScreen(
+          chatId: chat.id,
+          isGroup: chat.isGroup,
+        ),
+      ),
+    );
+  }
+
+  /// Hiển thị các tùy chọn cho đoạn chat
   void _showChatOptions(BuildContext context, Chatroom chat) {
     showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
       ),
-      builder: (context) => Container(
-        padding: const EdgeInsets.symmetric(vertical: 20),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ListTile(
-              leading: const Icon(Icons.delete_forever, color: Colors.red),
-              title: const Text('Xóa đoạn chat'),
-              onTap: () {
-                Navigator.of(context).pop();
-                _confirmDeleteChat(context, chat.id);
-              },
-            ),
-            if (!chat.isGroup) ...[
-              ListTile(
-                leading: const Icon(Icons.block),
-                title: const Text('Chặn người dùng'),
-                onTap: () {
-                  Navigator.of(context).pop();
-                  // Chức năng chặn người dùng sẽ được thêm sau
-                  showToastMessage(text: 'Chức năng đang phát triển');
-                },
-              ),
-            ],
-            if (chat.isGroup &&
-                chat.isAdmin(FirebaseAuth.instance.currentUser?.uid ?? '')) ...[
-              ListTile(
-                leading: const Icon(Icons.edit),
-                title: const Text('Chỉnh sửa nhóm'),
-                onTap: () {
-                  Navigator.of(context).pop();
-                  // Chức năng chỉnh sửa nhóm sẽ được thêm sau
-                  showToastMessage(text: 'Chức năng đang phát triển');
-                },
-              ),
-            ],
-          ],
-        ),
+      builder: (context) => ChatOptionsSheet(
+        chat: chat,
+        currentUserId: _currentUserId,
+        onDeletePressed: () {
+          Navigator.of(context).pop();
+          _confirmDeleteChat(context, chat.id);
+        },
       ),
     );
   }
 
-  // Hiển thị hộp thoại xác nhận xóa đoạn chat
+  /// Hiển thị hộp thoại xác nhận xóa đoạn chat
   Future<void> _confirmDeleteChat(BuildContext context, String chatId) async {
     final confirmed = await showDialog<bool>(
           context: context,
-          builder: (context) => AlertDialog(
-            title: const Text('Xác nhận xóa'),
-            content: const Text(
-                'Bạn có chắc chắn muốn xóa toàn bộ đoạn chat này không? Hành động này không thể hoàn tác.'),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(false),
-                child: const Text('Hủy'),
-              ),
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(true),
-                child: const Text('Xóa', style: TextStyle(color: Colors.red)),
-              ),
-            ],
-          ),
+          builder: (context) => const DeleteChatConfirmDialog(),
         ) ??
         false;
 
     if (confirmed) {
-      try {
-        // Xóa chat
-        await ref.read(deleteChatProvider(chatId).future);
-
-        // Hiển thị thông báo thành công
-        showToastMessage(text: 'Đã xóa đoạn chat');
-      } catch (e) {
-        // Hiển thị thông báo lỗi
-        showToastMessage(text: 'Lỗi: ${e.toString()}');
-      }
+      await _performChatDeletion(chatId);
     }
+  }
+
+  /// Thực hiện việc xóa chat
+  Future<void> _performChatDeletion(String chatId) async {
+    try {
+      await ref.read(deleteChatProvider(chatId).future);
+      showToastMessage(text: 'Đã xóa đoạn chat');
+    } catch (e) {
+      showToastMessage(text: 'Lỗi: ${e.toString()}');
+    }
+  }
+}
+
+/// Widget hiển thị danh sách các tùy chọn cho một đoạn chat
+class ChatOptionsSheet extends StatelessWidget {
+  final Chatroom chat;
+  final String currentUserId;
+  final VoidCallback onDeletePressed;
+
+  const ChatOptionsSheet({
+    Key? key,
+    required this.chat,
+    required this.currentUserId,
+    required this.onDeletePressed,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 20),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          _buildDeleteOption(context),
+          if (!chat.isGroup) _buildBlockUserOption(context),
+          if (chat.isGroup && chat.isAdmin(currentUserId))
+            _buildEditGroupOption(context),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDeleteOption(BuildContext context) {
+    return ListTile(
+      leading: const Icon(Icons.delete_forever, color: Colors.red),
+      title: const Text('Xóa đoạn chat'),
+      onTap: onDeletePressed,
+    );
+  }
+
+  Widget _buildBlockUserOption(BuildContext context) {
+    return ListTile(
+      leading: const Icon(Icons.block),
+      title: const Text('Chặn người dùng'),
+      onTap: () {
+        Navigator.of(context).pop();
+        showToastMessage(text: 'Chức năng đang phát triển');
+      },
+    );
+  }
+
+  Widget _buildEditGroupOption(BuildContext context) {
+    return ListTile(
+      leading: const Icon(Icons.edit),
+      title: const Text('Chỉnh sửa nhóm'),
+      onTap: () {
+        Navigator.of(context).pop();
+        showToastMessage(text: 'Chức năng đang phát triển');
+      },
+    );
+  }
+}
+
+/// Hộp thoại xác nhận xóa chat
+class DeleteChatConfirmDialog extends StatelessWidget {
+  const DeleteChatConfirmDialog({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text('Xác nhận xóa'),
+      content: const Text(
+          'Bạn có chắc chắn muốn xóa toàn bộ đoạn chat này không? Hành động này không thể hoàn tác.'),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(false),
+          child: const Text('Hủy'),
+        ),
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(true),
+          child: const Text('Xóa', style: TextStyle(color: Colors.red)),
+        ),
+      ],
+    );
   }
 }

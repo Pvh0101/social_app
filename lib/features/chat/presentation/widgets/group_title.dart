@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:social_app/core/constants/routes_constants.dart';
 import 'package:social_app/core/widgets/display_user_image.dart';
-import 'package:social_app/features/chat/models/chatroom.dart';
 import 'package:social_app/features/chat/providers/chat_providers.dart';
 
 class GroupTitle extends ConsumerWidget {
@@ -61,14 +60,29 @@ class GroupTitle extends ConsumerWidget {
                   Text(
                     chat.name ?? 'Nhóm chat',
                     style: Theme.of(context).textTheme.titleMedium,
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
                   ),
                   const SizedBox(height: 2),
                   Text(
                     '${chat.members.length} thành viên',
                     style: Theme.of(context).textTheme.bodyMedium,
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
                   ),
                 ],
               ),
+            ),
+            const Spacer(),
+            IconButton(
+              onPressed: () {
+                Navigator.pushNamed(
+                  context,
+                  RouteConstants.chatInfo,
+                  arguments: chatId,
+                );
+              },
+              icon: const Icon(Icons.more_vert),
             ),
           ],
         );

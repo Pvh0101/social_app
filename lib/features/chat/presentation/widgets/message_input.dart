@@ -33,6 +33,7 @@ class _MessageInputState extends ConsumerState<MessageInput> {
   File? _selectedMedia;
   MessageType _selectedMediaType = MessageType.text;
   double _uploadProgress = 0.0;
+  final _mediaService = MediaService();
 
   @override
   void initState() {
@@ -115,12 +116,40 @@ class _MessageInputState extends ConsumerState<MessageInput> {
     });
 
     try {
+      // Hiển thị thanh tiến trình xác định trong quá trình upload ở repository
+      // Vì không thể nhận callback trực tiếp từ repository, nên sử dụng timer để mô phỏng tiến trình
+      // Trong thực tế, bạn có thể cân nhắc sử dụng một provider trạng thái khác để theo dõi tiến trình upload
+      setState(() {
+        _uploadProgress = 0.1; // Bắt đầu với 10%
+      });
+
+      // Định nghĩa các mốc tiến độ để hiển thị cho người dùng
+      Future.delayed(const Duration(milliseconds: 300), () {
+        if (_isUploading)
+          setState(() {
+            _uploadProgress = 0.2;
+          });
+      });
+
+      Future.delayed(const Duration(milliseconds: 800), () {
+        if (_isUploading)
+          setState(() {
+            _uploadProgress = 0.4;
+          });
+      });
+
+      // Sử dụng uploadMediaProvider từ repository
       final mediaUrl = await ref.read(uploadMediaProvider(
         UploadMediaParams(
           chatId: widget.chatId,
           file: _selectedMedia!,
         ),
       ).future);
+
+      // Đã hoàn thành upload
+      setState(() {
+        _uploadProgress = 1.0;
+      });
 
       final messageContent = caption.isEmpty
           ? 'Đã gửi ${_selectedMediaType.displayText}'
@@ -155,43 +184,57 @@ class _MessageInputState extends ConsumerState<MessageInput> {
       children: [
         // Hiển thị xem trước media nếu có
         if (_selectedMedia != null)
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
-            child: Container(
-              constraints: const BoxConstraints(
-                maxHeight: 300, // Giới hạn chiều cao tối đa
-                minHeight: 100, // Đảm bảo chiều cao tối thiểu
-              ),
-              decoration: BoxDecoration(
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withAlpha(10),
-                    blurRadius: 4,
-                    offset: const Offset(0, 2),
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+                child: Container(
+                  width: double.infinity,
+                  constraints: BoxConstraints(
+                    maxHeight: _selectedMediaType == MessageType.video
+                        ? 400
+                        : 300, // Tăng chiều cao cho video
+                    minHeight: _selectedMediaType == MessageType.video
+                        ? 250
+                        : 150, // Tăng chiều cao tối thiểu cho video
                   ),
-                ],
+                  decoration: BoxDecoration(
+                    color: Colors.black,
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withAlpha(20),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  clipBehavior: Clip.antiAlias,
+                  child: MediaPreview(
+                    media: _selectedMedia!,
+                    type: _convertToMediaServiceType(_selectedMediaType),
+                    onRemove: () {
+                      setState(() {
+                        _selectedMedia = null;
+                        _selectedMediaType = MessageType.text;
+                        _isComposing = _controller.text.trim().isNotEmpty;
+                      });
+                    },
+                    onEdit: _selectedMediaType == MessageType.image
+                        ? (file) {
+                            setState(() {
+                              _selectedMedia = file;
+                            });
+                          }
+                        : null,
+                    isUploading: _isUploading,
+                    uploadProgress: _uploadProgress,
+                  ),
+                ),
               ),
-              child: MediaPreview(
-                media: _selectedMedia!,
-                type: _convertToMediaServiceType(_selectedMediaType),
-                onRemove: () {
-                  setState(() {
-                    _selectedMedia = null;
-                    _selectedMediaType = MessageType.text;
-                    _isComposing = _controller.text.trim().isNotEmpty;
-                  });
-                },
-                onEdit: _selectedMediaType == MessageType.image
-                    ? (file) {
-                        setState(() {
-                          _selectedMedia = file;
-                        });
-                      }
-                    : null,
-                isUploading: _isUploading,
-                uploadProgress: _uploadProgress,
-              ),
-            ),
+            ],
           ),
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
@@ -212,12 +255,19 @@ class _MessageInputState extends ConsumerState<MessageInput> {
                   ),
                 Row(
                   children: [
-                    // Nút media tích hợp
+                    // Nút media tích hợp - vô hiệu hóa nếu đã chọn media
                     SimpleMediaPicker(
-                      onMediaSelected: _handleMediaSelected,
-                      iconColor: colorScheme.primary,
+                      onMediaSelected: _selectedMedia == null
+                          ? _handleMediaSelected
+                          : (_,
+                              __) {}, // Cung cấp một hàm trống nếu đã có media
+                      iconColor: _selectedMedia == null
+                          ? colorScheme.primary
+                          : colorScheme.onSurfaceVariant.withOpacity(0.5),
                       iconSize: 24,
-                      title: 'Chọn media',
+                      title: _selectedMedia == null
+                          ? 'Chọn media'
+                          : 'Đã chọn media',
                     ),
 
                     // Ô nhập tin nhắn
@@ -278,16 +328,6 @@ class _MessageInputState extends ConsumerState<MessageInput> {
                         ? Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              // Hiển thị biểu tượng media nếu có file được chọn
-                              if (_selectedMedia != null)
-                                Padding(
-                                  padding: const EdgeInsets.only(right: 4.0),
-                                  child: Icon(
-                                    _getMediaIcon(),
-                                    color: colorScheme.primary,
-                                    size: 18,
-                                  ),
-                                ),
                               IconButton(
                                 icon: const Icon(Icons.send),
                                 onPressed: () =>
@@ -321,80 +361,8 @@ class _MessageInputState extends ConsumerState<MessageInput> {
     );
   }
 
-  // Lấy biểu tượng dựa trên loại media
-  IconData _getMediaIcon() {
-    switch (_selectedMediaType) {
-      case MessageType.image:
-        return Icons.image;
-      case MessageType.video:
-        return Icons.videocam;
-      case MessageType.audio:
-        return Icons.audiotrack;
-      default:
-        return Icons.attach_file;
-    }
-  }
-
-  Future<void> _selectMedia() async {
-    try {
-      // Hiển thị bottom sheet để chọn media
-      showModalBottomSheet(
-        context: context,
-        builder: (BuildContext context) {
-          return SafeArea(
-            child: Wrap(
-              children: <Widget>[
-                ListTile(
-                  leading: const Icon(Icons.photo_camera),
-                  title: const Text('Chụp ảnh mới'),
-                  onTap: () async {
-                    Navigator.pop(context);
-                    final mediaService = MediaService();
-                    final file = await mediaService.pickImageFromCamera();
-                    if (file != null) {
-                      _handleMediaSelected(file, MediaType.image);
-                    }
-                  },
-                ),
-                ListTile(
-                  leading: const Icon(Icons.photo_library),
-                  title: const Text('Chọn ảnh từ thư viện'),
-                  onTap: () async {
-                    Navigator.pop(context);
-                    final mediaService = MediaService();
-                    final files = await mediaService.pickImagesFromGallery(
-                      multiple: false,
-                    );
-                    if (files.isNotEmpty) {
-                      _handleMediaSelected(files.first, MediaType.image);
-                    }
-                  },
-                ),
-                ListTile(
-                  leading: const Icon(Icons.video_library),
-                  title: const Text('Chọn video từ thư viện'),
-                  onTap: () async {
-                    Navigator.pop(context);
-                    final mediaService = MediaService();
-                    final file = await mediaService.pickVideoFromGallery();
-                    if (file != null) {
-                      _handleMediaSelected(file, MediaType.video);
-                    }
-                  },
-                ),
-              ],
-            ),
-          );
-        },
-      );
-    } catch (e) {
-      showToastMessage(text: 'Lỗi khi chọn media: $e');
-    }
-  }
-
   // Hiển thị dialog ghi âm
   Future<File?> _showAudioRecordingDialog() async {
-    final mediaService = MediaService();
     File? resultFile;
 
     await showDialog(
@@ -410,7 +378,7 @@ class _MessageInputState extends ConsumerState<MessageInput> {
             // Hàm dừng ghi âm và lưu file
             Future<void> stopAndSave() async {
               isRecording = false;
-              final file = await mediaService.stopAudioRecording();
+              final file = await _mediaService.stopAudioRecording();
               resultFile = file;
               Navigator.of(context).pop();
             }
@@ -434,7 +402,7 @@ class _MessageInputState extends ConsumerState<MessageInput> {
             }
 
             // Bắt đầu ghi âm khi hiển thị dialog
-            mediaService.startAudioRecording().then((success) {
+            _mediaService.startAudioRecording().then((success) {
               if (success) {
                 startTimer();
               } else {
@@ -475,7 +443,7 @@ class _MessageInputState extends ConsumerState<MessageInput> {
                 TextButton(
                   onPressed: () {
                     isRecording = false;
-                    mediaService.cancelAudioRecording();
+                    _mediaService.cancelAudioRecording();
                     Navigator.of(context).pop();
                   },
                   child: const Text('Hủy'),

@@ -2,16 +2,67 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:io';
-import 'package:image_picker/image_picker.dart';
 
 import '../../models/chatroom.dart';
 import '../../providers/chat_providers.dart';
-import '../../providers/chat_repository_provider.dart';
 import '../../../../features/authentication/providers/get_user_info_as_stream_by_id_provider.dart';
 import '../../../../features/friends/providers/get_all_friends_provider.dart';
 import '../../../../core/widgets/display_user_image.dart';
 import '../../../../core/utils/global_method.dart';
-import '../../../../core/widgets/custom_text_field.dart';
+import '../../../../core/widgets/loading_overlay.dart';
+import '../../services/chatroom_service.dart';
+import '../widgets/chat_widgets.dart';
+import '../widgets/friend_selection_list.dart';
+
+// Widget hiển thị các tùy chọn khác
+class OtherOptions extends StatelessWidget {
+  final Chatroom chat;
+  final VoidCallback onLeaveChat;
+  final VoidCallback onDeleteChat;
+
+  const OtherOptions({
+    Key? key,
+    required this.chat,
+    required this.onLeaveChat,
+    required this.onDeleteChat,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Tùy chọn khác',
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        const SizedBox(height: 8),
+        if (chat.isGroup)
+          ListTile(
+            leading: const Icon(Icons.exit_to_app, color: Colors.red),
+            title: const Text('Rời khỏi nhóm'),
+            onTap: onLeaveChat,
+          ),
+        ListTile(
+          leading: const Icon(Icons.delete_forever, color: Colors.red),
+          title: const Text('Xóa đoạn chat'),
+          onTap: onDeleteChat,
+        ),
+        if (!chat.isGroup)
+          ListTile(
+            leading: const Icon(Icons.block),
+            title: const Text('Chặn người dùng'),
+            onTap: () {
+              showToastMessage(text: 'Chức năng đang phát triển');
+            },
+          ),
+      ],
+    );
+  }
+}
 
 class ChatInfoScreen extends ConsumerStatefulWidget {
   final String chatId;
@@ -38,294 +89,196 @@ class _ChatInfoScreenState extends ConsumerState<ChatInfoScreen> {
     super.dispose();
   }
 
-  Future<void> _pickImage() async {
-    try {
-      final pickedFile = await ImagePicker().pickImage(
-        source: ImageSource.gallery,
-        imageQuality: 70,
-      );
+  void _onImageSelected(File file) {
+    setState(() {
+      _selectedImage = file;
+    });
+  }
 
-      if (pickedFile != null) {
+  Future<void> _showAddMemberDialog() async {
+    // Hiển thị bottom sheet để chọn bạn bè
+    final selectedFriend = await showModalBottomSheet<String>(
+      context: context,
+      isScrollControlled: true, // Cho phép bottom sheet mở rộng
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (context) {
+        return DraggableScrollableSheet(
+          initialChildSize: 0.6, // Ban đầu chiếm 60% màn hình
+          minChildSize: 0.3, // Tối thiểu 30% màn hình
+          maxChildSize: 0.9, // Tối đa 90% màn hình
+          expand: false,
+          builder: (context, scrollController) {
+            return Container(
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Phần header có nút đóng
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text(
+                          'Thêm thành viên',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.close),
+                          onPressed: () => Navigator.of(context).pop(),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const Divider(),
+                  // Phần danh sách bạn bè
+                  Expanded(
+                    child: SingleChildScrollView(
+                      controller: scrollController,
+                      child: Consumer(
+                        builder: (context, ref, _) {
+                          return FriendSelectionList(
+                            chatId: widget.chatId,
+                            onFriendToggled: (friendId) =>
+                                Navigator.of(context).pop(friendId),
+                            useCheckbox: false,
+                            filterExistingMembers:
+                                true, // Chỉ hiển thị bạn bè chưa là thành viên
+                            enableSearch: true, // Bật tính năng tìm kiếm
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
+
+    if (selectedFriend == null || selectedFriend.isEmpty || !mounted) return;
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      // Sử dụng ChatroomService để thêm thành viên
+      final chatroomService = ref.read(chatroomServiceProvider);
+      await chatroomService.addMemberToChat(widget.chatId, selectedFriend);
+
+      // Làm mới provider để cập nhật UI
+      ref.invalidate(chatProvider(widget.chatId));
+    } finally {
+      if (mounted) {
         setState(() {
-          _selectedImage = File(pickedFile.path);
+          _isLoading = false;
         });
       }
-    } catch (e) {
-      showToastMessage(text: 'Lỗi khi chọn ảnh: $e');
+    }
+  }
+
+  Future<void> _removeMember(String userId) async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      // Sử dụng ChatroomService để xóa thành viên
+      final chatroomService = ref.read(chatroomServiceProvider);
+      await chatroomService.removeMemberFromChat(
+        context,
+        widget.chatId,
+        userId,
+        _currentUserId,
+      );
+
+      // Làm mới provider để cập nhật UI
+      ref.invalidate(chatProvider(widget.chatId));
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
+  }
+
+  Future<void> _leaveChat() async {
+    // Sử dụng ChatroomService để rời nhóm
+    final chatroomService = ref.read(chatroomServiceProvider);
+    if (await chatroomService.leaveChat(
+        context, widget.chatId, _currentUserId)) {
+      // Làm mới provider trước khi rời khỏi màn hình
+      ref.invalidate(chatProvider(widget.chatId));
+      Navigator.of(context).pop();
     }
   }
 
   Future<void> _updateChatInfo(Chatroom chat) async {
-    if (!chat.isAdmin(_currentUserId)) {
-      showToastMessage(text: 'Bạn không có quyền cập nhật thông tin nhóm');
-      return;
-    }
-
-    if (_nameController.text.trim().isEmpty) {
-      showToastMessage(text: 'Tên nhóm không được để trống');
-      return;
-    }
-
     setState(() {
       _isLoading = true;
     });
 
     try {
-      final chatRepository = ref.read(chatRepositoryProvider);
-      String? avatarUrl;
-
-      // Upload ảnh mới nếu có
-      if (_selectedImage != null) {
-        avatarUrl =
-            await chatRepository.uploadMedia(_selectedImage!, widget.chatId);
-      }
-
-      // Cập nhật thông tin nhóm
-      await chatRepository.updateChatInfo(
-        widget.chatId,
-        name: _nameController.text.trim(),
-        avatar: avatarUrl ?? chat.avatar,
+      // Sử dụng ChatroomService để cập nhật thông tin nhóm
+      final chatroomService = ref.read(chatroomServiceProvider);
+      final success = await chatroomService.updateChatInfo(
+        chatId: widget.chatId,
+        name: _nameController.text,
+        imageFile: _selectedImage,
+        currentAvatar: chat.avatar,
+        currentUserId: _currentUserId,
       );
 
-      if (mounted) {
+      if (success && mounted) {
+        // Làm mới provider để cập nhật UI
+        ref.invalidate(chatProvider(widget.chatId));
         setState(() {
-          _isLoading = false;
           _isEditing = false;
           _selectedImage = null;
         });
-        showToastMessage(text: 'Cập nhật thông tin nhóm thành công');
       }
-    } catch (e) {
+    } finally {
       if (mounted) {
         setState(() {
           _isLoading = false;
         });
-        showToastMessage(text: 'Lỗi khi cập nhật thông tin nhóm: $e');
       }
     }
   }
 
-  Future<void> _addMember(Chatroom chat) async {
-    if (!mounted) return;
-
-    // Hiển thị dialog để chọn bạn bè từ danh sách bạn bè
-    final friendId = await _showFriendSelectionDialog();
-
-    if (friendId == null || friendId.isEmpty) return;
-
-    setState(() {
-      _isLoading = true;
-    });
-
-    try {
-      final chatRepository = ref.read(chatRepositoryProvider);
-      await chatRepository.addMemberToChat(widget.chatId, friendId);
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
-        showToastMessage(text: 'Thêm thành viên thành công');
-      }
-    } catch (e) {
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
-        showToastMessage(text: 'Lỗi khi thêm thành viên: $e');
-      }
-    }
-  }
-
-  Future<String?> _showFriendSelectionDialog() async {
-    return showDialog<String>(
+  void _showDeleteChatConfirmation() {
+    showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Chọn bạn bè'),
-        content: SizedBox(
-          width: double.maxFinite,
-          height: 300,
-          child: Consumer(
-            builder: (context, ref, child) {
-              final friendsAsync = ref.watch(getAllFriendsProvider);
-
-              return friendsAsync.when(
-                data: (friendIds) {
-                  if (friendIds.isEmpty) {
-                    return const Center(
-                      child: Text('Bạn chưa có bạn bè nào'),
-                    );
-                  }
-
-                  return ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: friendIds.length,
-                    itemBuilder: (context, index) {
-                      final friendId = friendIds[index];
-                      final friendStream =
-                          ref.watch(getUserInfoAsStreamByIdProvider(friendId));
-
-                      return friendStream.when(
-                        data: (friend) {
-                          // Kiểm tra xem bạn bè đã là thành viên của nhóm chat hay chưa
-                          final isMember = ref
-                                  .read(chatProvider(widget.chatId))
-                                  .value
-                                  ?.members
-                                  .contains(friendId) ??
-                              false;
-
-                          return ListTile(
-                            leading: DisplayUserImage(
-                              imageUrl: friend.profileImage,
-                              radius: 20,
-                            ),
-                            title: Text(friend.fullName),
-                            subtitle: Text(friend.email),
-                            enabled: !isMember,
-                            onTap: isMember
-                                ? null
-                                : () => Navigator.of(context).pop(friendId),
-                            trailing: isMember
-                                ? const Chip(
-                                    label: Text('Đã là thành viên'),
-                                    backgroundColor: Colors.grey,
-                                  )
-                                : null,
-                          );
-                        },
-                        loading: () => const ListTile(
-                          leading: CircleAvatar(
-                            radius: 20,
-                            child: CircularProgressIndicator(strokeWidth: 2),
-                          ),
-                          title: Text('Đang tải...'),
-                        ),
-                        error: (error, stack) => ListTile(
-                          leading: const CircleAvatar(
-                            radius: 20,
-                            child: Icon(Icons.error),
-                          ),
-                          title: Text('Lỗi'),
-                          subtitle: Text(error.toString()),
-                        ),
-                      );
-                    },
-                  );
-                },
-                loading: () => const Center(
-                  child: CircularProgressIndicator(),
-                ),
-                error: (error, stack) => Center(
-                  child: Text('Lỗi: $error'),
-                ),
-              );
-            },
-          ),
+        title: const Text('Xác nhận xóa'),
+        content: const Text(
+          'Bạn có chắc chắn muốn xóa toàn bộ đoạn chat này không? Hành động này không thể hoàn tác.',
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
             child: const Text('Hủy'),
           ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              // Quay lại màn hình danh sách chat
+              Navigator.of(context).pop();
+            },
+            child: const Text('Xóa', style: TextStyle(color: Colors.red)),
+          ),
         ],
       ),
     );
-  }
-
-  Future<void> _removeMember(Chatroom chat, String userId) async {
-    // Hiển thị dialog xác nhận
-    final confirmed = await showDialog<bool>(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: const Text('Xác nhận xóa thành viên'),
-            content: const Text(
-                'Bạn có chắc chắn muốn xóa thành viên này khỏi nhóm?'),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(false),
-                child: const Text('Hủy'),
-              ),
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(true),
-                child: const Text('Xóa', style: TextStyle(color: Colors.red)),
-              ),
-            ],
-          ),
-        ) ??
-        false;
-
-    if (!confirmed) return;
-
-    setState(() {
-      _isLoading = true;
-    });
-
-    try {
-      final chatRepository = ref.read(chatRepositoryProvider);
-      await chatRepository.removeMemberFromChat(widget.chatId, userId);
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
-        showToastMessage(text: 'Xóa thành viên thành công');
-      }
-    } catch (e) {
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
-        showToastMessage(text: 'Lỗi khi xóa thành viên: $e');
-      }
-    }
-  }
-
-  Future<void> _leaveChat(Chatroom chat) async {
-    // Hiển thị dialog xác nhận
-    final confirmed = await showDialog<bool>(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: const Text('Xác nhận rời nhóm'),
-            content:
-                const Text('Bạn có chắc chắn muốn rời khỏi nhóm chat này?'),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(false),
-                child: const Text('Hủy'),
-              ),
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(true),
-                child:
-                    const Text('Rời nhóm', style: TextStyle(color: Colors.red)),
-              ),
-            ],
-          ),
-        ) ??
-        false;
-
-    if (!confirmed) return;
-
-    setState(() {
-      _isLoading = true;
-    });
-
-    try {
-      final chatRepository = ref.read(chatRepositoryProvider);
-      await chatRepository.removeMemberFromChat(widget.chatId, _currentUserId);
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
-        Navigator.of(context).pop(); // Quay lại màn hình danh sách chat
-        showToastMessage(text: 'Đã rời khỏi nhóm chat');
-      }
-    } catch (e) {
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
-        showToastMessage(text: 'Lỗi khi rời nhóm: $e');
-      }
-    }
   }
 
   @override
@@ -354,309 +307,129 @@ class _ChatInfoScreenState extends ConsumerState<ChatInfoScreen> {
             ),
         ],
       ),
-      body: chatAsync.when(
-        data: (chat) {
-          if (chat == null) {
-            return const Center(
-              child: Text('Không tìm thấy thông tin chat'),
-            );
-          }
+      body: LoadingOverlay(
+        isLoading: _isLoading,
+        child: chatAsync.when(
+          data: (chat) {
+            if (chat == null) {
+              return const Center(
+                child: Text('Không tìm thấy thông tin chat'),
+              );
+            }
 
-          return Stack(
-            children: [
-              ListView(
-                padding: const EdgeInsets.all(16),
-                children: [
-                  // Phần thông tin nhóm
-                  _buildChatInfo(chat),
-                  const SizedBox(height: 24),
+            return ListView(
+              padding: const EdgeInsets.all(16),
+              children: [
+                // Sử dụng GroupImagePicker thay vì ChatroomInfoHeader
+                Center(
+                  child: GroupImagePicker(
+                    existingImageUrl: chat.avatar,
+                    selectedImage: _selectedImage,
+                    isEditable: _isEditing,
+                    onImageSelected: _onImageSelected,
+                    isGroup: chat.isGroup,
+                  ),
+                ),
+                const SizedBox(height: 16),
 
-                  // Phần quản lý thành viên (chỉ hiển thị nếu là nhóm)
-                  if (chat.isGroup) ...[
-                    const Divider(),
-                    const SizedBox(height: 8),
-                    _buildMemberManagement(chat),
-                    const SizedBox(height: 24),
-                  ],
+                // Sử dụng GroupNameField thay vì triển khai trực tiếp
+                Center(
+                  child: GroupNameField(
+                    controller: _nameController,
+                    isEditing: _isEditing,
+                    initialName: chat.getDisplayName(_currentUserId),
+                  ),
+                ),
 
-                  // Phần các tùy chọn khác
+                // Thông tin thêm về nhóm
+                Center(
+                  child: Text(
+                    chat.isGroup
+                        ? '${chat.members.length} thành viên'
+                        : 'Chat 1-1',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.grey[600],
+                    ),
+                  ),
+                ),
+                Center(
+                  child: Text(
+                    'Tạo ngày ${chat.createdAt.day}/${chat.createdAt.month}/${chat.createdAt.year}',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.grey[600],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 24),
+
+                // Phần quản lý thành viên (chỉ hiển thị nếu là nhóm)
+                if (chat.isGroup) ...[
                   const Divider(),
                   const SizedBox(height: 8),
-                  _buildOtherOptions(chat),
-                ],
-              ),
-              if (_isLoading)
-                Container(
-                  color: Colors.black.withOpacity(0.3),
-                  child: const Center(
-                    child: CircularProgressIndicator(),
-                  ),
-                ),
-            ],
-          );
-        },
-        loading: () => const Center(
-          child: CircularProgressIndicator(),
-        ),
-        error: (error, stack) => Center(
-          child: Text('Lỗi: $error'),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildChatInfo(Chatroom chat) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        // Avatar nhóm
-        GestureDetector(
-          onTap: _isEditing ? _pickImage : null,
-          child: Stack(
-            alignment: Alignment.bottomRight,
-            children: [
-              CircleAvatar(
-                radius: 50,
-                backgroundColor: Colors.grey[300],
-                backgroundImage: _selectedImage != null
-                    ? FileImage(_selectedImage!) as ImageProvider
-                    : chat.avatar != null
-                        ? NetworkImage(chat.avatar!) as ImageProvider
-                        : null,
-                child: chat.avatar == null && _selectedImage == null
-                    ? Icon(
-                        chat.isGroup ? Icons.group : Icons.person,
-                        size: 50,
-                        color: Colors.grey[600],
-                      )
-                    : null,
-              ),
-              if (_isEditing)
-                Container(
-                  padding: const EdgeInsets.all(4),
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).primaryColor,
-                    shape: BoxShape.circle,
-                  ),
-                  child: const Icon(
-                    Icons.camera_alt,
-                    size: 20,
-                    color: Colors.white,
-                  ),
-                ),
-            ],
-          ),
-        ),
-        const SizedBox(height: 16),
-
-        // Tên nhóm
-        if (_isEditing)
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 32),
-            child: CustomTextField(
-              controller: _nameController,
-              hintText: 'Tên nhóm',
-              keyboardType: TextInputType.text,
-            ),
-          )
-        else
-          Text(
-            chat.getDisplayName(_currentUserId),
-            style: const TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-            ),
-            textAlign: TextAlign.center,
-          ),
-        const SizedBox(height: 8),
-
-        // Thông tin thêm
-        Text(
-          chat.isGroup ? '${chat.members.length} thành viên' : 'Chat 1-1',
-          style: TextStyle(
-            fontSize: 16,
-            color: Colors.grey[600],
-          ),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          'Tạo ngày ${chat.createdAt.day}/${chat.createdAt.month}/${chat.createdAt.year}',
-          style: TextStyle(
-            fontSize: 14,
-            color: Colors.grey[600],
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildMemberManagement(Chatroom chat) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            const Text(
-              'Thành viên nhóm',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            if (chat.isAdmin(_currentUserId))
-              TextButton.icon(
-                onPressed: () => _addMember(chat),
-                icon: const Icon(Icons.add),
-                label: const Text('Thêm'),
-              ),
-          ],
-        ),
-        const SizedBox(height: 8),
-        ...chat.members.map((userId) => _buildMemberItem(chat, userId)),
-      ],
-    );
-  }
-
-  Widget _buildMemberItem(Chatroom chat, String userId) {
-    final isAdmin = chat.isAdmin(userId);
-    final isSelf = userId == _currentUserId;
-
-    return Consumer(
-      builder: (context, ref, child) {
-        final userAsync = ref.watch(getUserInfoAsStreamByIdProvider(userId));
-
-        return userAsync.when(
-          data: (user) {
-            return ListTile(
-              leading: DisplayUserImage(
-                imageUrl: user.profileImage,
-                radius: 20,
-              ),
-              title: Row(
-                children: [
-                  Text(user.fullName),
-                  if (isSelf)
-                    const Padding(
-                      padding: EdgeInsets.only(left: 8),
-                      child: Text(
-                        '(Bạn)',
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        'Thành viên nhóm',
                         style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.grey,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
-                    ),
-                  if (isAdmin)
-                    Container(
-                      margin: const EdgeInsets.only(left: 8),
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 6,
-                        vertical: 2,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Colors.blue[100],
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: const Text(
-                        'Admin',
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.blue,
+                      if (chat.isAdmin(_currentUserId))
+                        TextButton.icon(
+                          onPressed: _showAddMemberDialog,
+                          icon: const Icon(Icons.add),
+                          label: const Text('Thêm'),
                         ),
-                      ),
+                      if (!chat.isAdmin(_currentUserId))
+                        Padding(
+                          padding: const EdgeInsets.only(right: 8.0),
+                          child: Text(
+                            '${chat.members.length} thành viên',
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.grey[600],
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+
+                  // Sử dụng MembersList thay vì triển khai trực tiếp - ẩn tiêu đề của MembersList
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8.0),
+                    child: MembersList(
+                      chat: chat,
+                      currentUserId: _currentUserId,
+                      onRemoveMember: _removeMember,
+                      showHeader:
+                          false, // Không hiển thị tiêu đề trong MembersList
                     ),
+                  ),
+                  const SizedBox(height: 24),
                 ],
-              ),
-              trailing: chat.isAdmin(_currentUserId) && !isSelf
-                  ? IconButton(
-                      icon: const Icon(Icons.remove_circle_outline,
-                          color: Colors.red),
-                      onPressed: () => _removeMember(chat, userId),
-                    )
-                  : null,
+
+                // Phần các tùy chọn khác
+                const Divider(),
+                const SizedBox(height: 8),
+                OtherOptions(
+                  chat: chat,
+                  onLeaveChat: _leaveChat,
+                  onDeleteChat: _showDeleteChatConfirmation,
+                ),
+              ],
             );
           },
-          loading: () => const ListTile(
-            leading: CircleAvatar(
-              radius: 20,
-              child: CircularProgressIndicator(strokeWidth: 2),
-            ),
-            title: Text('Đang tải...'),
+          loading: () => const Center(
+            child: CircularProgressIndicator(),
           ),
-          error: (error, stack) => ListTile(
-            leading: CircleAvatar(
-              radius: 20,
-              child: Icon(Icons.error),
-            ),
-            title: Text('Lỗi: $error'),
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _buildOtherOptions(Chatroom chat) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'Tùy chọn khác',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
+          error: (error, stack) => Center(
+            child: Text('Lỗi: $error'),
           ),
         ),
-        const SizedBox(height: 8),
-        if (chat.isGroup)
-          ListTile(
-            leading: const Icon(Icons.exit_to_app, color: Colors.red),
-            title: const Text('Rời khỏi nhóm'),
-            onTap: () => _leaveChat(chat),
-          ),
-        ListTile(
-          leading: const Icon(Icons.delete_forever, color: Colors.red),
-          title: const Text('Xóa đoạn chat'),
-          onTap: () {
-            Navigator.of(context).pop();
-            _showDeleteChatConfirmation(context);
-          },
-        ),
-        if (!chat.isGroup)
-          ListTile(
-            leading: const Icon(Icons.block),
-            title: const Text('Chặn người dùng'),
-            onTap: () {
-              showToastMessage(text: 'Chức năng đang phát triển');
-            },
-          ),
-      ],
-    );
-  }
-
-  void _showDeleteChatConfirmation(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Xác nhận xóa'),
-        content: const Text(
-          'Bạn có chắc chắn muốn xóa toàn bộ đoạn chat này không? Hành động này không thể hoàn tác.',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Hủy'),
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-              // Xóa chat (chức năng này đã có sẵn trong ChatScreen)
-              // Quay lại màn hình danh sách chat
-              Navigator.of(context).pop();
-            },
-            child: const Text('Xóa', style: TextStyle(color: Colors.red)),
-          ),
-        ],
       ),
     );
   }

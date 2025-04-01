@@ -99,7 +99,7 @@ class PostInfoTile extends ConsumerWidget {
               ),
               ListTile(
                 leading: const Icon(Icons.delete, color: Colors.red),
-                title: const Text('common.delete',
+                title: const Text('edit_post.title',
                         style: TextStyle(color: Colors.red))
                     .tr(),
                 onTap: () {
@@ -110,7 +110,7 @@ class PostInfoTile extends ConsumerWidget {
             ],
             ListTile(
               leading: const Icon(Icons.report),
-              title: const Text('common.report').tr(),
+              title: const Text('edit_post.title').tr(),
               onTap: () => Navigator.pop(context),
             ),
           ],

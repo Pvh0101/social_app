@@ -471,10 +471,12 @@
     "success": "Đăng bài viết thành công"
   },
   "edit_post": {
+    "delete":"Xóa bài viết",
     "title": "Chỉnh sửa bài viết",
     "save": "Lưu thay đổi",
     "success": "Cập nhật bài viết thành công",
-    "error": "Không thể cập nhật bài viết"
+    "error": "Không thể cập nhật bài viết",
+    "report":"Báo cáo vi phạm"
   },
   "notification": {
     "title": "Thông báo",
@@ -515,14 +517,11 @@
     "location_rationale": "Ứng dụng cần quyền truy cập vị trí để hiển thị nội dung phù hợp với khu vực của bạn."
   },
   "chat": {
-    "message": {
-      "sent_media": "Đã gửi {0}",
-      "type": {
-        "text": "văn bản",
-        "image": "hình ảnh",
-        "video": "video",
-        "audio": "âm thanh"
+      "message_type": {
+        "text": "đã gửi văn bản",
+        "image": "đã gửi hình ảnh",
+        "video": "đã gửi video",
+        "audio": "đã gửi âm thanh"
       }
-    }
   }
 }

@@ -10,6 +10,7 @@ import '../models/chatroom.dart';
 import '../../../features/notification/repository/notification_repository.dart';
 import '../../../features/authentication/models/user_model.dart';
 import '../../../core/services/media/media_service.dart';
+import '../../../core/services/media/media_types.dart';
 
 class ChatRepository {
   final FirebaseFirestore _firestore;
@@ -295,9 +296,10 @@ class ChatRepository {
 
     final updateData = <String, dynamic>{
       'lastMessageId': message.id,
-      'lastMessage': message.getDisplayContent(),
+      'lastMessage': message.content,
       'lastMessageType': message.type.name,
       'lastMessageSenderId': message.senderId,
+      'lastMessageSenderName': message.senderName,
       'updatedAt': FieldValue.serverTimestamp(),
     };
 
@@ -334,14 +336,15 @@ class ChatRepository {
       logInfo(LogService.CHAT,
           'Thông tin người gửi cho thông báo: ${sender.toMap()}');
 
-      logInfo(LogService.CHAT, 'Đang tạo thông báo tin nhắn');
-      await _notificationRepository.createMessageNotification(
+      logInfo(LogService.CHAT, 'Đang gửi push notification cho tin nhắn');
+      // Sử dụng phương thức mới - chỉ gửi push notification không lưu vào collection
+      await _notificationRepository.sendMessagePushNotificationOnly(
         receiverId: receiverId,
         sender: sender,
         chatId: chatId,
         messageContent: content,
       );
-      logInfo(LogService.CHAT, 'Đã gửi thông báo thành công');
+      logInfo(LogService.CHAT, 'Đã gửi push notification thành công');
     } catch (e) {
       logError(LogService.CHAT, 'Lỗi khi gửi thông báo: $e');
       // Tiếp tục xử lý tin nhắn ngay cả khi gửi thông báo thất bại
@@ -662,9 +665,10 @@ class ChatRepository {
   Future<void> updateChatInfo(String chatId,
       {String? name, String? avatar}) async {
     try {
+      // Kiểm tra quyền
       final chatDoc = await _getChatRef(chatId).get();
       if (!chatDoc.exists) {
-        throw Exception('Không tìm thấy nhóm chat');
+        throw Exception('Không tìm thấy chat');
       }
 
       final chatroom = Chatroom.fromMap(chatDoc.data()!);
@@ -679,30 +683,6 @@ class ChatRepository {
       await _getChatRef(chatId).update(updates);
     } catch (e) {
       throw Exception('Không thể cập nhật thông tin nhóm: $e');
-    }
-  }
-
-  // Tải lên file đa phương tiện
-  Future<String> uploadMedia(File file, String chatId) async {
-    try {
-      final fileExtension = file.path.split('.').last.toLowerCase();
-      final fileName = '${_uuid.v4()}.$fileExtension';
-      final path = 'chats/$chatId/media/$fileName';
-
-      // Sử dụng uploadSingleFile thay vì uploadMedia
-      final uploadResult = await _mediaService.uploadSingleFile(
-        file: file,
-        path: path,
-      );
-
-      if (!uploadResult.isSuccess || uploadResult.downloadUrl == null) {
-        throw Exception(
-            'Tải lên thất bại: ${uploadResult.error ?? "Lỗi không xác định"}');
-      }
-
-      return uploadResult.downloadUrl!;
-    } catch (e) {
-      throw Exception('Không thể tải lên file: $e');
     }
   }
 
@@ -934,5 +914,142 @@ class ChatRepository {
     logInfo(LogService.CHAT, '===== END CHECK CHAT STATUS =====');
 
     return result;
+  }
+
+  /// Tải lên file đa phương tiện
+  ///
+  /// Phương thức này thực hiện:
+  /// 1. Xác định loại file (ảnh, video, v.v.)
+  /// 2. Nén file nếu cần thiết
+  /// 3. Tải lên file và trả về URL tải xuống
+  Future<String> uploadMedia(File file, String chatId) async {
+    try {
+      final fileExtension = file.path.split('.').last.toLowerCase();
+      final fileName = '${_uuid.v4()}.$fileExtension';
+      final path = 'chats/$chatId/media/$fileName';
+
+      File processedFile = file;
+
+      // Xác định loại file và xử lý phù hợp
+      final mediaType = _mediaService.detectMediaType(file);
+      if (mediaType == MediaType.image) {
+        // Nén hình ảnh trước khi tải lên
+        final compressedImage = await _mediaService.compressImage(file);
+        if (compressedImage != null) {
+          processedFile = compressedImage;
+          logInfo(LogService.CHAT,
+              'Đã nén hình ảnh từ ${file.lengthSync()} xuống ${processedFile.lengthSync()} bytes');
+        }
+      } else if (mediaType == MediaType.video) {
+        // Nén video trước khi tải lên
+        final compressedVideo = await _mediaService.compressVideo(file);
+        if (compressedVideo != null) {
+          processedFile = compressedVideo;
+          logInfo(LogService.CHAT,
+              'Đã nén video từ ${file.lengthSync()} xuống ${processedFile.lengthSync()} bytes');
+        }
+      }
+
+      // Tải lên file đã được xử lý
+      final uploadResult = await _mediaService.uploadSingleFile(
+        file: processedFile,
+        path: path,
+        onProgress: (progress) {
+          // Có thể thêm code để callback tiến trình tải lên ở đây nếu cần
+          logInfo(LogService.CHAT,
+              'Tiến trình tải lên media: ${(progress * 100).toStringAsFixed(0)}%');
+        },
+      );
+
+      if (!uploadResult.isSuccess) {
+        throw Exception(
+            'Tải lên thất bại: ${uploadResult.error ?? "Lỗi không xác định"}');
+      }
+
+      return uploadResult.downloadUrl ?? '';
+    } catch (e) {
+      logError(LogService.CHAT, 'Lỗi khi tải lên media: $e');
+      throw Exception('Không thể tải lên media: $e');
+    }
+  }
+
+  /// Tải lên nhiều file đa phương tiện cùng lúc
+  ///
+  /// Phương thức này thực hiện:
+  /// 1. Nén từng file nếu cần thiết
+  /// 2. Tải lên tất cả các file đã xử lý
+  /// 3. Trả về danh sách URL tải xuống tương ứng với từng file
+  Future<List<String>> uploadMultipleMedia(
+      List<File> files, String chatId) async {
+    try {
+      if (files.isEmpty) {
+        logWarning(
+            LogService.CHAT, 'Danh sách files trống, không có gì để tải lên');
+        return [];
+      }
+
+      logInfo(LogService.CHAT,
+          'Bắt đầu tải lên ${files.length} files cho chatId $chatId');
+
+      // Xử lý và nén mỗi file
+      final List<File> processedFiles = [];
+      for (final file in files) {
+        File processedFile = file;
+
+        // Xác định loại file và xử lý phù hợp
+        final mediaType = _mediaService.detectMediaType(file);
+        if (mediaType == MediaType.image) {
+          // Nén hình ảnh trước khi tải lên
+          final compressedImage = await _mediaService.compressImage(file);
+          if (compressedImage != null) {
+            processedFile = compressedImage;
+            logInfo(LogService.CHAT,
+                'Đã nén hình ảnh từ ${file.lengthSync()} xuống ${processedFile.lengthSync()} bytes');
+          }
+        } else if (mediaType == MediaType.video) {
+          // Nén video trước khi tải lên
+          final compressedVideo = await _mediaService.compressVideo(file);
+          if (compressedVideo != null) {
+            processedFile = compressedVideo;
+            logInfo(LogService.CHAT,
+                'Đã nén video từ ${file.lengthSync()} xuống ${processedFile.lengthSync()} bytes');
+          }
+        }
+
+        processedFiles.add(processedFile);
+      }
+
+      // Tạo đường dẫn lưu trữ cơ sở
+      final basePath = 'chats/$chatId/media';
+
+      // Tải lên tất cả files đã xử lý
+      final uploadResults = await _mediaService.uploadMultipleFiles(
+        files: processedFiles,
+        basePath: basePath,
+        onProgress: (progress) {
+          // Có thể thêm code để callback tiến trình tải lên ở đây nếu cần
+          logInfo(LogService.CHAT,
+              'Tiến trình tải lên nhiều media: ${(progress * 100).toStringAsFixed(0)}%');
+        },
+      );
+
+      // Lọc kết quả thành công và trả về các URL
+      final List<String> downloadUrls = [];
+      for (final result in uploadResults) {
+        if (result.isSuccess && result.downloadUrl != null) {
+          downloadUrls.add(result.downloadUrl!);
+        } else {
+          logWarning(LogService.CHAT,
+              'Một file tải lên thất bại: ${result.error ?? "Lỗi không xác định"}');
+        }
+      }
+
+      logInfo(LogService.CHAT,
+          'Hoàn thành tải lên media: ${downloadUrls.length}/${files.length} thành công');
+      return downloadUrls;
+    } catch (e) {
+      logError(LogService.CHAT, 'Lỗi khi tải lên nhiều media: $e');
+      throw Exception('Không thể tải lên nhiều media: $e');
+    }
   }
 }

@@ -1,12 +1,10 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'dart:io';
 import '../models/chatroom.dart';
 import '../models/message.dart';
-import '../repositories/chat_repository.dart';
 import 'chat_repository_provider.dart';
 import '../../../core/enums/message_type.dart';
 import '../../../features/authentication/models/user_model.dart';
-import 'dart:io';
 
 // Provider cho danh sách chat của người dùng
 final userChatsProvider = StreamProvider<List<Chatroom>>((ref) {
@@ -65,10 +63,20 @@ final markMessageAsSeenProvider =
 });
 
 // Provider cho việc tải lên file đa phương tiện
+// Sử dụng để thực hiện việc nén và tải lên ở tầng repository
 final uploadMediaProvider =
     FutureProvider.family<String, UploadMediaParams>((ref, params) async {
   final chatRepository = ref.watch(chatRepositoryProvider);
   return chatRepository.uploadMedia(params.file, params.chatId);
+});
+
+// Provider cho việc tải lên nhiều file đa phương tiện cùng lúc
+// Sử dụng để thực hiện việc nén và tải lên ở tầng repository
+final uploadMultipleMediaProvider =
+    FutureProvider.family<List<String>, UploadMultipleMediaParams>(
+        (ref, params) async {
+  final chatRepository = ref.watch(chatRepositoryProvider);
+  return chatRepository.uploadMultipleMedia(params.files, params.chatId);
 });
 
 // Provider cho việc tạo nhóm chat
@@ -195,11 +203,21 @@ class MarkMessageAsSeenParams {
 
 class UploadMediaParams {
   final String chatId;
-  final dynamic file;
+  final File file;
 
   UploadMediaParams({
     required this.chatId,
     required this.file,
+  });
+}
+
+class UploadMultipleMediaParams {
+  final String chatId;
+  final List<File> files;
+
+  UploadMultipleMediaParams({
+    required this.chatId,
+    required this.files,
   });
 }
 

@@ -2,13 +2,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../../core/services/cache/cache_manager.dart';
 import '../../../../core/utils/log_utils.dart';
-
-// Provider lưu trữ trạng thái của các URL đã được tải
-final _preloadedImagesProvider = StateProvider<Set<String>>((ref) => {});
 
 class PostImageView extends ConsumerStatefulWidget {
   final List<String> imageUrls;
@@ -28,8 +23,6 @@ class _PostImageViewState extends ConsumerState<PostImageView>
     with AutomaticKeepAliveClientMixin {
   late PageController _pageController;
   int _currentPage = 0;
-  String? _currentImageUrl;
-  bool _hasInitialized = false;
 
   @override
   bool get wantKeepAlive => true;
@@ -40,84 +33,11 @@ class _PostImageViewState extends ConsumerState<PostImageView>
     _pageController = PageController(viewportFraction: 1.0);
     ref.logDebug(LogService.MEDIA,
         'PostImageView khởi tạo với ${widget.imageUrls.length} ảnh');
-
-    if (widget.imageUrls.isNotEmpty) {
-      _currentImageUrl = widget.imageUrls[0];
-    }
-
-    // Tải ảnh trong frame tiếp theo để tránh lỗi khi widget được tạo/hủy nhanh
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) {
-        _preloadImages();
-        _hasInitialized = true;
-      }
-    });
-  }
-
-  @override
-  void didUpdateWidget(PostImageView oldWidget) {
-    super.didUpdateWidget(oldWidget);
-
-    // Kiểm tra xem URL ảnh có thay đổi không
-    final hasNewImages = widget.imageUrls.isNotEmpty &&
-        (oldWidget.imageUrls.isEmpty ||
-            widget.imageUrls[0] != oldWidget.imageUrls[0]);
-
-    if (hasNewImages && mounted) {
-      ref.logDebug(LogService.MEDIA,
-          'PostImageView: URL ảnh đã thay đổi, tải lại dữ liệu');
-      _currentImageUrl = widget.imageUrls[0];
-      _preloadImages();
-    }
-  }
-
-  Future<void> _preloadImages() async {
-    if (widget.imageUrls.isEmpty) return;
-
-    // Lấy danh sách ảnh đã được tải trước
-    final preloadedImages = ref.read(_preloadedImagesProvider);
-
-    // Nếu ảnh đã được tải trước rồi, không cần tải lại
-    if (preloadedImages.contains(widget.imageUrls[0])) {
-      ref.logDebug(LogService.MEDIA,
-          'Ảnh ${widget.imageUrls[0]} đã được tải trước đó, bỏ qua');
-      return;
-    }
-
-    final cacheManager = ref.read(appCacheManagerProvider);
-    try {
-      ref.logDebug(
-          LogService.MEDIA, 'Bắt đầu tải trước ảnh: ${widget.imageUrls[0]}');
-      // Ưu tiên tải ảnh hiện tại trước
-      await cacheManager.getFileFromCache(
-          widget.imageUrls[0], MediaCacheType.image);
-
-      // Đánh dấu ảnh đã được tải
-      ref
-          .read(_preloadedImagesProvider.notifier)
-          .update((state) => {...state, widget.imageUrls[0]});
-
-      // Sau đó tải trước các ảnh khác
-      if (widget.imageUrls.length > 1) {
-        ref.logDebug(LogService.MEDIA,
-            'Tải trước ${widget.imageUrls.length - 1} ảnh còn lại');
-        cacheManager.preCacheMedia(
-            widget.imageUrls.sublist(1), MediaCacheType.image);
-
-        // Đánh dấu các ảnh khác
-        ref
-            .read(_preloadedImagesProvider.notifier)
-            .update((state) => {...state, ...widget.imageUrls.sublist(1)});
-      }
-    } catch (e) {
-      ref.logError(LogService.MEDIA, 'Lỗi khi tải trước ảnh: $e', e);
-    }
   }
 
   @override
   void dispose() {
-    ref.logDebug(LogService.MEDIA,
-        'PostImageView dispose: ${_currentImageUrl ?? "không có URL"}');
+    ref.logDebug(LogService.MEDIA, 'PostImageView dispose');
     _pageController.dispose();
     super.dispose();
   }
@@ -159,8 +79,6 @@ class _PostImageViewState extends ConsumerState<PostImageView>
               setState(() => _currentPage = index);
               ref.logDebug(LogService.MEDIA,
                   'Chuyển sang ảnh ${index + 1}/${widget.imageUrls.length}');
-              // Tải trước ảnh kế tiếp khi chuyển trang
-              _preloadNextImage(index);
             },
             itemCount: widget.imageUrls.length,
             itemBuilder: (context, index) {
@@ -171,7 +89,6 @@ class _PostImageViewState extends ConsumerState<PostImageView>
                   child: CachedNetworkImage(
                     imageUrl: widget.imageUrls[index],
                     fit: BoxFit.cover,
-                    cacheManager: DefaultCacheManager(),
                     placeholder: (context, url) => const Center(
                       child: SizedBox.shrink(),
                     ),
@@ -213,46 +130,6 @@ class _PostImageViewState extends ConsumerState<PostImageView>
       ),
     );
   }
-
-  void _preloadNextImage(int currentIndex) {
-    if (widget.imageUrls.length <= 1) return;
-
-    final cacheManager = ref.read(appCacheManagerProvider);
-    final preloadedImages = ref.read(_preloadedImagesProvider);
-
-    // Tải ảnh kế tiếp
-    final nextIndex = (currentIndex + 1) % widget.imageUrls.length;
-    final nextImageUrl = widget.imageUrls[nextIndex];
-
-    if (!preloadedImages.contains(nextImageUrl)) {
-      ref.logDebug(LogService.MEDIA,
-          'Tải trước ảnh tiếp theo: ${nextIndex + 1}/${widget.imageUrls.length}');
-      cacheManager.getFileFromCache(nextImageUrl, MediaCacheType.image);
-
-      // Đánh dấu ảnh đã được tải
-      ref
-          .read(_preloadedImagesProvider.notifier)
-          .update((state) => {...state, nextImageUrl});
-    }
-
-    // Tải ảnh trước đó nếu có
-    if (widget.imageUrls.length > 2) {
-      final prevIndex = (currentIndex - 1 + widget.imageUrls.length) %
-          widget.imageUrls.length;
-      final prevImageUrl = widget.imageUrls[prevIndex];
-
-      if (!preloadedImages.contains(prevImageUrl)) {
-        ref.logDebug(LogService.MEDIA,
-            'Tải trước ảnh trước đó: ${prevIndex + 1}/${widget.imageUrls.length}');
-        cacheManager.getFileFromCache(prevImageUrl, MediaCacheType.image);
-
-        // Đánh dấu ảnh đã được tải
-        ref
-            .read(_preloadedImagesProvider.notifier)
-            .update((state) => {...state, prevImageUrl});
-      }
-    }
-  }
 }
 
 class FullscreenImageView extends ConsumerStatefulWidget {
@@ -277,7 +154,7 @@ class _FullscreenImageViewState extends ConsumerState<FullscreenImageView> {
   int _currentPage = 0;
   double _dragOffset = 0;
   static const double _dragThreshold = 100.0;
-  bool _isDragging = false;
+  bool isDragging = false;
 
   @override
   void initState() {
@@ -289,41 +166,6 @@ class _FullscreenImageViewState extends ConsumerState<FullscreenImageView> {
     _currentPage = widget.initialIndex;
     ref.logInfo(LogService.MEDIA,
         'FullscreenImageView khởi tạo với ảnh ${widget.initialIndex + 1}/${widget.imageUrls.length}');
-    _preloadImages();
-  }
-
-  Future<void> _preloadImages() async {
-    if (widget.imageUrls.isEmpty) return;
-
-    final cacheManager = ref.read(appCacheManagerProvider);
-
-    try {
-      // Ưu tiên tải ảnh hiện tại
-      ref.logDebug(LogService.MEDIA,
-          'Tải ảnh hiện tại cho fullscreen: ${_currentPage + 1}/${widget.imageUrls.length}');
-      await cacheManager.getFileFromCache(
-          widget.imageUrls[_currentPage], MediaCacheType.image);
-
-      // Sau đó tải các ảnh xung quanh (trước và sau) nếu có
-      final imagesToPreload = <String>[];
-
-      if (_currentPage > 0) {
-        imagesToPreload.add(widget.imageUrls[_currentPage - 1]);
-      }
-
-      if (_currentPage < widget.imageUrls.length - 1) {
-        imagesToPreload.add(widget.imageUrls[_currentPage + 1]);
-      }
-
-      if (imagesToPreload.isNotEmpty) {
-        ref.logDebug(LogService.MEDIA,
-            'Tải trước ${imagesToPreload.length} ảnh liền kề');
-        cacheManager.preCacheMedia(imagesToPreload, MediaCacheType.image);
-      }
-    } catch (e) {
-      ref.logError(
-          LogService.MEDIA, 'Lỗi khi tải trước ảnh full screen: $e', e);
-    }
   }
 
   @override
@@ -389,7 +231,7 @@ class _FullscreenImageViewState extends ConsumerState<FullscreenImageView> {
         ),
         body: GestureDetector(
           onVerticalDragStart: (details) {
-            _isDragging = true;
+            isDragging = true;
             _dragOffset = 0;
             ref.logDebug(
                 LogService.MEDIA, 'Bắt đầu kéo thả để đóng fullscreen');
@@ -401,14 +243,11 @@ class _FullscreenImageViewState extends ConsumerState<FullscreenImageView> {
               });
 
               if (_dragOffset > _dragThreshold / 2 &&
-                  _dragOffset < _dragThreshold) {
-                ref.logDebug(LogService.MEDIA,
-                    'Kéo thả tiến triển: $_dragOffset/${_dragThreshold}');
-              }
+                  _dragOffset < _dragThreshold) {}
             }
           },
           onVerticalDragEnd: (details) {
-            _isDragging = false;
+            isDragging = false;
             if (_dragOffset > _dragThreshold) {
               ref.logInfo(LogService.MEDIA,
                   'Đóng fullscreen bằng kéo thả (offset: $_dragOffset)');
@@ -427,7 +266,6 @@ class _FullscreenImageViewState extends ConsumerState<FullscreenImageView> {
                 return PhotoViewGalleryPageOptions(
                   imageProvider: CachedNetworkImageProvider(
                     widget.imageUrls[index],
-                    cacheManager: DefaultCacheManager(),
                   ),
                   initialScale: PhotoViewComputedScale.contained,
                   minScale: PhotoViewComputedScale.contained * 0.8,
@@ -455,7 +293,6 @@ class _FullscreenImageViewState extends ConsumerState<FullscreenImageView> {
                 setState(() => _currentPage = index);
                 ref.logInfo(LogService.MEDIA,
                     'Chuyển sang ảnh toàn màn hình ${index + 1}/${widget.imageUrls.length}');
-                _preloadAdjacentImages(index);
               },
               scrollDirection: Axis.horizontal,
             ),
@@ -463,33 +300,5 @@ class _FullscreenImageViewState extends ConsumerState<FullscreenImageView> {
         ),
       ),
     );
-  }
-
-  void _preloadAdjacentImages(int currentIndex) {
-    if (widget.imageUrls.length <= 1) return;
-
-    final cacheManager = ref.read(appCacheManagerProvider);
-
-    // Tạo danh sách các ảnh cần tải trước (ảnh trước và sau vị trí hiện tại)
-    final List<String> imagesToPreload = [];
-
-    // Ảnh tiếp theo
-    if (currentIndex < widget.imageUrls.length - 1) {
-      imagesToPreload.add(widget.imageUrls[currentIndex + 1]);
-      ref.logDebug(LogService.MEDIA,
-          'Tải trước ảnh kế tiếp: ${currentIndex + 2}/${widget.imageUrls.length}');
-    }
-
-    // Ảnh trước đó
-    if (currentIndex > 0) {
-      imagesToPreload.add(widget.imageUrls[currentIndex - 1]);
-      ref.logDebug(LogService.MEDIA,
-          'Tải trước ảnh trước đó: ${currentIndex}/${widget.imageUrls.length}');
-    }
-
-    // Tải trước các ảnh liền kề
-    if (imagesToPreload.isNotEmpty) {
-      cacheManager.preCacheMedia(imagesToPreload, MediaCacheType.image);
-    }
   }
 }

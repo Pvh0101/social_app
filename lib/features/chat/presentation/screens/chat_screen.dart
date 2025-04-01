@@ -238,13 +238,20 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
           data: (chat) {
             // Kiểm tra xem có phải nhóm chat không
             if (chat != null && chat.isGroup) {
-              return GroupTitle(chatId: _chatId);
+              return SizedBox(
+                width: MediaQuery.of(context).size.width,
+                child: GroupTitle(chatId: _chatId),
+              );
             } else {
-              return ChatTitle(userId: _receiverId);
+              return SizedBox(
+                width: MediaQuery.of(context).size.width * 0.7,
+                child: ChatTitle(userId: _receiverId),
+              );
             }
           },
-          loading: () => const SizedBox.shrink(),
-          error: (error, _) => Text('Lỗi: $error'),
+          loading: () => const Text('Đang tải...'),
+          error: (error, _) =>
+              Text('Lỗi', overflow: TextOverflow.ellipsis, maxLines: 1),
         ),
       ),
       body: Column(

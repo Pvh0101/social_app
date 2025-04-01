@@ -43,14 +43,19 @@ class _MediaPreviewState extends State<MediaPreview> {
     setState(() => _isVideoLoading = true);
 
     try {
-      const betterPlayerConfiguration = BetterPlayerConfiguration(
-        aspectRatio: 16 / 9,
+      final betterPlayerConfiguration = BetterPlayerConfiguration(
+        aspectRatio: 9 / 16,
         fit: BoxFit.contain,
         autoPlay: false,
-        controlsConfiguration: BetterPlayerControlsConfiguration(
+        controlsConfiguration: const BetterPlayerControlsConfiguration(
           enableFullscreen: false,
           enableOverflowMenu: false,
-          showControls: false, // Ẩn controls để chỉ hiển thị nút play
+          showControls: false,
+          enablePlayPause: false,
+          enableProgressBar: false,
+          enableSkips: false,
+          loadingWidget:
+              Center(child: CircularProgressIndicator(color: Colors.white)),
         ),
       );
 
@@ -93,91 +98,117 @@ class _MediaPreviewState extends State<MediaPreview> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      fit: StackFit.passthrough,
-      children: [
-        // Media content
-        _buildMediaContent(),
-
-        // Close button ở góc trên bên phải
-        Positioned(
-          top: 8,
-          right: 8,
-          child: Row(
-            children: [
-              // Edit button (chỉ cho ảnh)
-              if (widget.type == MediaType.image && widget.onEdit != null)
-                GestureDetector(
-                  onTap: _editImage,
-                  child: Container(
-                    padding: const EdgeInsets.all(6),
-                    margin: const EdgeInsets.only(right: 8),
-                    decoration: const BoxDecoration(
-                      color: Colors.black54,
-                      shape: BoxShape.circle,
-                    ),
-                    child: const Icon(
-                      Icons.edit,
-                      color: Colors.white,
-                      size: 16,
-                    ),
-                  ),
-                ),
-
-              // Remove button
-              GestureDetector(
-                onTap: widget.onRemove,
-                child: Container(
-                  padding: const EdgeInsets.all(6),
-                  decoration: const BoxDecoration(
-                    color: Colors.black54,
-                    shape: BoxShape.circle,
-                  ),
-                  child: const Icon(
-                    Icons.close,
-                    color: Colors.white,
-                    size: 16,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-
-        // Upload progress indicator
-        if (widget.isUploading)
+    return Container(
+      clipBehavior: Clip.antiAlias,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Stack(
+        fit: StackFit.passthrough,
+        children: [
+          // Media content với container đen để đảm bảo màu nền nhất quán
           Container(
-            color: Colors.black54,
-            child: Center(
-              child: widget.uploadProgress != null
-                  ? CircularProgressIndicator(
-                      value: widget.uploadProgress,
-                      color: Colors.white,
-                    )
-                  : const CircularProgressIndicator(
-                      color: Colors.white,
+            color: Colors.black,
+            child: _buildMediaContent(),
+          ),
+
+          // Close button ở góc trên bên phải
+          Positioned(
+            top: 8,
+            right: 8,
+            child: Row(
+              children: [
+                // Edit button (chỉ cho ảnh)
+                if (widget.type == MediaType.image && widget.onEdit != null)
+                  Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      onTap: _editImage,
+                      customBorder: const CircleBorder(),
+                      child: Ink(
+                        decoration: const BoxDecoration(
+                          color: Colors.black54,
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Padding(
+                          padding: EdgeInsets.all(6),
+                          child: Icon(
+                            Icons.edit,
+                            color: Colors.white,
+                            size: 16,
+                          ),
+                        ),
+                      ),
                     ),
+                  ),
+
+                // Remove button
+                const SizedBox(width: 8),
+                Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    onTap: widget.onRemove,
+                    customBorder: const CircleBorder(),
+                    child: Ink(
+                      decoration: const BoxDecoration(
+                        color: Colors.black54,
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Padding(
+                        padding: EdgeInsets.all(6),
+                        child: Icon(
+                          Icons.close,
+                          color: Colors.white,
+                          size: 16,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
-      ],
+
+          // Upload progress indicator
+          if (widget.isUploading)
+            Container(
+              color: Colors.black54,
+              child: Center(
+                child: widget.uploadProgress != null
+                    ? CircularProgressIndicator(
+                        value: widget.uploadProgress,
+                        color: Colors.white,
+                      )
+                    : const CircularProgressIndicator(
+                        color: Colors.white,
+                      ),
+              ),
+            ),
+        ],
+      ),
     );
   }
 
   Widget _buildMediaContent() {
     switch (widget.type) {
       case MediaType.image:
-        return Image.file(
-          widget.media,
-          fit: BoxFit.cover,
-          errorBuilder: (_, __, ___) => const Center(
-            child: Icon(Icons.broken_image, color: Colors.grey, size: 40),
+        return Container(
+          width: double.infinity,
+          height: double.infinity,
+          color: Colors.black,
+          child: Image.file(
+            widget.media,
+            fit: BoxFit.contain,
+            errorBuilder: (_, __, ___) => const Center(
+              child: Icon(Icons.broken_image, color: Colors.grey, size: 40),
+            ),
           ),
         );
 
       case MediaType.video:
         if (_isVideoLoading) {
           return Container(
-            color: Colors.transparent,
+            color: Colors.black,
             child: const Center(
               child: CircularProgressIndicator(color: Colors.white),
             ),
@@ -197,32 +228,63 @@ class _MediaPreviewState extends State<MediaPreview> {
         return Stack(
           alignment: Alignment.center,
           children: [
-            // Video player
-            BetterPlayer(controller: _videoController!),
+            // Video player với container màu đen tràn toàn bộ không gian
+            Container(
+              color: Colors.black,
+              width: double.infinity,
+              height: double.infinity,
+              child: FittedBox(
+                fit: BoxFit.contain,
+                child: SizedBox(
+                  width: MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.width * 16 / 9,
+                  child: BetterPlayer(controller: _videoController!),
+                ),
+              ),
+            ),
 
             // Play button overlay
-            GestureDetector(
-              onTap: () {
-                if (_videoController!.isPlaying() ?? false) {
-                  _videoController!.pause();
-                } else {
-                  _videoController!.play();
-                }
-                setState(() {});
-              },
-              child: Container(
-                width: double.infinity,
-                height: double.infinity,
-                color: Colors.transparent,
-                child: Center(
-                  child: (!_videoController!.isPlaying()!)
-                      ? const Icon(
-                          Icons.play_circle_outline,
-                          size: 64,
-                          color: Colors.white,
-                        )
-                      : const SizedBox.shrink(),
-                ),
+            Container(
+              width: double.infinity,
+              height: double.infinity,
+              color: Colors.transparent,
+              child: Center(
+                child: (!_videoController!.isPlaying()!)
+                    ? Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          onTap: () {
+                            _videoController!.play();
+                            setState(() {});
+                          },
+                          customBorder: const CircleBorder(),
+                          child: Ink(
+                            decoration: const BoxDecoration(
+                              color: Colors.black38,
+                              shape: BoxShape.circle,
+                            ),
+                            child: const Padding(
+                              padding: EdgeInsets.all(18.0),
+                              child: Icon(
+                                Icons.play_arrow,
+                                size: 48,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+                      )
+                    : Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          onTap: () {
+                            _videoController!.pause();
+                            setState(() {});
+                          },
+                          customBorder: const CircleBorder(),
+                          child: const SizedBox.shrink(),
+                        ),
+                      ),
               ),
             ),
           ],
@@ -246,6 +308,7 @@ class MultipleMediaPreview extends StatelessWidget {
   final Function(int) onRemove;
   final Function(int, File)? onEdit;
   final bool isUploading;
+  final List<double>? uploadProgress;
 
   const MultipleMediaPreview({
     Key? key,
@@ -254,35 +317,69 @@ class MultipleMediaPreview extends StatelessWidget {
     required this.onRemove,
     this.onEdit,
     this.isUploading = false,
+    this.uploadProgress,
   })  : assert(mediaFiles.length == mediaTypes.length),
         super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return AspectRatio(
-      aspectRatio: 16 / 9,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
+    // Sử dụng 2 columns nếu có nhiều hơn 1 media
+    final bool useGrid = mediaFiles.length > 1;
+
+    if (!useGrid) {
+      // Nếu chỉ có 1 media, hiển thị đơn giản
+      return AspectRatio(
+        aspectRatio: 16 / 9,
+        child: MediaPreview(
+          key: ValueKey(0),
+          media: mediaFiles[0],
+          type: mediaTypes[0],
+          onRemove: () => onRemove(0),
+          onEdit: onEdit != null && mediaTypes[0] == MediaType.image
+              ? (file) => onEdit!(0, file)
+              : null,
+          isUploading: isUploading,
+          uploadProgress: uploadProgress != null && uploadProgress!.isNotEmpty
+              ? uploadProgress![0]
+              : null,
+        ),
+      );
+    }
+
+    // Hiển thị dạng grid nếu có nhiều media
+    return LayoutBuilder(builder: (context, constraints) {
+      // Tính toán số cột dựa trên số lượng media và kích thước màn hình
+      final int columns =
+          mediaFiles.length > 3 || constraints.maxWidth > 400 ? 2 : 1;
+      final double aspectRatio = columns == 1 ? 3 / 4 : 1;
+
+      return GridView.builder(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: columns,
+          childAspectRatio: aspectRatio,
+          crossAxisSpacing: 4,
+          mainAxisSpacing: 4,
+        ),
         itemCount: mediaFiles.length,
         itemBuilder: (context, index) {
-          return Padding(
-            padding: const EdgeInsets.only(right: 2),
-            child: AspectRatio(
-              aspectRatio: 9 / 16,
-              child: MediaPreview(
-                key: ValueKey(index),
-                media: mediaFiles[index],
-                type: mediaTypes[index],
-                onRemove: () => onRemove(index),
-                onEdit: onEdit != null && mediaTypes[index] == MediaType.image
-                    ? (file) => onEdit!(index, file)
+          return MediaPreview(
+            key: ValueKey(index),
+            media: mediaFiles[index],
+            type: mediaTypes[index],
+            onRemove: () => onRemove(index),
+            onEdit: onEdit != null && mediaTypes[index] == MediaType.image
+                ? (file) => onEdit!(index, file)
+                : null,
+            isUploading: isUploading,
+            uploadProgress:
+                uploadProgress != null && index < uploadProgress!.length
+                    ? uploadProgress![index]
                     : null,
-                isUploading: isUploading,
-              ),
-            ),
           );
         },
-      ),
-    );
+      );
+    });
   }
 }

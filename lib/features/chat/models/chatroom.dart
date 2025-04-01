@@ -1,6 +1,5 @@
 import '../../../core/utils/datetime_helper.dart';
 import 'package:social_app/core/enums/message_type.dart';
-import 'package:logger/logger.dart';
 
 /// Model đại diện cho phòng chat trong ứng dụng mạng xã hội.
 ///
@@ -43,6 +42,9 @@ class Chatroom {
   /// ID của người gửi tin nhắn cuối cùng
   final String? lastMessageSenderId;
 
+  /// Tên của người gửi tin nhắn cuối cùng
+  final String? lastMessageSenderName;
+
   /// Thời điểm phòng chat được cập nhật lần cuối
   final DateTime updatedAt;
 
@@ -51,8 +53,6 @@ class Chatroom {
 
   /// Thời điểm phòng chat được tạo
   final DateTime createdAt;
-
-  static final logger = Logger();
 
   /// Constructor tạo đối tượng Chatroom với các tham số bắt buộc và tùy chọn
   Chatroom({
@@ -67,32 +67,25 @@ class Chatroom {
     this.lastMessage,
     this.lastMessageType,
     this.lastMessageSenderId,
+    this.lastMessageSenderName,
     required this.updatedAt,
     required this.createdBy,
     required this.createdAt,
-  }) {
-    logger.d(
-        'Đã tạo phòng chat: ID=$id, Tên=$name, Nhóm=$isGroup, Công khai=$isPublic');
-  }
+  });
 
   /// Kiểm tra xem một người dùng có phải là admin của phòng chat không
   ///
   /// [userId] là ID của người dùng cần kiểm tra
   /// Trả về true nếu người dùng là admin
   bool isAdmin(String userId) {
-    final result = admins.contains(userId);
-    logger.d('Kiểm tra admin: userId=$userId, kết quả=$result');
-    return result;
+    return admins.contains(userId);
   }
 
   /// Kiểm tra xem một người dùng có phải là thành viên của phòng chat không
-  ///
   /// [userId] là ID của người dùng cần kiểm tra
   /// Trả về true nếu người dùng là thành viên
   bool isMember(String userId) {
-    final result = members.contains(userId);
-    logger.d('Kiểm tra thành viên: userId=$userId, kết quả=$result');
-    return result;
+    return members.contains(userId);
   }
 
   /// Kiểm tra xem một người dùng có thể tham gia phòng chat không
@@ -100,9 +93,7 @@ class Chatroom {
   /// [userId] là ID của người dùng cần kiểm tra
   /// Trả về true nếu phòng chat là công khai hoặc người dùng là admin
   bool canJoin(String userId) {
-    final result = isPublic || isAdmin(userId);
-    logger.d('Kiểm tra quyền tham gia: userId=$userId, kết quả=$result');
-    return result;
+    return isPublic || isAdmin(userId);
   }
 
   /// Lấy ID của người dùng khác trong chat 1-1
@@ -111,25 +102,15 @@ class Chatroom {
   /// Trả về ID của người dùng còn lại trong chat 1-1
   /// Trả về chuỗi rỗng nếu là chat nhóm hoặc không tìm thấy người dùng khác
   String getOtherUserId(String currentUserId) {
-    logger.i('===== BẮT ĐẦU LẤY ID NGƯỜI DÙNG KHÁC =====');
-    logger.i('getOtherUserId được gọi với currentUserId: $currentUserId');
-    logger.i('isGroup: $isGroup, members: $members');
-
     if (isGroup) {
-      logger.i('Đây là nhóm chat, trả về chuỗi rỗng');
       return '';
     }
 
     final otherUserId = members.firstWhere(
       (id) => id != currentUserId,
-      orElse: () {
-        logger.i('Không tìm thấy người dùng khác trong danh sách thành viên');
-        return '';
-      },
+      orElse: () => '',
     );
 
-    logger.i('Đã tìm thấy ID người dùng khác: $otherUserId');
-    logger.i('===== KẾT THÚC LẤY ID NGƯỜI DÙNG KHÁC =====');
     return otherUserId;
   }
 
@@ -138,10 +119,7 @@ class Chatroom {
   /// [currentUserId] là ID của người dùng hiện tại
   /// Trả về tên của phòng chat (đối với chat nhóm) hoặc tên người dùng (đối với chat 1-1)
   String getDisplayName(String currentUserId) {
-    final displayName = isGroup ? name ?? 'Nhóm chat' : name ?? 'Người dùng';
-    logger.d(
-        'Lấy tên hiển thị cho người dùng: $currentUserId, kết quả: $displayName');
-    return displayName;
+    return isGroup ? name ?? 'Nhóm chat' : name ?? 'Người dùng';
   }
 
   /// Lấy URL ảnh đại diện của phòng chat
@@ -149,8 +127,6 @@ class Chatroom {
   /// [currentUserId] là ID của người dùng hiện tại
   /// Trả về URL ảnh đại diện của phòng chat hoặc người dùng
   String? getDisplayAvatar(String currentUserId) {
-    logger.d(
-        'Lấy avatar hiển thị cho người dùng: $currentUserId, kết quả: $avatar');
     if (isGroup) return avatar;
     return avatar;
   }
@@ -158,24 +134,26 @@ class Chatroom {
   /// Lấy nội dung hiển thị của tin nhắn cuối cùng
   ///
   /// [currentUserId] là ID của người dùng hiện tại
-  /// Trả về nội dung tin nhắn cuối cùng, có thêm tiền tố "Bạn: " nếu người gửi là người dùng hiện tại
+  /// Trả về nội dung tin nhắn cuối cùng
+  /// - Nếu người gửi là người dùng hiện tại, thêm tiền tố "Bạn: "
+  /// - Nếu là nhóm chat và người gửi không phải người dùng hiện tại, hiển thị "Tên người gửi: nội dung"
+  /// - Nếu là chat 1-1, chỉ hiển thị nội dung tin nhắn
   String getDisplayLastMessage(String currentUserId) {
-    logger
-        .d('Lấy tin nhắn cuối cùng để hiển thị cho người dùng: $currentUserId');
-
     if (lastMessage == null) {
-      logger.d('Chưa có tin nhắn, trả về mặc định');
       return 'Chưa có tin nhắn';
     }
 
     // Nếu người gửi tin nhắn cuối cùng là người dùng hiện tại
     if (lastMessageSenderId == currentUserId) {
-      logger.d(
-          'Người gửi tin nhắn cuối cùng là người dùng hiện tại, thêm tiền tố "Bạn: "');
       return 'Bạn: $lastMessage';
     }
 
-    logger.d('Trả về tin nhắn cuối cùng nguyên bản: $lastMessage');
+    // Nếu là nhóm chat và có thông tin người gửi, hiển thị tên người gửi
+    if (isGroup && lastMessageSenderName != null) {
+      return '$lastMessageSenderName: $lastMessage';
+    }
+
+    // Trường hợp còn lại (chat 1-1 hoặc không có thông tin người gửi)
     return lastMessage!;
   }
 
@@ -183,19 +161,13 @@ class Chatroom {
   ///
   /// Ví dụ: "5 phút trước", "2 giờ trước", "Hôm qua", v.v.
   String get updatedAtText {
-    final text = DateTimeHelper.getRelativeTime(updatedAt);
-    logger.d('Lấy thời gian cập nhật dạng văn bản: $text');
-    return text;
+    return DateTimeHelper.getRelativeTime(updatedAt);
   }
 
   /// Tạo đối tượng Chatroom từ Map dữ liệu
   ///
   /// Thường được sử dụng khi lấy dữ liệu từ Firestore
   factory Chatroom.fromMap(Map<String, dynamic> map) {
-    logger.i('===== BẮT ĐẦU TẠO CHATROOM TỪ MAP =====');
-    logger.i(
-        'Dữ liệu đầu vào: id=${map['id']}, name=${map['name']}, isGroup=${map['isGroup']}');
-
     try {
       final chatroom = Chatroom(
         id: map['id'] ?? '',
@@ -211,19 +183,14 @@ class Chatroom {
             ? MessageType.fromString(map['lastMessageType'])
             : null,
         lastMessageSenderId: map['lastMessageSenderId'],
+        lastMessageSenderName: map['lastMessageSenderName'],
         updatedAt: DateTimeHelper.fromMap(map['updatedAt']) ?? DateTime.now(),
         createdBy: map['createdBy'] ?? '',
         createdAt: DateTimeHelper.fromMap(map['createdAt']) ?? DateTime.now(),
       );
 
-      logger.i('Đã tạo thành công chatroom với ID: ${chatroom.id}');
-      logger.i(
-          'Số lượng thành viên: ${chatroom.members.length}, Số lượng admin: ${chatroom.admins.length}');
-      logger.i('===== KẾT THÚC TẠO CHATROOM TỪ MAP =====');
       return chatroom;
     } catch (e) {
-      logger.e('Lỗi khi tạo Chatroom từ Map: $e');
-      logger.i('===== KẾT THÚC TẠO CHATROOM TỪ MAP - LỖI =====');
       rethrow;
     }
   }
@@ -232,7 +199,6 @@ class Chatroom {
   ///
   /// Thường được sử dụng khi lưu dữ liệu vào Firestore
   Map<String, dynamic> toMap() {
-    logger.d('Chuyển đổi chatroom thành Map: id=$id');
     return {
       'id': id,
       'name': name,
@@ -245,6 +211,7 @@ class Chatroom {
       'lastMessage': lastMessage,
       'lastMessageType': lastMessageType?.name,
       'lastMessageSenderId': lastMessageSenderId,
+      'lastMessageSenderName': lastMessageSenderName,
       'updatedAt': DateTimeHelper.toMap(updatedAt),
       'createdBy': createdBy,
       'createdAt': DateTimeHelper.toMap(createdAt),
@@ -266,11 +233,11 @@ class Chatroom {
     String? lastMessage,
     MessageType? lastMessageType,
     String? lastMessageSenderId,
+    String? lastMessageSenderName,
     DateTime? updatedAt,
     String? createdBy,
     DateTime? createdAt,
   }) {
-    logger.d('Tạo bản sao của chatroom: id=$id');
     return Chatroom(
       id: id ?? this.id,
       name: name ?? this.name,
@@ -283,6 +250,8 @@ class Chatroom {
       lastMessage: lastMessage ?? this.lastMessage,
       lastMessageType: lastMessageType ?? this.lastMessageType,
       lastMessageSenderId: lastMessageSenderId ?? this.lastMessageSenderId,
+      lastMessageSenderName:
+          lastMessageSenderName ?? this.lastMessageSenderName,
       updatedAt: updatedAt ?? this.updatedAt,
       createdBy: createdBy ?? this.createdBy,
       createdAt: createdAt ?? this.createdAt,

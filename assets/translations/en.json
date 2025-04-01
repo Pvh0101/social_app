@@ -406,15 +406,13 @@
       "mark_read_error_prefix": "Error marking as read: "
     }
   },
-  "chat": {
-    "message": {
-      "sent_media": "Sent {0}",
-      "type": {
-        "text": "text",
-        "image": "image",
-        "video": "video",
-        "audio": "audio"
-      }
-    }
+"chat": {
+  "message_type": {
+    "text": "sent a text",
+    "image": "sent an image",
+    "video": "sent a video",
+    "audio": "sent an audio"
   }
+}
+
 }

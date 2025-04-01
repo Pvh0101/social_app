@@ -63,22 +63,7 @@ class SplashScreen extends ConsumerWidget {
   }
 
   Widget _buildLoadingView() {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          SizedBox(
-            height: 200,
-            width: 200,
-            child: Lottie.asset(
-              AssetsManager.social,
-              repeat: true,
-              animate: true,
-            ),
-          ),
-        ],
-      ),
-    );
+    return const SizedBox.shrink();
   }
 
   Future<Widget> _checkUserState(

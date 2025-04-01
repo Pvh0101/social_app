@@ -351,4 +351,45 @@ class NotificationRepository {
       rethrow;
     }
   }
+
+  /// Gửi thông báo đẩy cho tin nhắn mà không lưu vào collection notifications
+  Future<void> sendMessagePushNotificationOnly({
+    required String receiverId,
+    required UserModel sender,
+    required String chatId,
+    required String messageContent,
+  }) async {
+    try {
+      // Lấy FCM token của người nhận
+      final userDoc =
+          await _firestore.collection('users').doc(receiverId).get();
+      final fcmToken = userDoc.data()?['fcmToken'];
+
+      if (fcmToken != null && fcmToken.isNotEmpty) {
+        // Tạo nội dung thông báo
+        final title = '${sender.fullName}';
+        final body =
+            messageContent.isNotEmpty ? messageContent : 'Đã gửi một media';
+
+        // Gửi thông báo đẩy
+        await sendPushNotification(
+          token: fcmToken,
+          title: title,
+          body: body,
+          data: {
+            'type': NotificationType.message.value,
+            'senderId': sender.uid,
+            'chatId': chatId,
+          },
+        );
+        debugPrint(
+            'Đã gửi push notification tin nhắn không lưu vào collection');
+      } else {
+        debugPrint('Không tìm thấy FCM token cho người dùng $receiverId');
+      }
+    } catch (e) {
+      debugPrint('Lỗi khi gửi push notification tin nhắn: $e');
+      // Không ném lỗi để không ảnh hưởng đến luồng gửi tin nhắn
+    }
+  }
 }

@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:io';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:better_player_plus/better_player_plus.dart';
@@ -83,7 +82,9 @@ class ReelsPlayerProvider extends ChangeNotifier {
   }
 
   /// Tạo controller cho video đang xem
-  void createReelsController(String url) {
+  void createReelsController(
+    String url,
+  ) {
     try {
       logDebug(
           LogService.MEDIA, '[REELS_PLAYER] Tạo controller cho video: $url');
@@ -96,11 +97,14 @@ class ReelsPlayerProvider extends ChangeNotifier {
       reelsController = BetterPlayerController(
         BetterPlayerConfiguration(
           placeholder: CachedNetworkImage(
-            fit: BoxFit.cover,
+            fit: BoxFit.contain,
             imageUrl: videosList[currentReelIndex].thumbnailUrl ?? '',
             placeholder: (context, url) => const SizedBox(),
             errorWidget: (context, url, error) => const Icon(Icons.error),
           ),
+          showPlaceholderUntilPlay: false,
+          allowedScreenSleep: false,
+          handleLifecycle: true,
           aspectRatio: 9 / 16,
           fit: BoxFit.contain,
           autoDispose: false,
@@ -110,7 +114,7 @@ class ReelsPlayerProvider extends ChangeNotifier {
             showControls: false,
             enableFullscreen: false,
             enableProgressBar: false,
-            loadingWidget: SizedBox(),
+            loadingWidget: SizedBox.shrink(),
           ),
         ),
         betterPlayerDataSource: betterPlayerDataSource,

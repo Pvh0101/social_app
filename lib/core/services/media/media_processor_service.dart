@@ -138,7 +138,7 @@ class MediaProcessorService {
     }
   }
 
-  /// Nén video với chất lượng giống TikTok
+  /// Nén video với chất lượng giống
   Future<File?> compressVideo(
     File file, {
     Function(double)? onProgress,
@@ -182,7 +182,7 @@ class MediaProcessorService {
           quality: videoQuality,
           deleteOrigin: false,
           includeAudio: true,
-          frameRate: 30,
+          frameRate: 60,
         );
 
         // Hủy đăng ký theo dõi tiến độ
@@ -275,6 +275,7 @@ class MediaProcessorService {
       final thumbnailFile = await VideoCompress.getFileThumbnail(
         videoPath,
         quality: quality,
+        position: 0,
       );
 
       logInfo(LogService.MEDIA,

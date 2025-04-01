@@ -1,7 +1,6 @@
 import 'package:social_app/core/enums/message_type.dart';
 
 import '../../../core/utils/datetime_helper.dart';
-import 'package:easy_localization/easy_localization.dart';
 
 /// Model đại diện cho tin nhắn trong ứng dụng mạng xã hội.
 ///
@@ -62,29 +61,14 @@ class Message {
   /// Lấy nội dung hiển thị của tin nhắn
   ///
   /// Nếu là tin nhắn văn bản, trả về nội dung gốc
-  /// Nếu là tin nhắn media, trả về thông báo "Đã gửi [loại media]"
+  /// Nếu là tin nhắn media, trả về thông báo phù hợp với loại media
   String getDisplayContent() {
-    final displayName = senderName ?? 'Người dùng';
-
     if (type == MessageType.text) {
-      return '$displayName: $content';
+      return content;
     }
 
-    String mediaType = '';
-    switch (type) {
-      case MessageType.image:
-        mediaType = 'hình ảnh';
-        break;
-      case MessageType.video:
-        mediaType = 'video';
-        break;
-      case MessageType.audio:
-        mediaType = 'âm thanh';
-        break;
-      default:
-        mediaType = 'tệp';
-    }
-    return '$displayName đã gửi $mediaType';
+    // Đối với các loại tin nhắn khác, hiển thị loại media
+    return type.displayText;
   }
 
   /// Lấy thời gian tạo tin nhắn dưới dạng văn bản tương đối

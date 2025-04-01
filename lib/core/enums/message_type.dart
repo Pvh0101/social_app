@@ -25,4 +25,17 @@ enum MessageType {
         return 'chat.message_type.audio'.tr();
     }
   }
+
+  String getMediaDisplayName() {
+    switch (this) {
+      case MessageType.text:
+        return 'chat.media_type.text'.tr();
+      case MessageType.image:
+        return 'chat.media_type.image'.tr();
+      case MessageType.video:
+        return 'chat.media_type.video'.tr();
+      case MessageType.audio:
+        return 'chat.media_type.audio'.tr();
+    }
+  }
 }

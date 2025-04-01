@@ -83,7 +83,7 @@ class _VideoReelsScreenState extends ConsumerState<VideoReelsScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.transparent,
+      backgroundColor: Colors.black,
       body: Consumer(
         builder: (context, ref, child) {
           final provider = ref.watch(reelsPlayerProvider);
@@ -104,16 +104,19 @@ class _VideoReelsScreenState extends ConsumerState<VideoReelsScreen>
                 );
               }
               return PageView.builder(
-                physics: const CustomPageViewScrollPhysics(),
+                // physics: const CustomPageViewScrollPhysics(),
                 itemCount: posts.length,
                 scrollDirection: Axis.vertical,
                 onPageChanged: (index) {
                   provider.onPageChange(index);
                 },
                 itemBuilder: (context, index) {
-                  return index != provider.currentReelIndex
-                      ? _buildThumbnailItem(provider, index)
-                      : _buildVideoItem(provider, index);
+                  return SizedBox(
+                      width: MediaQuery.of(context).size.width,
+                      height: MediaQuery.of(context).size.height,
+                      child: index != provider.currentReelIndex
+                          ? _buildVideothumnail(provider, index)
+                          : _buildVideoItem(provider, index));
                 },
               );
             },
@@ -133,36 +136,16 @@ class _VideoReelsScreenState extends ConsumerState<VideoReelsScreen>
     );
   }
 
-  /// Xây dựng item hiển thị thumbnail
-  Widget _buildThumbnailItem(ReelsPlayerProvider provider, int index) {
-    if (index >= provider.videosList.length) return const SizedBox();
-
-    return Stack(
-      children: [
-        // Thumbnail chính
-        SizedBox(
-          width: MediaQuery.of(context).size.width,
-          height: MediaQuery.of(context).size.height,
-          child: ClipRRect(
-            child: Container(
-              color: Theme.of(context).colorScheme.surface,
-              child: CachedNetworkImage(
-                width: double.infinity,
-                height: double.infinity,
-                fit: BoxFit.cover,
-                imageUrl: provider.videosList[index].thumbnailUrl ?? '',
-                placeholder: (context, url) => Container(color: Colors.black),
-                errorWidget: (context, url, error) => const Center(
-                  child: Icon(Icons.error, color: Colors.white),
-                ),
-              ),
-            ),
-          ),
-        ),
-
-        // Overlay UI (Tương tác, Like, Comment...)
-        _buildVideoOverlay(provider, index),
-      ],
+  _buildVideothumnail(ReelsPlayerProvider provider, int index) {
+    return AspectRatio(
+      aspectRatio: 9 / 16,
+      child: CachedNetworkImage(
+        height: 9 / 16,
+        fit: BoxFit.cover,
+        imageUrl: provider.videosList[index].thumbnailUrl ?? '',
+        placeholder: (context, url) => const SizedBox(),
+        errorWidget: (context, url, error) => const Icon(Icons.error),
+      ),
     );
   }
 
@@ -170,41 +153,31 @@ class _VideoReelsScreenState extends ConsumerState<VideoReelsScreen>
   Widget _buildVideoItem(ReelsPlayerProvider provider, int index) {
     if (index >= provider.videosList.length) return const SizedBox();
 
-    final isVideoReady =
-        provider.reelsController?.videoPlayerController != null &&
-            provider.reelsController!.isVideoInitialized()!;
-
-    if (!isVideoReady) {
-      return _buildThumbnailItem(provider, index);
-    }
-
     return Stack(
       children: [
         // Video chính
-        Positioned.fill(
-          child: VisibilityDetector(
-            key: Key('video_${provider.videosList[index].postId}'),
-            onVisibilityChanged: (info) {
-              if (info.visibleFraction >= 0.99) {
+        VisibilityDetector(
+          key: Key('video_${provider.videosList[index].postId}'),
+          onVisibilityChanged: (info) {
+            if (info.visibleFraction >= 0.6) {
+              provider.playVideo();
+            }
+          },
+          child: GestureDetector(
+            onTap: () {
+              // Kiểm tra trạng thái đang phát để thực hiện hành động ngược lại
+              if (provider.isPlaying) {
+                logDebug(LogService.POST,
+                    '[VIDEO_REELS] Dừng video khi chạm vào màn hình');
+                provider.pauseVideo();
+              } else {
+                logDebug(LogService.POST,
+                    '[VIDEO_REELS] Phát video khi chạm vào màn hình');
                 provider.playVideo();
               }
             },
-            child: GestureDetector(
-              onTap: () {
-                // Kiểm tra trạng thái đang phát để thực hiện hành động ngược lại
-                if (provider.isPlaying) {
-                  logDebug(LogService.POST,
-                      '[VIDEO_REELS] Dừng video khi chạm vào màn hình');
-                  provider.pauseVideo();
-                } else {
-                  logDebug(LogService.POST,
-                      '[VIDEO_REELS] Phát video khi chạm vào màn hình');
-                  provider.playVideo();
-                }
-              },
-              child: BetterPlayer(
-                controller: provider.reelsController!,
-              ),
+            child: BetterPlayer(
+              controller: provider.reelsController!,
             ),
           ),
         ),
@@ -252,7 +225,7 @@ class _VideoReelsScreenState extends ConsumerState<VideoReelsScreen>
           child: PostInteractions(
               post: post,
               style: PostInteractionsStyle.video,
-              onShowComments: () => {}),
+              onShowComments: () => _showCommentSheet(context, post)),
         ),
 
         // Thông tin video
@@ -285,31 +258,24 @@ class _VideoReelsScreenState extends ConsumerState<VideoReelsScreen>
     );
   }
 
-  // void _showCommentSheet(BuildContext context, PostModel post) {
-  //   showModalBottomSheet(
-  //     context: context,
-  //     isScrollControlled: true,
-  //     shape: const RoundedRectangleBorder(
-  //       borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-  //     ),
-  //     builder: (_) => CommentSheet(postId: post.postId),
-  //   );
-  // }
+  void _showCommentSheet(BuildContext context, PostModel post) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (_) => CommentSheet(post: post),
+    );
+  }
 }
 
 /// Physics tùy chỉnh cho PageView
-class CustomPageViewScrollPhysics extends ScrollPhysics {
-  const CustomPageViewScrollPhysics({super.parent});
+// class CustomPageViewScrollPhysics extends ScrollPhysics {
+//   const CustomPageViewScrollPhysics({super.parent});
 
-  @override
-  CustomPageViewScrollPhysics applyTo(ScrollPhysics? ancestor) {
-    return CustomPageViewScrollPhysics(parent: buildParent(ancestor)!);
-  }
-
-  @override
-  SpringDescription get spring => const SpringDescription(
-        mass: 120,
-        stiffness: 120,
-        damping: 1,
-      );
-}
+//   @override
+//   CustomPageViewScrollPhysics applyTo(ScrollPhysics? ancestor) {
+//     return CustomPageViewScrollPhysics(parent: buildParent(ancestor)!);
+//   }
+// }
