@@ -116,13 +116,6 @@ lib/
 └── main.dart              # Điểm khởi đầu ứng dụng
 ```
 
-## 📄 Giấy phép
-
-Dự án này được cấp phép theo [LICENSE_NAME] - xem file LICENSE để biết thêm chi tiết.
-
-## 👥 Tác giả
-
-- **Tên Tác Giả** - [@username](https://github.com/username)
 
 ## 🙏 Lời cảm ơn
 
@@ -132,5 +125,5 @@ Dự án này được cấp phép theo [LICENSE_NAME] - xem file LICENSE để 
 ---
 
 <p align="center">
-  <strong>Made with ❤️ by [Tên Team/Cá nhân]</strong>
+  <strong>Made with ❤️ by Phạm Văn Huỳnh</strong>
 </p>
