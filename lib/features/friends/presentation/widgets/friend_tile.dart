@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:social_app/core/screens/loader.dart';
 import '../../../../core/screens/error_screen.dart';
-import '../../../../core/widgets/loader.dart';
 import '../../../../core/core.dart';
 import '../../../authentication/authentication.dart';
 import '../../providers/get_all_friends_provider.dart';

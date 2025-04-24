@@ -1,6 +1,5 @@
 import 'package:easy_localization/easy_localization.dart';
-
-import 'utils/datetime_helper.dart';
+import 'package:social_app/core/utils/datetime_helper.dart';
 
 extension DateTimeX on DateTime? {
   /// Format ngày tháng theo định dạng cụ thể
